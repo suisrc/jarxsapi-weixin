@@ -1,0 +1,11 @@
+.project
+.settings/
+.classpath
+*.class
+MANIFEST.MF
+pom.properties
+*.log
+*.log.*
+.externalToolBuilders/
+target/
+import.sql
