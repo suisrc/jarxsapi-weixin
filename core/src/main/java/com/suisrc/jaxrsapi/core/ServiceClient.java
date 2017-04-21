@@ -13,8 +13,47 @@ import javax.naming.InitialContext;
  * @see org.wildfly.swarm.client.jaxrs.ServiceClient
  * @param <T>
  */
-public interface ServiceClient<T> {
-
+public interface ServiceClient {
+	
+	//------------------------------------初始化-------------------------------------//
+	void initialized();
+	
+	//------------------------------------配置信息------------------------------------//
+	/**
+	 * 获取激活器,激活器存放远程服务器信息
+	 * @return
+	 */
+	ApiActivator getActivator();
+	
+	/**
+	 * 重置激活器
+	 * @param activator
+	 */
+	void setActivator( ApiActivator activator);
+	
+	/**
+	 * 通过适配器获取数据
+	 * @param key
+	 * @return
+	 */
+	default <T> T getAdapter(String key) {
+		return getActivator().getAdapter(key);
+	}
+	
+	/**
+	 * 通过适配器获取数据
+	 * @param type
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	default <T> T getAdapter( Class<T> type ) {
+		if( type == ApiActivator.class ) {
+			return (T)getActivator();
+		}
+		return getActivator().getAdapter(type);
+	}
+	
+	//------------------------------------执行内容--------------------------------//
 	default <U> void exec(Supplier<U> restMethod, Consumer<U> handler, Consumer<Throwable> exceptionHandler)
 			throws Exception {
 		chainableExec(restMethod, exceptionHandler).thenAccept(handler).exceptionally(t -> {

@@ -2,167 +2,203 @@ package com.suisrc.jaxrsapi.core.runtime;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.client.WebTarget;
+
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.FieldInfo;
+import org.jboss.jandex.Index;
 import org.jboss.jandex.MethodInfo;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.jboss.jandex.Type;
+
+import com.suisrc.jaxrsapi.core.ApiActivator;
+import com.suisrc.jaxrsapi.core.ServiceClient;
+import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.proxy.ProxyBuilder;
+import com.suisrc.jaxrsapi.core.util.Utils;
+
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.Modifier;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.StringMemberValue;
 
 /**
- * 代码参考wildfly-swarm
- * @see org.wildfly.swarm.cdi.jaxrsapi.runtime.ServiceClientProcessor
+ * 生成执行的代理实体
+ * 使用javassist对java代码进行动态生成。
  * @author Y13
  *
  */
-class ClientServiceFactory implements Opcodes {
-	static byte[] createImpl(String implName, ClassInfo classInfo) {
-		ClassWriter cw = new ClassWriter(0);
-		MethodVisitor mv;
-		AnnotationVisitor av0;
-
-		cw.visit(V1_8, ACC_PUBLIC + ACC_SUPER, implName.replace('.', '/'), null, "java/lang/Object",
-				new String[] { classInfo.name().toString().replace('.', '/') });
-
-		int lastDot = implName.lastIndexOf('.');
-		String simpleName = implName.substring(lastDot + 1);
-
-		cw.visitSource(simpleName + ".java", null);
-		{
-			av0 = cw.visitAnnotation("Ljavax/enterprise/context/ApplicationScoped;", true);
-			av0.visitEnd();
+class ClientServiceFactory {
+	/**
+	 * 代理生成模版
+	 */
+	private static final String InitMethodModule = "{ proxy = " + ProxyBuilder.class.getCanonicalName() + ".builder({ApiType}.class, ("
+			+ WebTarget.class.getCanonicalName() + ")activator.getAdapter(" + WebTarget.class.getCanonicalName() + ".class)).build(); }";
+	/**
+	 * 系统常数模版
+	 */
+	private static final String SystemReturnModule = "return proxy.{Method}({Params});";
+	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType})activator.getAdapter(\"{GetKey}\"); } ";
+	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType})activator.getAdapter(\"{GetKey}\")); } ";
+	
+	static CtClass createImpl(ApiActivator activator, Index index, ClassPool ctPool, String implName, ClassInfo classInfo) throws Exception {
+		Named named = activator.getClass().getAnnotation(Named.class);
+		if( named == null ) {
+			throw new RuntimeException("Not found Named Annotation : " + activator.getClass());
 		}
-		cw.visitInnerClass("javax/ws/rs/client/Invocation$Builder", "javax/ws/rs/client/Invocation", "Builder",
-				ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
-
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-			mv.visitCode();
-			Label l0 = new Label();
-			mv.visitLabel(l0);
-			mv.visitLineNumber(14, l0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-			Label l1 = new Label();
-			mv.visitLabel(l1);
-			mv.visitLineNumber(15, l1);
-			mv.visitInsn(RETURN);
-			Label l2 = new Label();
-			mv.visitLabel(l2);
-			mv.visitLocalVariable("this", buildTypeDef(implName), null, l0, l2, 0);
-			mv.visitMaxs(1, 1);
-			mv.visitEnd();
+		CtClass ctClass = ctPool.makeClass(implName);
+		crateBaseInfo(ctPool, classInfo, named, ctClass);
+		for( MethodInfo methodInfo : classInfo.methods() ) {
+			createMethod(index, ctPool, ctClass, methodInfo);
 		}
-
-//		List<AnnotationInstance> annotations = classInfo.annotations()
-//				.get(DotName.createSimple("org.wildfly.swarm.client.jaxrs.Service"));
-		String baseUrl = "xxxxx";
-		int lineNum = 18;
-
-		classInfo.asClass().methods().stream().forEachOrdered(method -> {
-			createMethod(cw, implName, classInfo.name().toString(), method, lineNum, baseUrl);
-		});
-		cw.visitEnd();
-
-		return cw.toByteArray();
+		return ctClass;
 	}
 
-	static void createMethod(ClassWriter cw, String implName, String clientInterfaceName, MethodInfo method,
-			int lineNum, String baseUrl) {
-		MethodVisitor mv;
+	/**
+	 * 构建代理的方法
+	 * @param index 
+	 * @param ctClass
+	 * @param method
+	 * @throws CannotCompileException 
+	 * @throws NotFoundException 
+	 * @throws ClassNotFoundException 
+	 */
+	private static void createMethod(Index index, ClassPool ctPool, CtClass ctClass, MethodInfo method) 
+			throws CannotCompileException, ClassNotFoundException, NotFoundException {
 
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, method.name(), buildMethodDef(method), null, null);
-			mv.visitCode();
-			Label l0 = new Label();
-			mv.visitLabel(l0);
-			mv.visitLineNumber(lineNum++, l0);
-			mv.visitLdcInsn(Type.getType(buildTypeDef(clientInterfaceName)));
-			mv.visitTypeInsn(NEW, "org/jboss/resteasy/client/jaxrs/ResteasyClientBuilder");
-			mv.visitInsn(DUP);
-			mv.visitMethodInsn(INVOKESPECIAL, "org/jboss/resteasy/client/jaxrs/ResteasyClientBuilder", "<init>",
-					"()V", false);
-			mv.visitMethodInsn(INVOKEVIRTUAL, "org/jboss/resteasy/client/jaxrs/ResteasyClientBuilder", "build",
-					"()Lorg/jboss/resteasy/client/jaxrs/ResteasyClient;", false);
-			mv.visitLdcInsn(baseUrl);
-			Label l1 = new Label();
-			mv.visitLabel(l1);
-			mv.visitLineNumber(lineNum++, l1);
-			mv.visitMethodInsn(INVOKEVIRTUAL, "org/jboss/resteasy/client/jaxrs/ResteasyClient", "target",
-					"(Ljava/lang/String;)Lorg/jboss/resteasy/client/jaxrs/ResteasyWebTarget;", false);
-			Label l2 = new Label();
-			mv.visitLabel(l2);
-			mv.visitLineNumber(lineNum - 2, l2);
-			mv.visitMethodInsn(INVOKESTATIC, "org/wildfly/swarm/cdi/jaxrsapi/deployment/ProxyBuilder", "builder",
-					"(Ljava/lang/Class;Ljavax/ws/rs/client/WebTarget;)Lorg/wildfly/swarm/cdi/jaxrsapi/deployment/ProxyBuilder;",
-					false);
-			Label l3 = new Label();
-			mv.visitLabel(l3);
-			mv.visitLineNumber(lineNum++, l3);
-			mv.visitMethodInsn(INVOKEVIRTUAL, "org/wildfly/swarm/cdi/jaxrsapi/deployment/ProxyBuilder", "build",
-					"()Ljava/lang/Object;", false);
-			mv.visitTypeInsn(CHECKCAST, clientInterfaceName.replace('.', '/'));
-			for (int i = 1; i <= method.parameters().size(); i++) {
-				mv.visitVarInsn(ALOAD, i);
+		List<Type> parameters = method.parameters(); // 获取参数的
+		StringBuilder methodContent = new StringBuilder("{ ");
+		// SystemValue
+		for (AnnotationInstance anno : method.annotations()) {
+			if (anno.name().toString().equals(SystemValue.class.getCanonicalName())) {
+				short position = anno.target().asMethodParameter().position();
+				String content = SystemParamModule
+						.replace("{Param}", position + 1 + "")
+						.replace("{ParamType}", parameters.get(position).name().toString())
+						.replace("{GetKey}", anno.value().asString());
+				methodContent.append(content);
 			}
-			Label l4 = new Label();
-			mv.visitLabel(l4);
-			mv.visitLineNumber(lineNum++, l4);
-			mv.visitMethodInsn(INVOKEINTERFACE, clientInterfaceName.replace('.', '/'), method.name(),
-					buildMethodDef(method), true);
-			Label l5 = new Label();
-			mv.visitLabel(l5);
-			if (method.returnType().kind().equals(org.jboss.jandex.Type.Kind.VOID)) {
-				mv.visitLineNumber(lineNum++, l5);
-				mv.visitInsn(RETURN);
-			} else {
-				mv.visitLineNumber(lineNum - 4, l5);
-				mv.visitInsn(ARETURN);
-			}
-			Label l6 = new Label();
-			mv.visitLabel(l6);
-			int methodParams = 0;
-			mv.visitLocalVariable("this", buildTypeDef(implName), null, l0, l6, methodParams++);
-			for (AnnotationInstance anno : method.annotations()) {
-				if (anno.name().toString().contains("QueryParam") || anno.name().toString().contains("PathParam")) {
-					short position = anno.target().asMethodParameter().position();
-					org.jboss.jandex.Type parameterType = anno.target().asMethodParameter().method().parameters()
-							.get(position);
-					mv.visitLocalVariable(String.valueOf(anno.value().value()),
-							buildTypeDef(parameterType.name().toString()), null, l0, l6, methodParams++);
+		}
+		
+		// 参数
+		StringBuilder paramsContent = new StringBuilder();
+		CtClass[] ctParameters = new CtClass[parameters.size()];
+		for( int i = 0; i < parameters.size(); i++ ) {
+			paramsContent.append('$').append(i + 1).append(',');
+			Type paramType = parameters.get(i);
+			ctParameters[i] = Utils.getCtClass(ctPool, paramType.name().toString());
+			
+			ClassInfo classInfo = index.getClassByName(paramType.name());
+			if( classInfo == null ) { continue; }
+			List<AnnotationInstance> annos = classInfo.annotations().get(DotName.createSimple(SystemValue.class.getName()));
+			if( annos == null || annos.isEmpty() ) { continue; }
+			for( AnnotationInstance anno : annos ) {
+				FieldInfo fieldInfo  = anno.target().asField();
+				String name = fieldInfo.name();
+				name = name.substring(0, 1).toUpperCase() + name.substring(1);
+				String getMethod = "get" + name;
+				String setMethod = "set" + name;
+				if( fieldInfo.declaringClass().method(getMethod) == null ) {
+					name = "is" + name;
 				}
+				String content = SystemFieldModule
+						.replace("{Param}", i + 1 + "")
+						.replace("{FieldType}", fieldInfo.type().toString())
+						.replace("{GetField}", getMethod)
+						.replace("{SetField}", setMethod)
+						.replace("{GetKey}", anno.value().asString());
+				methodContent.append(content);
 			}
-			mv.visitMaxs(3, methodParams);
-			lineNum += 4;
-			mv.visitEnd();
 		}
+		if( paramsContent.length() > 0 ) {
+			paramsContent.setLength(paramsContent.length() - 1);
+		}
+		methodContent.append(SystemReturnModule.replace("{Method}", method.name()).replace("{Params}", paramsContent));
+		methodContent.append("}");
+		// 返回值
+		CtClass returnType = Utils.getCtClass(ctPool, method.returnType().name().toString());
+		// 异常
+		List<Type> exceptions = method.exceptions();
+		CtClass[] ctExceptions = new CtClass[exceptions.size()];
+		for( int i = 0; i < exceptions.size(); i++ ) {
+			ctExceptions[i] = Utils.getCtClass(ctPool, exceptions.get(i).name().toString());
+		}
+		CtMethod ctMethod = CtNewMethod.make(returnType, method.name(), ctParameters, ctExceptions, methodContent.toString(), ctClass);
+		ctClass.addMethod(ctMethod);
 	}
 
-	static String buildTypeDef(String name) {
-		return "L" + name.replace('.', '/') + ";";
+	/**
+	 * 构建基础信息
+	 * @param ctPool
+	 * @param classInfo
+	 * @param named
+	 * @param ctClass
+	 * @throws NotFoundException
+	 * @throws ClassNotFoundException
+	 * @throws CannotCompileException
+	 */
+	private static void crateBaseInfo(ClassPool ctPool, ClassInfo classInfo, Named named, CtClass ctClass)
+			throws NotFoundException, ClassNotFoundException, CannotCompileException {
+
+		// 增加注解
+		ClassFile ctFile = ctClass.getClassFile(); 
+		ConstPool constPool = ctFile.getConstPool();
+		AnnotationsAttribute attribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		Annotation annotation = new Annotation(ApplicationScoped.class.getCanonicalName(), constPool);
+		attribute.addAnnotation(annotation);
+		ctFile.addAttribute(attribute);
+		
+		CtClass ctApiClass = Utils.getCtClass(ctPool, classInfo.name().toString());
+		ctClass.addInterface(ctApiClass); // 继承与通信API
+		ctClass.addInterface(Utils.getCtClass(ctPool, ServiceClient.class)); // 继承与ServiceClient
+		
+		/*
+		 * private UserRest proxy;
+		 */
+		CtField ctProxyField = new CtField(ctApiClass, "proxy", ctClass); // 执行代理
+		ctClass.addField(ctProxyField);
+		
+		/*
+		 * @Inject @Named("xxxx")
+		 * private ApiActivator activator; 
+		 */
+		CtClass ctApiActivatorClass = Utils.getCtClass(ctPool, ApiActivator.class);
+		CtField ctApiActivatorField = new CtField(ctApiActivatorClass, "activator", ctClass); // 执行代理
+		// 增加注解
+		attribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		annotation = new Annotation(Inject.class.getCanonicalName(), constPool);
+		attribute.addAnnotation(annotation);
+		annotation = new Annotation(Named.class.getCanonicalName(), constPool);
+		annotation.addMemberValue("value", new StringMemberValue(named.value(), constPool));
+		attribute.addAnnotation(annotation);
+		ctApiActivatorField.getFieldInfo().addAttribute(attribute);
+		ctApiActivatorField.setModifiers(Modifier.PRIVATE );
+		ctClass.addField(ctApiActivatorField);
+		ctClass.addMethod(CtNewMethod.getter("getActivator", ctApiActivatorField));
+		ctClass.addMethod(CtNewMethod.setter("setActivator", ctApiActivatorField));
+
+		String methodContent = InitMethodModule.replace("{ApiType}", ctApiClass.getName());
+		CtMethod ctInitializedMethod = CtNewMethod.make(CtClass.voidType, "initialized", null, null, methodContent, ctClass);
+		// 增加注解
+		attribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		annotation = new Annotation(PostConstruct.class.getCanonicalName(), constPool);
+		attribute.addAnnotation(annotation);
+		ctInitializedMethod.getMethodInfo().addAttribute(attribute);
+		ctClass.addMethod(ctInitializedMethod);
 	}
-
-	static String buildMethodDef(MethodInfo method) {
-		StringBuilder builder = new StringBuilder();
-
-		// Method Parameters
-		builder.append("(");
-		for (org.jboss.jandex.Type type : method.parameters()) {
-			builder.append(buildTypeDef(type.name().toString()));
-		}
-		builder.append(")");
-
-		// Method Return Type
-		if (method.returnType().kind().equals(org.jboss.jandex.Type.Kind.VOID)) {
-			builder.append("V");
-		} else {
-			builder.append(buildTypeDef(method.returnType().name().toString()));
-		}
-
-		return builder.toString();
-	}
+	
 }
