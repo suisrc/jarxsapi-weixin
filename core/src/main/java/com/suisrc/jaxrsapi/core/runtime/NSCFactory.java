@@ -54,7 +54,7 @@ public class NSCFactory /* NativeServiceClientFactory */ {
 	public static void build( boolean debug, Class<? extends ApiActivator>... clazzes ) {
 		if( !clientImpls.isEmpty() ) { clientImpls.clear(); } // 情况原有系统数据
 
-		ClassLoader loader = NSCFactory.class.getClassLoader();
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Index index = createIndexer(loader, clazzes);
 		ClassPool ctPool = ClassPool.getDefault();
 		// 前期 clientImpls 中都是ApiActivator对象
@@ -63,7 +63,7 @@ public class NSCFactory /* NativeServiceClientFactory */ {
 			// 由于默认的provider在本地访问中是失效的，所以在这里提供新的访问方式
 			activator.setAdapter(ResteasyProviderFactory.class, getNativeProviderFactory());
 			// 初始化
-			activator.initialized();
+			activator.initialized(); 
 			for( Class<?> apiClass : activator.getClasses() ) {
 				ClassInfo info = index.getClassByName(DotName.createSimple(apiClass.getName()));
 				try {
