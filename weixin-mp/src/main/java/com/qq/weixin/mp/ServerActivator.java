@@ -1,6 +1,5 @@
 package com.qq.weixin.mp;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,9 +14,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import com.qq.weixin.mp.api.UserRest;
-import com.qq.weixin.mp.result.ErrCode;
 import com.suisrc.jaxrsapi.core.ApiActivator;
-import com.suisrc.jaxrsapi.core.runtime.NSCFactory;
 import com.suisrc.jaxrsapi.core.util.Utils;
 
 /**
@@ -139,21 +136,5 @@ public class ServerActivator implements ApiActivator {
 			providerFactory = (ResteasyProviderFactory) value;
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws IOException { 
-		NSCFactory.build(true, ServerActivator.class);
-		ServerActivator activator = NSCFactory.get(ServerActivator.class);
-		activator.token = "1243";
-		
-		UserRest userRest = NSCFactory.get(UserRest.class);
-		
-		ErrCode content = userRest.getUserGet(null, null);
-//		UserInfoParam param = new UserInfoParam();
-//		param.setOpenid("123456");
-//		String content = userRest.getUserInfo(param);
-		System.out.println(content);
-	}
-	
 	
 }
