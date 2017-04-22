@@ -15,14 +15,20 @@
 ### 如何使用和扩展？
   这里我以微信公众号进行说明。
   1.定义远程服务器激活器：
-  '''java
-  @Named("com.qq.weixin.api") // CDI使用扩展注入的时候，选择性注入表示
-  @ApplicationScoped // 激活器的生存周期
-  public class ServerActivator implements ApiActivator {
-  '''
+  
+  ```java
+    @Named("com.qq.weixin.api") // CDI使用扩展注入的时候，选择性注入表示
+    @ApplicationScoped // 激活器的生存周期
+    public class ServerActivator implements ApiActivator {
+    }
+  ```
+  
   定义一个服务器激活器，实现API接口适配器，详情请看weinxin-mp中的代码。
   2.构建java api
-  '''java
+  
+  ```java
+  @Path("user")
+   public interface UserRest {
   	/**
 	 * http请求方式: GET https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN 
 	 */
@@ -30,8 +36,10 @@
 	@Path("info")
 	@Produces(MediaType.APPLICATION_JSON)
 	String getUserInfo(@BeanParam UserInfoParam userInfo);
- '''
- '''java
+   }
+ ```
+ 
+ ```java
  public class UserInfoParam {
 	
 	@QueryParam("access_token")
@@ -44,7 +52,8 @@
 	@QueryParam("lang") 
 	private String lang;
  }
- '''
+ ```
+ 
  构建的接口是不需要实现的，只需要在ServerActivator中的getClasses方法中指定就可以了。框架会实现接口。完成调用，同时我们可以直接
  使用 @Inject对接口注入，得到系统实现的实体内容。
  
