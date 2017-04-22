@@ -60,8 +60,8 @@
  为程序员开发，再在巨人的肩上看远方。还有我是jboss社区的忠实粉丝，目前在研究和使用wildfly-swarm框架，为公司节省人力成本。
  
  ## 框架使用开源清单
-   resteasy(网络通信) 
-   reflections(反射控制)
-   jandex(代码自分析，比通过反射方式访问代码的结构和注解更加方便)
-   fasterxml(结果集转换为对象)
+   resteasy(网络通信)</br>
+   reflections(反射控制)</br>
+   jandex(代码自分析，比通过反射方式访问代码的结构和注解更加方便)</br>
+   fasterxml(结果集转换为对象)</br>
    
