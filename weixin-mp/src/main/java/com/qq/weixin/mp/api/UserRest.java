@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.qq.weixin.mp.WxConsts;
 import com.qq.weixin.mp.param.UserInfoParam;
-import com.qq.weixin.mp.result.ErrCode;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 
 /**
@@ -21,7 +20,7 @@ import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 public interface UserRest {
 
 	/**
-	 * http请求方式: GET https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN 
+	 * http请求方式: GET https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 	 */
 	@GET
 	@Path("info")
@@ -34,6 +33,6 @@ public interface UserRest {
 	@GET
 	@Path("get")
 	@Produces(MediaType.APPLICATION_JSON)
-	ErrCode getUserGet(@QueryParam("access_token")@SystemValue(WxConsts.ACCESS_TOKEN) String accessToken, @QueryParam("next_openid") String openid);
+	String getUserGet(@QueryParam("access_token")@SystemValue(WxConsts.ACCESS_TOKEN) String accessToken, @QueryParam("next_openid") String openid);
 
 }

@@ -24,7 +24,7 @@ import com.suisrc.jaxrsapi.core.util.Utils;
  */
 @Named("com.qq.weixin.api")
 @ApplicationScoped
-public class ServerActivator implements ApiActivator {
+public class ServerActivator implements ApiActivator, WxConfig {
 
 	/**
 	 * 微信公众号的appid
@@ -44,12 +44,17 @@ public class ServerActivator implements ApiActivator {
 	/**
 	 * 消息加解密密钥
 	 */
-	protected String aesKey;
+	protected String encodingAesKey;
 	
 	/**
 	 * 获取基础路径地址
 	 */
 	protected String baseUrl;
+	
+	/**
+	 * access token
+	 */
+	private volatile String accessToken;
 	
 	/**
 	 * 访问的客户端
@@ -69,8 +74,8 @@ public class ServerActivator implements ApiActivator {
 	public void initialized() {
 		appId = System.getProperty("com.qq.weixin.endpoint.app_id");
 		appSecret = System.getProperty("com.qq.weixin.endpoint.app_secret");
-		token = System.getProperty("com.qq.weixin.endpoint.access_token");
-		aesKey = System.getProperty("com.qq.weixin.endpoint.aes_key");
+		token = System.getProperty("com.qq.weixin.endpoint.token");
+		encodingAesKey = System.getProperty("com.qq.weixin.endpoint.encoding_aes_key");
 		baseUrl = System.getProperty("com.qq.weixin.endpoint.base_url", "https://api.weixin.qq.com/cgi-bin");
 		
 		ClientBuilder clientBuilder = ClientBuilder.newBuilder();// 配置网络通信内容
@@ -84,12 +89,10 @@ public class ServerActivator implements ApiActivator {
 		client = clientBuilder.build();
 	}
 
-	@Override
 	public String getBaseUrl() {
 		return baseUrl;
 	}
 	
-	@Override
 	public Set<Class<?>> getClasses() {
 		HashSet<Class<?>> set = new HashSet<>();
 		set.addAll(Utils.getRestApiClasses(UserRest.class.getPackage().getName(), null, true));
@@ -105,13 +108,15 @@ public class ServerActivator implements ApiActivator {
 	public <T> T getAdapter(String key) {
 		switch (key) {
 		case WxConsts.APP_ID:// 设置微信公众号的appid
-			return (T) appId;
+			return (T) getAppId();
 		case WxConsts.APP_SECRET:// 设置微信公众号的app corpSecret
-			return (T) appSecret;
-		case WxConsts.ACCESS_TOKEN:// 设置微信公众号的token
-			return (T) token;
-		case WxConsts.AES_KEY:// 设置消息加解密密钥
-			return (T) aesKey;
+			return (T) getAppSecret();
+		case WxConsts.ACCESS_TOKEN:// 设置微信公众号的 access token
+			return (T) getAccessToken();
+		case WxConsts.TOKEN:// 设置微信公众号的token
+			return (T) getToken();
+		case WxConsts.ENCODING_AES_KEY:// 设置消息加解密密钥
+			return (T) getEncodingAesKey();
 		default:
 			return null;
 		}
@@ -130,11 +135,34 @@ public class ServerActivator implements ApiActivator {
 		return null;
 	}
 	
-	@Override
 	public <T> void setAdapter(Class<T> type, T value) {
 		if( type == ResteasyProviderFactory.class ) {
 			providerFactory = (ResteasyProviderFactory) value;
 		}
+	}
+
+	public String getAppId() {
+		return appId;
+	}
+
+	public String getAppSecret() {
+		return appSecret;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public String getEncodingAesKey() {
+		return encodingAesKey;
+	}
+	
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 	
 }

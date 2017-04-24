@@ -17,13 +17,18 @@ public interface WxConsts {
 	String APP_SECRET = "APP_SECRET";
 	
 	/**
-	 * 微信公众号的token
+	 * 微信公众号的 access token
 	 */
 	String ACCESS_TOKEN = "ACCESS_TOKEN";
 	
 	/**
+	 * 微信公众号的 token
+	 */
+	String TOKEN = "TOKEN";
+	
+	/**
 	 * 消息加解密密钥
 	 */
-	String AES_KEY = "AES_KEY";
+	String ENCODING_AES_KEY = "ENCODING_AES_KEY";
 
 }

@@ -24,6 +24,7 @@
 		<version.reflections>0.9.10</version.reflections>
 		<version.jandex>2.0.3.Final</version.jandex>
 		<version.asm>5.2</version.asm>
+		<version.fasterxml>2.7.4</version.fasterxml>
 		<!-- test -->
 		<version.junit>4.12</version.junit>
 	</properties>
