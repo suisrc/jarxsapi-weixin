@@ -1,4 +1,6 @@
-package com.qq.weixin.mp.result;
+package com.suisrc.weixin.core.bean;
+
+import java.io.Serializable;
 
 /**
  * 异常获取，最好所有的返回值都集成该对象，这样对于异常的返回也可以正常处理
@@ -6,8 +8,9 @@ package com.qq.weixin.mp.result;
  * @author Y13
  *
  */
-public class ErrCode {
-	
+public class WxErrCode implements Serializable {
+	private static final long serialVersionUID = 1237064203482294732L;
+
 	private String errcode = null;
 	
 	private String errmsg = null;

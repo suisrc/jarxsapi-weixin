@@ -3,7 +3,7 @@
  *
  * @copyright Copyright (c) 1998-2014 Tencent Inc.
  */
-package com.suisrc.weixin.mp.crypto;
+package com.suisrc.weixin.core.crypto;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;

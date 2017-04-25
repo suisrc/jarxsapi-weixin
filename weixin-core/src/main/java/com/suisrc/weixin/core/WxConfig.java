@@ -1,4 +1,4 @@
-package com.qq.weixin.mp;
+package com.suisrc.weixin.core;
 
 public interface WxConfig {
 
@@ -28,8 +28,7 @@ public interface WxConfig {
 	String getAccessToken();
 	
 	/**
-	 * 设定access token
-	 * @param accessToken
+	 * 防止AccessToken在访问过程中实现，提供清空接口
 	 */
-	void setAccessToken(String accessToken);
+	void clearAccessToken();
 }

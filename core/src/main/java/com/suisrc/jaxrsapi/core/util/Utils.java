@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.ws.rs.Path;
 
 import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
@@ -24,7 +25,7 @@ public class Utils {
 	public static Collection<Class<?>> getRestApiClasses(String packageName, Class<? extends Annotation> anno, boolean honorInherited) {
 		ConfigurationBuilder config = new ConfigurationBuilder();
 		config.forPackages(packageName);
-		config.setScanners(new TypeAnnotationsScanner());
+		config.setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 		Reflections reflections = new Reflections(config);
 		return reflections.getTypesAnnotatedWith(anno != null ? anno : Path.class, honorInherited);
 	}

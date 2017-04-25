@@ -42,7 +42,7 @@ import javassist.bytecode.annotation.StringMemberValue;
  * @author Y13
  *
  */
-class ClientServiceFactory {
+public class ClientServiceFactory {
 	/**
 	 * 代理生成模版
 	 */
@@ -55,7 +55,7 @@ class ClientServiceFactory {
 	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType})activator.getAdapter(\"{GetKey}\"); } ";
 	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType})activator.getAdapter(\"{GetKey}\")); } ";
 	
-	static CtClass createImpl(ApiActivator activator, Index index, ClassPool ctPool, String implName, ClassInfo classInfo) throws Exception {
+	public static CtClass createImpl(ApiActivator activator, Index index, ClassPool ctPool, String implName, ClassInfo classInfo) throws Exception {
 		Named named = activator.getClass().getAnnotation(Named.class);
 		if( named == null ) {
 			throw new RuntimeException("Not found Named Annotation : " + activator.getClass());
@@ -63,6 +63,9 @@ class ClientServiceFactory {
 		CtClass ctClass = ctPool.makeClass(implName);
 		crateBaseInfo(ctPool, classInfo, named, ctClass);
 		for( MethodInfo methodInfo : classInfo.methods() ) {
+			if( methodInfo.name().equals("<init>") || methodInfo.name().startsWith("as") ) {
+				continue;
+			}
 			createMethod(index, ctPool, ctClass, methodInfo);
 		}
 		return ctClass;

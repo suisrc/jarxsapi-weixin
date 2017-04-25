@@ -29,6 +29,19 @@ public interface ApiActivator {
 	Set<Class<?>> getClasses();
 	
 	/**
+	 * 把自己强制转换为其他类型
+	 */
+	@SuppressWarnings("unchecked")
+	default
+	<T> T as(Class<T> clazz) {
+		if( clazz.isAssignableFrom(getClass()) ) {
+			return (T)this;
+		} else {
+			throw new RuntimeException(getClass().getName() + " not transform to " + clazz.getName());
+		}
+	}
+	
+	/**
 	 * 通过适配器获取数据
 	 * @param key
 	 * @return

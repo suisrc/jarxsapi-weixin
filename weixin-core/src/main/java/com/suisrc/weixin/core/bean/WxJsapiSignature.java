@@ -1,4 +1,4 @@
-package com.qq.weixin.mp.bean;
+package com.suisrc.weixin.core.bean;
 
 import java.io.Serializable;
 
@@ -53,6 +53,5 @@ public class WxJsapiSignature implements Serializable {
 	public void setEchostr(String echostr) {
 		this.echostr = echostr;
 	}
-	
 	
 }

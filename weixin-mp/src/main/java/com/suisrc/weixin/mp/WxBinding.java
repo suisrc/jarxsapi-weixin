@@ -10,9 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.qq.weixin.mp.WxConfig;
-import com.qq.weixin.mp.bean.WxJsapiSignature;
-import com.suisrc.weixin.mp.crypto.WxCrypt;
+import com.suisrc.weixin.core.WxConfig;
+import com.suisrc.weixin.core.bean.WxJsapiSignature;
+import com.suisrc.weixin.core.bean.WxJsapiSignatureStream;
+import com.suisrc.weixin.core.crypto.WxCrypt;
 
 /**
  * 跟微信服务器捆绑
@@ -26,7 +27,7 @@ public class WxBinding {
 	/**
 	 * 微信配置
 	 */
-	@Inject @Named("com.qq.weixin.api")
+	@Inject @Named("com.qq.weixin.mp.api")
 	private WxConfig config;
 	
 	
@@ -46,10 +47,10 @@ public class WxBinding {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String get(@BeanParam WxJsapiSignature jsapiSign) {
-		String signature = WxCrypt.genSHA1(config.getToken(), jsapiSign.getTimestamp(), jsapiSign.getNonce());
-		if( signature.equals(jsapiSign.getSignature()) ) {
-			return jsapiSign.getEchostr();
+	public String get(@BeanParam WxJsapiSignature sign) {
+		String signature = WxCrypt.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
+		if( signature.equals(sign.getSignature()) ) {
+			return sign.getEchostr();
 		} else {
 			return "";
 		}
@@ -61,7 +62,7 @@ public class WxBinding {
 	 */
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public String post(@BeanParam WxJsapiSignature jsapiSign) {
+	public String post(@BeanParam WxJsapiSignatureStream sign) {
 		return "";
 	}
 

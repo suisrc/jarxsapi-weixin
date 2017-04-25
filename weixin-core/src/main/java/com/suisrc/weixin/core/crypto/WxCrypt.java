@@ -7,7 +7,7 @@
  * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
  * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
  */
-package com.suisrc.weixin.mp.crypto;
+package com.suisrc.weixin.core.crypto;
 
 import java.io.StringReader;
 import java.nio.charset.Charset;
