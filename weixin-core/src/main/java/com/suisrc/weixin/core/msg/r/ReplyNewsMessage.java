@@ -3,7 +3,6 @@ package com.suisrc.weixin.core.msg.r;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -46,7 +45,6 @@ public class ReplyNewsMessage extends BaseMessage {
 	 */
 	@JacksonXmlElementWrapper(localName="Articles")
 	@JacksonXmlProperty(localName="item")
-	@JsonProperty("news")
 	private List<ArticlesMedia> articles = new ArrayList<>();
 
 	public ReplyNewsMessage() {
@@ -61,7 +59,7 @@ public class ReplyNewsMessage extends BaseMessage {
 	public int getArticleCount() {
 		return articles.size();
 	}
-
+	
 	public List<ArticlesMedia> getArticles() {
 		return articles;
 	}

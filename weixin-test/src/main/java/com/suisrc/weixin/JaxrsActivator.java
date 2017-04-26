@@ -7,6 +7,7 @@ import javax.ws.rs.core.Application;
 
 import com.google.common.collect.Sets;
 import com.suisrc.weixin.mp.WxBinding;
+import com.suisrc.weixin.test.TApi;
 
 /**
  * 测试使用
@@ -21,6 +22,6 @@ public class JaxrsActivator extends Application {
 	 */
 	@Override
 	public Set<Class<?>> getClasses() {
-		return Sets.newHashSet(WxBinding.class);
+		return Sets.newHashSet(WxBinding.class, TApi.class);
 	}
 }

@@ -1,6 +1,5 @@
 package com.suisrc.weixin.core.msg;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -23,7 +22,6 @@ public abstract class BaseMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="URL")
-	@JsonIgnore
 	private String baseUrl;
 	
 	/**
@@ -39,14 +37,12 @@ public abstract class BaseMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="FromUserName")
-	@JsonIgnore
 	private String fromUserName;
 
 	/**
 	 * 消息创建时间 （整型）
 	 */
 	@JacksonXmlProperty(localName="CreateTime")
-	@JsonIgnore
 	private Integer createTime;
 
 	/**

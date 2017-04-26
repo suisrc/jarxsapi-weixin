@@ -1,38 +1,41 @@
 package com.suisrc.weixin.core.msg.r;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.suisrc.weixin.core.WxMsgType;
+import com.suisrc.weixin.core.media.MediaId;
 import com.suisrc.weixin.core.msg.BaseMessage;
 
 /**
- * 文本
- * <Content><![CDATA[你好]]></Content>
+ * 微信卡券消息
+ * @author Y13
+ *
  */
 @JacksonXmlRootElement(localName="xml")
-public class ReplyTextMessage extends BaseMessage {
-
+public class ReplyWxcardMessage extends BaseMessage {
+	
 	/**
-	 * 回复的消息内容（换行：在content中能够换行，微信客户端就支持换行显示）
+	 *微信卡券
 	 * 必须
 	 */
 	@JacksonXmlCData
-	@JacksonXmlProperty(localName="Content")
-	private String content;
-	
-	public ReplyTextMessage() {
-		setMsgType(WxMsgType.text.name());
+	@JacksonXmlProperty(localName="Wxcard")
+	@JsonProperty("wxcard")
+	private MediaId wxcard;
+
+	public ReplyWxcardMessage() {
+		setMsgType(WxMsgType.wxcard.name());
 		setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
 	}
 
-	public String getContent() {
-		return content;
+	public MediaId getWxcard() {
+		return wxcard;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setWxcard(MediaId wxcard) {
+		this.wxcard = wxcard;
 	}
-	
-	
+
 }

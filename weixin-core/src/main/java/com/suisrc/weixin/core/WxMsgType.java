@@ -116,7 +116,15 @@ public enum WxMsgType {
 	/**
 	 * 图文消息
 	 */
-	news("图文消息", null);
+	news("图文消息", null),
+	/**
+	 * 发送图文消息（点击跳转到图文消息页面）
+	 */
+	mpnews("图文消息2", null),
+	/**
+	 * 发送卡券
+	 */
+	wxcard("发送卡券消息", null);
 	
 	/** 消息内容 */
 	public final String value;
