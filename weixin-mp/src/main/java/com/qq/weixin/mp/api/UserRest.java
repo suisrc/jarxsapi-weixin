@@ -11,6 +11,7 @@ import com.qq.weixin.mp.MpWxConsts;
 import com.qq.weixin.mp.param.UserInfoParam;
 import com.qq.weixin.mp.result.UserInfoResult;
 import com.qq.weixin.mp.result.UserListResult;
+import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 
 /**
@@ -19,7 +20,8 @@ import com.suisrc.jaxrsapi.core.annotation.SystemValue;
  * @author Y13
  *
  */
-@Path("user")
+@RemoteApi
+@Path("cgi-bin/user")
 public interface UserRest {
 
 	/**

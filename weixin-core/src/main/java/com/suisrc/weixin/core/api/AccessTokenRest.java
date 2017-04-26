@@ -6,6 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
 import com.suisrc.weixin.core.bean.WxAccessToken;
 
 /**
@@ -16,7 +17,8 @@ import com.suisrc.weixin.core.bean.WxAccessToken;
  * @author Y13
  *
  */
-@Path("token")
+@RemoteApi
+@Path("cgi-bin/token")
 public interface AccessTokenRest {
 
 	/**

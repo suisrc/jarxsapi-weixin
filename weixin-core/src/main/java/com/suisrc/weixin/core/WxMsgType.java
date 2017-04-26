@@ -1,21 +1,21 @@
 package com.suisrc.weixin.core;
 
 import com.suisrc.weixin.core.msg.BaseMessage;
-import com.suisrc.weixin.core.msg.ClickEvent;
-import com.suisrc.weixin.core.msg.ImageMessage;
-import com.suisrc.weixin.core.msg.LinkMessage;
-import com.suisrc.weixin.core.msg.LocationEvent;
-import com.suisrc.weixin.core.msg.LocationMessage;
-import com.suisrc.weixin.core.msg.QrsceneEvent;
-import com.suisrc.weixin.core.msg.QrsceneSubscribeEvent;
-import com.suisrc.weixin.core.msg.ShortvideoMessage;
-import com.suisrc.weixin.core.msg.SubscribeEvent;
-import com.suisrc.weixin.core.msg.TextMessage;
-import com.suisrc.weixin.core.msg.UnsubscribeEvent;
-import com.suisrc.weixin.core.msg.VideoMessage;
-import com.suisrc.weixin.core.msg.ViewEvent;
-import com.suisrc.weixin.core.msg.VoiceMessage;
-import com.suisrc.weixin.core.msg.WxEventMessage;
+import com.suisrc.weixin.core.msg.pe.ClickEvent;
+import com.suisrc.weixin.core.msg.pe.LocationEvent;
+import com.suisrc.weixin.core.msg.pe.QrsceneEvent;
+import com.suisrc.weixin.core.msg.pe.QrsceneSubscribeEvent;
+import com.suisrc.weixin.core.msg.pe.SubscribeEvent;
+import com.suisrc.weixin.core.msg.pe.UnsubscribeEvent;
+import com.suisrc.weixin.core.msg.pe.ViewEvent;
+import com.suisrc.weixin.core.msg.pe.WxEventMessage;
+import com.suisrc.weixin.core.msg.pm.ImageMessage;
+import com.suisrc.weixin.core.msg.pm.LinkMessage;
+import com.suisrc.weixin.core.msg.pm.LocationMessage;
+import com.suisrc.weixin.core.msg.pm.ShortvideoMessage;
+import com.suisrc.weixin.core.msg.pm.TextMessage;
+import com.suisrc.weixin.core.msg.pm.VideoMessage;
+import com.suisrc.weixin.core.msg.pm.VoiceMessage;
 
 /**
  * 微信消息类型
@@ -106,7 +106,17 @@ public enum WxMsgType {
 	/**
 	 * 点击菜单跳转链接时的事件推送
 	 */
-	event_view("点击菜单跳转链接时的事件", ViewEvent.class);
+	event_view("点击菜单跳转链接时的事件", ViewEvent.class),
+	
+	//----------------------------------特殊消息--------------------------//
+	/**
+	 * 音乐
+	 */
+	music("音乐消息", null),
+	/**
+	 * 图文消息
+	 */
+	news("图文消息", null);
 	
 	/** 消息内容 */
 	public final String value;

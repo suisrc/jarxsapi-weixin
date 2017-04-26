@@ -1,4 +1,4 @@
-package com.suisrc.weixin.core.msg;
+package com.suisrc.weixin.core.msg.pe;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -6,20 +6,20 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * 二维码扫描
- * 用户未关注时，进行关注后的事件推送
- * <Event><![CDATA[subscribe]]></Event>
+ * 用户已关注时的事件推送
+ * <Event><![CDATA[SCAN]]></Event>
  * 
- * <EventKey><![CDATA[qrscene_123123]]></EventKey>
+ * <EventKey><![CDATA[SCENE_VALUE]]></EventKey>
  * <Ticket><![CDATA[TICKET]]></Ticket>
  * 
  * @author Y13
  *
  */
 @JacksonXmlRootElement(localName="xml")
-public class QrsceneSubscribeEvent extends WxEventMessage {
+public class QrsceneEvent extends WxEventMessage {
 
 	/**
-	 * 事件KEY值，qrscene_为前缀，后面为二维码的参数值
+	 * 事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="EventKey")

@@ -1,11 +1,13 @@
 package com.qq.weixin.mp;
 
+import com.suisrc.weixin.core.WxConsts;
+
 /**
  * 常数
  * @author Y13
  *
  */
-public interface MpWxConsts extends com.suisrc.weixin.core.WxConsts {
+public interface MpWxConsts extends WxConsts {
 
 //---------------------------------KEY---------------------------------//
 	/**
@@ -37,5 +39,20 @@ public interface MpWxConsts extends com.suisrc.weixin.core.WxConsts {
 	 * 激活器中私有的线程数量
 	 */
 	String KEY_ACTIVATOR_THREAD_COUNT = "com.qq.weixin.mp.activator.thread_count";
+
+	/**
+	 * 回调监听器, 使用“,”分割, 指定单独的类型
+	 */
+	String KEY_WEIXIN_CALLBACK_LISTENER_CLASSES = "com.qq.weixin.mp.callback.listeners.classes";
+
+	/**
+	 * 回调监听器, 使用“,”分割, 指定扫描的范围
+	 */
+	String KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES = "com.qq.weixin.mp.callback.listeners.packages";
+
+	/**
+	 * 消息是否加密
+	 */
+	String KEY_WEIXIN_CALLBACK_MESSAGE_ENCRYPT = "com.qq.weixin.mp.callback.message.encrypt";
 
 }

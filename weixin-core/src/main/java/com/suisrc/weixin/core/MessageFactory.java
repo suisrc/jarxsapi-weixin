@@ -1,9 +1,6 @@
 package com.suisrc.weixin.core;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +16,6 @@ import com.suisrc.weixin.core.msg.BaseMessage;
  *
  */
 public class MessageFactory {
-	
-	public static final Charset CHARSET = Charset.forName("UTF-8");
 	
 	/**
 	 * 每一个线程上一个XmlMapper，加快分析进度。
@@ -94,27 +89,6 @@ public class MessageFactory {
 			return WxMsgType.event_subscribe; // 返回基本事件类型
 		}
 	}
-
-	/**
-	 * 获取消息的内容
-	 * @param inputStream
-	 * @return
-	 */
-	public static String getContent(InputStream inputStream) {
-		try {
-			InputStreamReader isr = new InputStreamReader(inputStream, CHARSET);
-			char[] bufs = new char[1024];
-			int len = 0;
-			StringBuilder sbir = new StringBuilder();
-			while( (len = isr.read(bufs)) > 0 ) {
-				sbir.append(bufs, 0, len);
-			}
-			return sbir.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-	}
 	
 	/**
 	 * 解析消息的内容，转换为Bean
@@ -146,9 +120,9 @@ public class MessageFactory {
 	 * @param bean
 	 * @return
 	 */
-	public static <T> String beanToXml( T bean ) {
+	public static <T> String beanToXml( T bean ) {	
 		try {
-			return getXmlMapper().setSerializationInclusion(Include.ALWAYS).writerWithDefaultPrettyPrinter().writeValueAsString(bean);
+			return getXmlMapper().setSerializationInclusion(Include.NON_NULL).writerWithDefaultPrettyPrinter().writeValueAsString(bean);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			return "";

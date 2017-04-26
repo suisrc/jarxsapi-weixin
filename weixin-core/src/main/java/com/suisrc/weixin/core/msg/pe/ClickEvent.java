@@ -1,22 +1,22 @@
-package com.suisrc.weixin.core.msg;
+package com.suisrc.weixin.core.msg.pe;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * 点击菜单跳转链接时的事件推送
- * <Event><![CDATA[VIEW]]></Event>
+ * 点击菜单拉取消息时的事件推送
+ * <Event><![CDATA[CLICK]]></Event>
  * 
- * <EventKey><![CDATA[www.qq.com]]></EventKey>
+ * <EventKey><![CDATA[EVENTKEY]]></EventKey>
  * @author Y13
  *
  */
 @JacksonXmlRootElement(localName="xml")
-public class ViewEvent extends WxEventMessage {
+public class ClickEvent extends WxEventMessage {
 
 	/**
-	 *  事件KEY值，设置的跳转URL
+	 * 事件KEY值，与自定义菜单接口中KEY值对应
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="EventKey")

@@ -1,6 +1,7 @@
-package com.suisrc.weixin.core.msg;
+package com.suisrc.weixin.core.msg.pm;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.suisrc.weixin.core.msg.BaseMessage;
 
 /**
  * 微信消息

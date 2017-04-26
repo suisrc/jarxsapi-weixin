@@ -1,8 +1,9 @@
-package com.suisrc.weixin.core.msg;
+package com.suisrc.weixin.core.msg.pe;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.suisrc.weixin.core.msg.BaseMessage;
 
 /**
  * 微信事件

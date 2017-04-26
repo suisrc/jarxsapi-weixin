@@ -1,4 +1,4 @@
-package com.suisrc.weixin.core.message;
+package com.suisrc.weixin.message;
 
 import java.io.IOException;
 import java.util.HashMap;

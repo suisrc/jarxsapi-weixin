@@ -41,11 +41,15 @@ public interface WxConsts {
 	 */
 	String GRANT_TYPE = "client_credential";
 
+	/**
+	 * 加密方式
+	 */
+	String ENCRYPT_TYPE_AES = "aes";
+
 //---------------------------------KEY---------------------------------//
 	
 	/**
 	 * access token 提前更新时间，该字段范围为0~7200
 	 */
 	String KEY_ADVANCE_TIME = "com.qq.weixin.access_token.advance_time";
-
 }

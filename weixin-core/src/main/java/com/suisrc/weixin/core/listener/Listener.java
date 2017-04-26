@@ -2,6 +2,10 @@ package com.suisrc.weixin.core.listener;
 
 /***
  * 监听接口
+ * 
+ * 监听器使用的时候，需要通过@Named注解标记监听的对象的类型，
+ * 必须是类型的全名（包+类型）
+ * 使用String类型标记而不使用Class,是为了解除项目之间的强引用
  * @author Y13
  *
  */

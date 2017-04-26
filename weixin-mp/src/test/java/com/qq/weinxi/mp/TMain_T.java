@@ -9,7 +9,7 @@ import com.suisrc.jaxrsapi.core.runtime.NSCFactory;
 import com.suisrc.weixin.core.api.AccessTokenRest;
 import com.suisrc.weixin.core.api.WxServerInfoRest;
 import com.suisrc.weixin.core.bean.ServerIpResult;
-import com.suisrc.weixin.core.message.ErrCodeMsg;
+import com.suisrc.weixin.message.ErrCodeMsg;
 
 /**
  * 

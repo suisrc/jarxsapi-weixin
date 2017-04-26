@@ -1,14 +1,16 @@
 package com.suisrc.jaxrsapi.core.util;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
-import java.util.Collection;
-
-import javax.ws.rs.Path;
+import java.util.Set;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
+
+import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
 
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -18,16 +20,30 @@ import javassist.NotFoundException;
 public class Utils {
 
 	/**
-	 * 获取一个包内容中的所有Rest Api接口
+	 * 获取一个包内容中的所有Remote Restful Api接口
+	 * 这里默认使用了RemoteApi接口
 	 * @param packageName
 	 * @return
 	 */
-	public static Collection<Class<?>> getRestApiClasses(String packageName, Class<? extends Annotation> anno, boolean honorInherited) {
+	public static Set<Class<?>> getRemoteApiClasses(Class<? extends Annotation> anno, boolean honorInherited, String... pkgs ) {
 		ConfigurationBuilder config = new ConfigurationBuilder();
-		config.forPackages(packageName);
+		config.forPackages(pkgs);
 		config.setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 		Reflections reflections = new Reflections(config);
-		return reflections.getTypesAnnotatedWith(anno != null ? anno : Path.class, honorInherited);
+		return reflections.getTypesAnnotatedWith(anno != null ? anno : RemoteApi.class, honorInherited);
+	}
+
+	/**
+	 * 获取一个接口的所有实现
+	 * @param packageName
+	 * @return
+	 */
+	public static <T> Set<Class<? extends T>> getSubclasses(Class<T> iface, String... pkgs ) {
+		ConfigurationBuilder config = new ConfigurationBuilder();
+		config.forPackages(pkgs);
+		config.setScanners(new SubTypesScanner());
+		Reflections reflections = new Reflections(config);
+		return reflections.getSubTypesOf(iface);
 	}
 	
 	/**
@@ -63,6 +79,27 @@ public class Utils {
 			ClassClassPath classPath = new ClassClassPath(Class.forName(className));  
 			pool.insertClassPath(classPath);
 			return pool.get(className);
+		}
+	}
+
+	/**
+	 * 获取消息的内容
+	 * @param inputStream
+	 * @return
+	 */
+	public static String getContent(InputStream inputStream) {
+		try {
+			InputStreamReader isr = new InputStreamReader(inputStream, "UTF-8");
+			char[] bufs = new char[1024];
+			int len = 0;
+			StringBuilder sbir = new StringBuilder();
+			while( (len = isr.read(bufs)) > 0 ) {
+				sbir.append(bufs, 0, len);
+			}
+			return sbir.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
 		}
 	}
 }

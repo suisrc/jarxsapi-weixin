@@ -1,4 +1,4 @@
-package com.suisrc.weixin.core.msg;
+package com.suisrc.weixin.core.msg.pe;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 

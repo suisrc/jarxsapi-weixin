@@ -1,11 +1,11 @@
-package com.suisrc.weixin.core.msg;
+package com.suisrc.weixin.core.msg.pm;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * 小视频消息
+ * 视频消息
  * <MsgType><![CDATA[video]]></MsgType>
  * 
  * <MediaId><![CDATA[media_id]]></MediaId>
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  *
  */
 @JacksonXmlRootElement(localName="xml")
-public class ShortvideoMessage extends WxMessage {
+public class VideoMessage extends WxMessage {
 
 	/**
 	 * 视频消息媒体id，可以调用多媒体文件下载接口拉取数据。

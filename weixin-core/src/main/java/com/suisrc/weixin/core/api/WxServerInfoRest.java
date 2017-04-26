@@ -6,6 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 import com.suisrc.weixin.core.WxConsts;
 import com.suisrc.weixin.core.bean.ServerIpResult;
@@ -15,7 +16,8 @@ import com.suisrc.weixin.core.bean.ServerIpResult;
  * @author Y13
  *
  */
-@Path("")
+@RemoteApi
+@Path("cgi-bin")
 public interface WxServerInfoRest {
 
 	/**

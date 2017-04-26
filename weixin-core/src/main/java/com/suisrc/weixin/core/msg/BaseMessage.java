@@ -1,5 +1,7 @@
 package com.suisrc.weixin.core.msg;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -17,10 +19,19 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 public abstract class BaseMessage {
 	
 	/**
+	 * 微信回调地址
+	 */
+	@JacksonXmlCData
+	@JacksonXmlProperty(localName="URL")
+	@JsonIgnore
+	private String baseUrl;
+	
+	/**
 	 * 开发者微信号
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="ToUserName")
+	@JsonProperty("touser")
 	private String toUserName;
 	
 	/**
@@ -28,12 +39,14 @@ public abstract class BaseMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="FromUserName")
+	@JsonIgnore
 	private String fromUserName;
 
 	/**
 	 * 消息创建时间 （整型）
 	 */
 	@JacksonXmlProperty(localName="CreateTime")
+	@JsonIgnore
 	private Integer createTime;
 
 	/**
@@ -41,7 +54,16 @@ public abstract class BaseMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="MsgType")
+	@JsonProperty("msgtype")
 	private String msgType;
+	
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+	
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
 
 	public String getToUserName() {
 		return toUserName;
@@ -74,5 +96,14 @@ public abstract class BaseMessage {
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
-
+	
+	/**
+	 * 发送和接受用户反转
+	 * @param msg
+	 */
+	public <T extends BaseMessage> T reverse(T msg) {
+		msg.setToUserName(this.getFromUserName());
+		msg.setFromUserName(this.toUserName);
+		return msg;
+	}
 }

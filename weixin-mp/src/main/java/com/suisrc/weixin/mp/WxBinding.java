@@ -12,13 +12,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.qq.weixin.mp.MpWxConsts;
 import com.suisrc.weixin.core.MessageFactory;
 import com.suisrc.weixin.core.WxConfig;
+import com.suisrc.weixin.core.WxConsts;
+import com.suisrc.weixin.core.bean.WxEncryptSignature;
 import com.suisrc.weixin.core.bean.WxJsapiSignature;
-import com.suisrc.weixin.core.bean.WxJsapiSignatureStream;
 import com.suisrc.weixin.core.crypto.WxCrypt;
 import com.suisrc.weixin.core.listener.ListenerManager;
 import com.suisrc.weixin.core.msg.BaseMessage;
+import com.suisrc.weixin.core.msg.EncryptMessage;
 
 /**
  * 跟微信服务器捆绑
@@ -33,6 +36,11 @@ public class WxBinding {
 	 * 监听器
 	 */
 	private ListenerManager listenerManager;
+	
+	/**
+	 * 是否使用信息加密
+	 */
+	private boolean isEncrypt = true;
 
 	/**
 	 * 微信配置
@@ -45,7 +53,12 @@ public class WxBinding {
 	 */
 	@PostConstruct
 	public void initialized() {
-		listenerManager = new ListenerManager();
+		// 初始化监听管理器
+		listenerManager = new ListenerManager(this);
+		listenerManager.addClassesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_CLASSES);
+		listenerManager.addPackagesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES);
+		// 消息加密
+		isEncrypt = Boolean.valueOf(System.getProperty(MpWxConsts.KEY_WEIXIN_CALLBACK_MESSAGE_ENCRYPT, "true")).booleanValue();
 	}
 	
 	/**
@@ -64,7 +77,7 @@ public class WxBinding {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String get(@BeanParam WxJsapiSignature sign) {
+	public String doGet(@BeanParam WxJsapiSignature sign) {
 		String signature = WxCrypt.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
 		if( signature.equals(sign.getSignature()) ) {
 			return sign.getEchostr();
@@ -79,22 +92,73 @@ public class WxBinding {
 	 */
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response post(@BeanParam WxJsapiSignatureStream sign) {
-		// 服务器验证
-		
-		
-		
-		// 获取消息内容
-		String content = MessageFactory.getContent(sign.getInputStream()); // 获取xml内容
-		BaseMessage message = MessageFactory.xmlToWxMessage(content); // 转换为bean
-		Object bean = listenerManager.accept(message); // 得到处理的结构
-		// 转换返回结果
-		if( bean instanceof String ) {
-			content = bean.toString();
-		} else {
-			content = MessageFactory.beanToXml(bean);
+	public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
+		//--------------------------------服务器验证------------------------------------//
+		if( isEncrypt && sign.isValid() ) {
+			// 没有签名信息
+			return Response.ok().entity("非法请求").type(MediaType.TEXT_PLAIN).build();
 		}
-		return Response.ok().entity(content).type(MediaType.TEXT_PLAIN).build();
+		if( sign.getSignature() != null ) {
+			// 服务器验证
+			String signature = WxCrypt.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
+			if( !signature.equals(sign.getSignature()) ) {
+				// 消息签名不正确，说明不是公众平台发过来的消息
+				return Response.ok().entity("非法请求").type(MediaType.TEXT_PLAIN).build();
+			}
+			if( sign.getEchostr() != null && !sign.getEchostr().isEmpty() ) {
+				// 仅仅用来验证的请求，回显echostr
+				return Response.ok().entity(sign.getEchostr()).type(MediaType.TEXT_PLAIN).build();
+			}
+		}
+		//--------------------------------消息签名验证------------------------------------//
+		// 处理消息内容
+		WxCrypt wxCrypt = null;
+		String xmlContent;
+		if( WxConsts.ENCRYPT_TYPE_AES.equals(sign.getEncryptType()) ) {
+			// 使用AES加密
+			wxCrypt = new WxCrypt(config.getToken(), config.getEncodingAesKey(), config.getAppId());
+			// 解析网络数据
+			EncryptMessage encryptMsg= MessageFactory.xmlToBean(data, EncryptMessage.class);
+			// 验证数据签名
+			String signature = WxCrypt.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
+			if( !signature.equals(sign.getMsgSignature()) ) {
+				return Response.ok().entity("数据签名异常").type(MediaType.TEXT_PLAIN).build();
+			}
+			xmlContent = wxCrypt.decrypt(encryptMsg.getEncrypt());
+		} else {
+			// raw 明文传输
+			xmlContent = data;
+		}
+		//--------------------------------消息内容处理------------------------------------//
+		// 解析消息内容
+		BaseMessage message = MessageFactory.xmlToWxMessage(xmlContent); // 转换为bean
+		if( message == null ) {
+			return Response.ok().entity("消息内容无法解析").type(MediaType.TEXT_PLAIN).build();
+		}
+		// 通过监听器处理消息内容
+		Object bean = listenerManager.accept(message); // 得到处理的结构
+		if( bean == null ) {
+			return Response.ok().entity("消息内容无法应答").type(MediaType.TEXT_PLAIN).build();
+		}
+		//--------------------------------响应结果解析------------------------------------//
+		// 分析结果
+		String reault = bean instanceof String ? bean.toString() : MessageFactory.beanToXml(bean);
+		if( wxCrypt != null ) {
+			// 消息内容需要加密返回
+			String encryText = wxCrypt.encrypt(reault);
+			// 构建返回对象
+			EncryptMessage encryptMsg = new EncryptMessage();
+			encryptMsg.setEncrypt(encryText);
+			encryptMsg.setNonce(WxCrypt.genRandomStr());
+			encryptMsg.setTimeStamp(System.currentTimeMillis());
+			// 生成签名
+			String signature = WxCrypt.genSHA1(wxCrypt.getToken(), encryptMsg.getTimeStamp(), encryptMsg.getNonce(), encryText);
+			encryptMsg.setMsgSignature(signature);
+			// 生成xml内容
+			reault = MessageFactory.beanToXml(encryptMsg);
+		}
+		//--------------------------------返回处理的结果------------------------------------//
+		return Response.ok().entity(reault).type(MediaType.TEXT_PLAIN).build();
 	}
 
 }

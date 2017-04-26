@@ -23,4 +23,10 @@ com:
           app_secret: 824edbf6928b623ef62fa9754041de33
           token: testtoken
           encoding_aes_key: oF1gNW2AvZBrQWO4mHNQ0GQ5fM8ls7dUFTjMT1G2VCb
-          base_url: https://api.weixin.qq.com/cgi-bin
+          base_url: https://api.weixin.qq.com
+        callback:
+          listeners:
+            packages: com.suisrc.weixin.listener
+            # classes: 
+          message:
+            encrypt: false
