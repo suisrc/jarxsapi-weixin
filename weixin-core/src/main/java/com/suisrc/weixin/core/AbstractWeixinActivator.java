@@ -97,19 +97,33 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 		// 初始化
 		initAccessToken();
 		// 构建客户端创建器
-		ClientBuilder clientBuilder = ClientBuilder.newBuilder();// 配置网络通信内容
-		if( clientBuilder instanceof ResteasyClientBuilder ) {
+		initTargetClient();
+	}
+	
+	/**
+	 * 初始化远程访问的客户端
+	 */
+	protected void initTargetClient() {
+		ClientBuilder clientBuilder = getClientBuilder();// 配置网络通信内容
+		if (clientBuilder instanceof ResteasyClientBuilder) {
 			ResteasyClientBuilder rcb = (ResteasyClientBuilder) clientBuilder;
-			if( executor != null ) {
+			if (executor != null) {
 				rcb.asyncExecutor(executor); // 配置线程池，默认使用线程池为固定大小最大10个线程
 			}
-			if( providerFactory != null ) {
+			if (providerFactory != null) {
 				rcb.providerFactory(providerFactory);
 			}
 		}
 		client = clientBuilder.build();
 	}
 	
+	/**
+	 * 获取一个Client Builder
+	 */
+	protected ClientBuilder getClientBuilder() {
+		return ClientBuilder.newBuilder();
+	}
+
 	/**
 	 * 初始化构造AccessToken
 	 */
@@ -123,7 +137,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 
 		if (accessToken == null) {
 			accessToken = new AtomicReference<>();
-			WxAccessToken token = readAccessToken(); // 读取系统文件中的access token
+			WxAccessToken token = (WxAccessToken) readTempObject(); // 读取系统文件中的access token
 			if (token == null) { token = new WxAccessToken(); } // 初始化一个无效凭证
 			accessToken.set(token);
 		}
@@ -239,7 +253,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 			accessToken.get().getSync().set(false); // 同步表示关闭
 		}
 		if( WxConsts.DEBUG ) { //把 access token以对象的形式写入文件中
-			writeAccessToken(accessToken.get());
+			writeTempObject(accessToken.get());
 		}
 	}
 	
@@ -247,19 +261,21 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	 * 临时缓存文件的名字
 	 * @return
 	 */
-	protected abstract String getTempFileName();
+	protected String getTempFileName() {
+		return null;
+	}
 	
 	/**
 	 * 把access token写入文件中，避免测试中频繁调用
 	 * @param token
 	 */
-	protected void writeAccessToken(WxAccessToken token) {
+	protected void writeTempObject(Object obj) {
 		String filename = getTempFileName();
 		if( filename == null || filename.isEmpty() ) { return; }
 		try {
 			FileOutputStream fos = new FileOutputStream(filename);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(token);
+			oos.writeObject(obj);
 			oos.close();
 			fos.close();
 		} catch (Exception e) {
@@ -271,7 +287,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	 * 从文件中读入access token
 	 * @return
 	 */
-	protected WxAccessToken readAccessToken() {
+	protected Object readTempObject() {
 		String filename = getTempFileName();
 		if( filename == null || filename.isEmpty() ) { return null; }
 		File file = new File(filename);
@@ -279,10 +295,10 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 		try {
 			FileInputStream fis = new FileInputStream(file);
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			WxAccessToken token = (WxAccessToken) ois.readObject();
+			Object obj = ois.readObject();
 			ois.close();
 			fis.close();
-			return token;
+			return obj;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

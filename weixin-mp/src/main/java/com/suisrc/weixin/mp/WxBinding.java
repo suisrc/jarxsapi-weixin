@@ -78,6 +78,13 @@ public class WxBinding {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String doGet(@BeanParam WxJsapiSignature sign) {
+		if( config.getToken() == null 
+			|| sign.getTimestamp() == null 
+			|| sign.getNonce() == null 
+			|| sign.getSignature() == null ) {
+			return "非法请求";
+		}
+		// 进行验证
 		String signature = WxCrypt.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
 		if( signature.equals(sign.getSignature()) ) {
 			return sign.getEchostr();
