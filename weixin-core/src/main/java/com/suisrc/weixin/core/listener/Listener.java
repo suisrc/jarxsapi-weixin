@@ -27,11 +27,11 @@ public interface Listener<T> {
 	}
 	
 	/**
-	 * 监听接受的顺序
+	 * 监听接受的顺序，默认排序为1024,为以后扩展留下空间
 	 * @return
 	 */
 	default int priority() {
-		return 0;
+		return 1024;
 	}
 
 }

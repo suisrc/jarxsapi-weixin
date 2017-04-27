@@ -2,11 +2,8 @@ package com.suisrc.weixin.listener;
 
 import javax.inject.Named;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.suisrc.weixin.core.listener.Listener;
-import com.suisrc.weixin.core.media.ArticlesMedia;
 import com.suisrc.weixin.core.msg.pm.TextMessage;
-import com.suisrc.weixin.core.msg.r.ReplyNewsMessage;
 
 /**
  * 监听文本消息
@@ -22,18 +19,6 @@ public class TextMessageListener implements Listener<TextMessage> {
 	 */
 	@Override
 	public Object accept(TextMessage message) {
-		ReplyNewsMessage reply = message.reverse(new ReplyNewsMessage());
-
-		ArticlesMedia media = new ArticlesMedia();
-		media.setDescription("hello");
-		media.setTitle("word");
-		reply.addArticles(media);
-
-		media = new ArticlesMedia();
-		media.setDescription("hello2");
-		media.setTitle("word3");
-		reply.addArticles(media);
-
-		return reply;
+		return "TextMessageListener";
 	}
 }

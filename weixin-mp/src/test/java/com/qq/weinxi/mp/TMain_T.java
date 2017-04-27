@@ -27,10 +27,10 @@ public class TMain_T {
 		// 初始化工厂
 		NSCFactory.build(MpServerActivator.class);
 		// 设定AccessToken远程访问
-		MpServerActivator serverActivator = NSCFactory.get(MpServerActivator.class);
-		serverActivator.setAdapter(AccessTokenRest.class, NSCFactory.get(AccessTokenRest.class));
+		MpServerActivator serverActivator = NSCFactory.get(MpServerActivator.class, "");
+		serverActivator.setAdapter(AccessTokenRest.class, NSCFactory.get(AccessTokenRest.class, MpWxConsts.NAMED));
 		// 获取远程访问接口
-		WxServerInfoRest rest = NSCFactory.get(WxServerInfoRest.class);
+		WxServerInfoRest rest = NSCFactory.get(WxServerInfoRest.class, MpWxConsts.NAMED);
 //		// 执行访问
 		ServerIpResult content = rest.getCallbackIp(null);
 		if( content.getErrcode() != null ) {

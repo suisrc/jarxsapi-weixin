@@ -1,0 +1,25 @@
+package com.suisrc.jaxrsapi.core;
+
+/**
+ * 静态变量
+ * @author Y13
+ *
+ */
+public interface Consts {
+	/**
+	 * 注入的时候@Named的间隔符
+	 */
+	String separator = "/";
+	
+	//------------------------------------------KEY--------------------------------//
+	/**
+	 * 远程API在系统中运行的模式，如果是单远程模式，只需要使用简单的@Inject即可，
+	 * 如果同时访问多个远程服务器，需要在使用注入的使用通过@Named进行分离
+	 * 这里所谓的多个，是同一个restful接口对应多个服务器的情况
+	 * 如果不愿意使用@Named,可以使用拷贝多份restful接口解决这个问题。这个使用
+	 * 系统应该运行与单模式
+	 * 
+	 * 多模式：同一个restful接口对应多台远程服务器
+	 */
+	String KEY_REMOTE_API_NULTI_MODE = "com.suisrc.remote-api.runtime.multi-mode";
+}

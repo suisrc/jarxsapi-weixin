@@ -17,6 +17,7 @@ import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Type;
 
 import com.suisrc.jaxrsapi.core.ApiActivator;
+import com.suisrc.jaxrsapi.core.Consts;
 import com.suisrc.jaxrsapi.core.ServiceClient;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 import com.suisrc.jaxrsapi.core.proxy.ProxyBuilder;
@@ -43,6 +44,17 @@ import javassist.bytecode.annotation.StringMemberValue;
  *
  */
 public class ClientServiceFactory {
+	
+	/**
+	 * 单接口多服务器模式
+	 */
+	private static boolean MULIT_MODE = Boolean.valueOf(System.getProperty(Consts.KEY_REMOTE_API_NULTI_MODE, "false"));
+	
+	/**
+	 * 全局偏移量
+	 */
+	private static volatile int baseOffset = 0;
+	
 	/**
 	 * 代理生成模版
 	 */
@@ -55,7 +67,17 @@ public class ClientServiceFactory {
 	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType})activator.getAdapter(\"{GetKey}\"); } ";
 	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType})activator.getAdapter(\"{GetKey}\")); } ";
 	
-	public static CtClass createImpl(ApiActivator activator, Index index, ClassPool ctPool, String implName, ClassInfo classInfo) throws Exception {
+	/**
+	 * 创建接口实现
+	 * @param activator
+	 * @param index
+	 * @param ctPool
+	 * @param implName
+	 * @param classInfo
+	 * @return
+	 * @throws Exception
+	 */
+	private static CtClass createImpl(ApiActivator activator, Index index, ClassPool ctPool, String implName, ClassInfo classInfo) throws Exception {
 		Named named = activator.getClass().getAnnotation(Named.class);
 		if( named == null ) {
 			throw new RuntimeException("Not found Named Annotation : " + activator.getClass());
@@ -68,6 +90,7 @@ public class ClientServiceFactory {
 			}
 			createMethod(index, ctPool, ctClass, methodInfo);
 		}
+		debugCtClass(ctClass);
 		return ctClass;
 	}
 
@@ -156,16 +179,22 @@ public class ClientServiceFactory {
 	 */
 	private static void crateBaseInfo(ClassPool ctPool, ClassInfo classInfo, Named named, CtClass ctClass)
 			throws NotFoundException, ClassNotFoundException, CannotCompileException {
-
+		// 代理的接口
+		CtClass ctApiClass = Utils.getCtClass(ctPool, classInfo.name().toString());
 		// 增加注解
 		ClassFile ctFile = ctClass.getClassFile(); 
 		ConstPool constPool = ctFile.getConstPool();
 		AnnotationsAttribute attribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 		Annotation annotation = new Annotation(ApplicationScoped.class.getCanonicalName(), constPool);
 		attribute.addAnnotation(annotation);
+		if( MULIT_MODE ) { // 单接口多服务器模式
+			annotation = new Annotation(Named.class.getCanonicalName(), constPool);
+			annotation.addMemberValue("value", new StringMemberValue(named.value() + Consts.separator + ctApiClass.getSimpleName(), constPool));
+		}
+		attribute.addAnnotation(annotation);
 		ctFile.addAttribute(attribute);
 		
-		CtClass ctApiClass = Utils.getCtClass(ctPool, classInfo.name().toString());
+		//集成
 		ctClass.addInterface(ctApiClass); // 继承与通信API
 		ctClass.addInterface(Utils.getCtClass(ctPool, ServiceClient.class)); // 继承与ServiceClient
 		
@@ -173,6 +202,7 @@ public class ClientServiceFactory {
 		 * private UserRest proxy;
 		 */
 		CtField ctProxyField = new CtField(ctApiClass, "proxy", ctClass); // 执行代理
+		ctProxyField.setModifiers(Modifier.PRIVATE );
 		ctClass.addField(ctProxyField);
 		
 		/*
@@ -202,6 +232,56 @@ public class ClientServiceFactory {
 		attribute.addAnnotation(annotation);
 		ctInitializedMethod.getMethodInfo().addAttribute(attribute);
 		ctClass.addMethod(ctInitializedMethod);
+	}
+	//------------------------------------------------------------------------------------------------------------//
+	
+	/**
+	 * 处理递归创建
+	 * @param index
+	 * @param acceptThen
+	 * @throws Exception
+	 */
+	public static void processIndex(Index index, CallBack acceptThen) throws Exception {
+		ClassPool ctPool = ClassPool.getDefault();
+		List<ClassInfo> activatorClasses = index.getKnownDirectImplementors((DotName.createSimple(ApiActivator.class.getName())));
+		for( ClassInfo activatorClass : activatorClasses ) {
+			Class<?> classActivator = (Class<?>)Class.forName(activatorClass.name().toString());
+			if( classActivator.isInterface() || Modifier.isAbstract(classActivator.getModifiers()) ) { continue; }
+			ApiActivator activator = (ApiActivator) classActivator.newInstance();
+			createImpl(activator, index, ctPool, acceptThen);
+		}
+	}
+
+	/**
+	 * 创建接口实体
+	 * @param activator
+	 * @param index
+	 * @param ctPool
+	 * @param acceptThen
+	 * @throws Exception
+	 */
+	static void createImpl(ApiActivator activator, Index index, ClassPool ctPool, CallBack acceptThen) throws Exception {
+		int offset = ++baseOffset; // 偏移量递进
+		for( Class<?> apiClass : activator.getClasses() ) {
+			ClassInfo info = index.getClassByName(DotName.createSimple(apiClass.getName()));
+			// 生成api代理实体
+			String name = apiClass.getCanonicalName() + "_$$jaxrsapi_" + offset;
+			CtClass ctClass = ClientServiceFactory.createImpl(activator, index, ctPool, name, info);
+			try {
+				acceptThen.accept(apiClass, ctClass);
+			} finally {
+				ctClass.freeze(); // 释放
+			}
+		}
+	}
+	
+	//----------------------------------------------TEST--------------------------------------------------------//
+	private static void debugCtClass(CtClass ctClass) {
+		try {
+			ctClass.writeFile("D:/classes");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

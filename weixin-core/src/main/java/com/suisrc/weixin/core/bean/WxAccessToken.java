@@ -1,5 +1,7 @@
 package com.suisrc.weixin.core.bean;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.suisrc.weixin.core.WxConsts;
 
@@ -55,6 +57,12 @@ public class WxAccessToken extends WxErrCode {
 	 */
 	private long createTime;
 	
+	/**
+	 * 是否在同步
+	 * access token 正在同步中，该字段是给异步同时时候使用的，避免多次异步同步更新
+	 */
+	private AtomicBoolean sync = new AtomicBoolean(false);
+	
 	public WxAccessToken() {
 		createTime = System.currentTimeMillis(); // 凭证创建时间
 	}
@@ -73,6 +81,14 @@ public class WxAccessToken extends WxErrCode {
 
 	public void setExpiresIn(long expiresIn) {
 		this.expiresIn = expiresIn;
+	}
+	
+	/**
+	 * 是否在同步标记
+	 * @return
+	 */
+	public AtomicBoolean getSync() {
+		return sync;
 	}
 	
 	/**

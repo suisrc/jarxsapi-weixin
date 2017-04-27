@@ -5,12 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -27,11 +27,18 @@ import com.suisrc.weixin.core.bean.WxAccessToken.Status;
  * @author Y13
  */
 public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConfig */ {
+	
+	/**
+	 * access token需要记性同步处理
+	 */
+	protected static final Map<String, AtomicReference<WxAccessToken>> accessTokenMap = new ConcurrentHashMap<>(1, 1); // 线程安全
+	
+//------------------------------------------------------------------------------------------------------------------//
 
 	/**
 	 * 注入远程获取AccessTokenRest接口
 	 */
-	private @Inject AccessTokenRest accessTokenRest;
+	private AccessTokenRest accessTokenRest;
 
 	/**
 	 * 微信公众号的appid
@@ -78,22 +85,17 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	 * 强原子操作
 	 */
 //	protected volatile WxAccessToken accessToken;
-	protected AtomicReference<WxAccessToken> accessToken = new AtomicReference<>();
-	/**
-	 * access token 正在同步中，该字段是给异步同时时候使用的，避免多次异步同步更新
-	 */
-	protected AtomicBoolean synchronize = new AtomicBoolean(false);
+	protected AtomicReference<WxAccessToken> accessToken = null;
+	
+//-----------------------------------------------------------------------------------------------//
 	
 	/**
 	 * 构造后被系统调用
 	 * 进行内容初始化
 	 */
 	public void initialized() {
-		WxAccessToken token = readAccessToken(); // 读取系统文件中的access token
-		if( token == null ) {
-			token = new WxAccessToken(); // 初始化一个无效凭证
-		}
-		accessToken.set(token);
+		// 初始化
+		initAccessToken();
 		// 构建客户端创建器
 		ClientBuilder clientBuilder = ClientBuilder.newBuilder();// 配置网络通信内容
 		if( clientBuilder instanceof ResteasyClientBuilder ) {
@@ -107,9 +109,25 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 		}
 		client = clientBuilder.build();
 	}
+	
+	/**
+	 * 初始化构造AccessToken
+	 */
+	protected void initAccessToken() {
+		String key = null;
+		if( getAppId() != null && getAppSecret() != null ) {
+			key = getAppId() + "$#->" + getAppSecret();
+			accessToken = accessTokenMap.get(key);
+			if( accessToken != null ) { return; }
+		}
 
-	public String getBaseUrl() {
-		return baseUrl;
+		if (accessToken == null) {
+			accessToken = new AtomicReference<>();
+			WxAccessToken token = readAccessToken(); // 读取系统文件中的access token
+			if (token == null) { token = new WxAccessToken(); } // 初始化一个无效凭证
+			accessToken.set(token);
+		}
+		if( key != null ) { accessTokenMap.put(key, accessToken); }
 	}
 	
 	/**
@@ -143,6 +161,10 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 			return (T) client.target(getBaseUrl() );
 		} else if( type == Client.class ) { 
 			return (T)client;
+		} else if( type == AccessTokenRest.class ) {
+			return (T) accessToken;
+		} else if ( type == ResteasyProviderFactory.class ) {
+			return (T) providerFactory;
 		}
 		return null;
 	}
@@ -156,6 +178,10 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 		} else if( type == AccessTokenRest.class ) {
 			accessTokenRest = (AccessTokenRest) value;
 		}
+	}
+
+	public String getBaseUrl() {
+		return baseUrl;
 	}
 
 	public String getAppId() {
@@ -185,7 +211,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 			newAccessToken();
 			break;
 		case WILL_EXPIRE:// 异步刷新
-			if (!synchronize.get()) {
+			if (!accessToken.get().getSync().get() ) {
 				CompletableFuture.runAsync(this::newAccessToken, executor);
 			}
 		case VALID: break; // access token 正常有效
@@ -206,11 +232,11 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	private synchronized void newAccessToken() {
 		if( accessToken.get().checkValid() == Status.VALID ) { return; } // 已经被其他线程同步过
 		try {
-			synchronize.set(true);  // 同步标识打开
+			accessToken.get().getSync().set(true);  // 同步标识打开
 			WxAccessToken token = accessTokenRest.getToken(WxConsts.GRANT_TYPE, appId, appSecret);
 			accessToken.set(token);
 		} finally {
-			synchronize.set(false); // 同步表示关闭
+			accessToken.get().getSync().set(false); // 同步表示关闭
 		}
 		if( WxConsts.DEBUG ) { //把 access token以对象的形式写入文件中
 			writeAccessToken(accessToken.get());
@@ -262,5 +288,4 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 			return null;
 		}
 	}
-	
 }

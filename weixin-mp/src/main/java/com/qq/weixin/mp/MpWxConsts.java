@@ -10,15 +10,21 @@ import com.suisrc.weixin.core.WxConsts;
 public interface MpWxConsts extends WxConsts {
 
 //---------------------------------KEY---------------------------------//
+	
+	/**
+	 * 激活器key
+	 */
+	String NAMED = "com.qq.weixin.mp.api";
+	
 	/**
 	 * app id key
 	 */
-	String KEY_APP_ID = "com.qq.weixin.mp.endpoint.app_id";
+	String KEY_APP_ID = "com.qq.weixin.mp.endpoint.app-id";
 
 	/**
 	 * app secret
 	 */
-	String KEY_APP_SECRET = "com.qq.weixin.mp.endpoint.app_secret";
+	String KEY_APP_SECRET = "com.qq.weixin.mp.endpoint.app-secret";
 
 	/**
 	 * token
@@ -28,17 +34,17 @@ public interface MpWxConsts extends WxConsts {
 	/**
 	 * encoding aes key
 	 */
-	String KEY_ENCODING_AES_KEY = "com.qq.weixin.mp.endpoint.encoding_aes_key";
+	String KEY_ENCODING_AES_KEY = "com.qq.weixin.mp.endpoint.encoding-aes-key";
 
 	/**
 	 * base url
 	 */
-	String BASE_URL = "com.qq.weixin.mp.endpoint.base_url";
+	String BASE_URL = "com.qq.weixin.mp.endpoint.base-url";
 	
 	/**
 	 * 激活器中私有的线程数量
 	 */
-	String KEY_ACTIVATOR_THREAD_COUNT = "com.qq.weixin.mp.activator.thread_count";
+	String KEY_ACTIVATOR_THREAD_COUNT = "com.qq.weixin.mp.activator.thread-count";
 
 	/**
 	 * 回调监听器, 使用“,”分割, 指定单独的类型

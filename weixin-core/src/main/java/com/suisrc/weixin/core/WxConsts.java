@@ -1,11 +1,13 @@
 package com.suisrc.weixin.core;
 
+import com.suisrc.jaxrsapi.core.Consts;
+
 /**
  * 常数
  * @author Y13
  *
  */
-public interface WxConsts {
+public interface WxConsts extends Consts {
 	
 	/**
 	 * 测试表示
@@ -51,5 +53,5 @@ public interface WxConsts {
 	/**
 	 * access token 提前更新时间，该字段范围为0~7200
 	 */
-	String KEY_ADVANCE_TIME = "com.qq.weixin.access_token.advance_time";
+	String KEY_ADVANCE_TIME = "com.qq.weixin.access-token.advance-time";
 }
