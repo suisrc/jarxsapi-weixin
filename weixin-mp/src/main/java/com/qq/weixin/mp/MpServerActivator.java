@@ -42,10 +42,14 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
 	 */
 	@PostConstruct
 	public void initialized() {
-		appId = System.getProperty(MpWxConsts.KEY_APP_ID);
-		appSecret = System.getProperty(MpWxConsts.KEY_APP_SECRET);
-		token = System.getProperty(MpWxConsts.KEY_TOKEN);
-		encodingAesKey = System.getProperty(MpWxConsts.KEY_ENCODING_AES_KEY);
+		String value =  System.getProperty(MpWxConsts.KEY_APP_ID);
+		if( value != null ) { appId = value; }
+		value =  System.getProperty(MpWxConsts.KEY_APP_SECRET);
+		if( value != null ) { appSecret = value; }
+		value =  System.getProperty(MpWxConsts.KEY_TOKEN);
+		if( value != null ) { token = value; }
+		value =  System.getProperty(MpWxConsts.KEY_ENCODING_AES_KEY);
+		if( value != null ) { encodingAesKey = value; }
 		baseUrl = System.getProperty(MpWxConsts.BASE_URL, "https://api.weixin.qq.com");
 		// 构建缓存线程池
 		executor = Executors.newFixedThreadPool(Integer.valueOf(System.getProperty(MpWxConsts.KEY_ACTIVATOR_THREAD_COUNT, "10")));

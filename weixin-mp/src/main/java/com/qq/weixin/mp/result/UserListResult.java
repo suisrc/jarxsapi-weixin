@@ -45,7 +45,7 @@ public class UserListResult extends WxErrCode {
 	/**
 	 * 拉取列表的最后一个用户的OPENID
 	 */
-	@JsonProperty("next_openId")
+	@JsonProperty("next_openid")
 	private String nextOpenId;
 
 	public Integer getTotal() {

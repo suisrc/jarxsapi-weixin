@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.api;
 
 import javax.ws.rs.BeanParam;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,8 +13,6 @@ import com.qq.weixin.mp.result.UserInfoResult;
 import com.qq.weixin.mp.result.UserListResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
-import com.suisrc.jaxrsapi.core.annotation.ThreadValue;
-import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
 
 /**
  * 微信公众号接口
@@ -53,6 +50,8 @@ public interface UserRest {
 	@GET
 	@Path("get")
 	@Produces(MediaType.APPLICATION_JSON)
-	UserListResult getUserGet(@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, @QueryParam("next_openid")@ThreadValue("12346")@ValueHelper(TVH.class) String openid);
+	UserListResult getUserGet(
+			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("next_openid")                                       String openid);
 
 }

@@ -49,4 +49,25 @@ public interface WxConsts extends Consts {
 	 * access token 提前更新时间，该字段范围为0~7200
 	 */
 	String KEY_ADVANCE_TIME = "com.qq.weixin.access-token.advance-time";
+
+	/**
+	 * app id key
+	 */
+	String KEY_CORE_APP_ID = "com.qq.weixin.core.endpoint.app-id";
+
+	/**
+	 * app secret
+	 */
+	String KEY_CORE_APP_SECRET = "com.qq.weixin.core.endpoint.app-secret";
+
+	/**
+	 * token
+	 */
+	String KEY_CORE_TOKEN = "com.qq.weixin.core.endpoint.token";
+
+	/**
+	 * encoding aes key
+	 */
+	String KEY_CORE_ENCODING_AES_KEY = "com.qq.weixin.core.endpoint.encoding-aes-key";
+	
 }

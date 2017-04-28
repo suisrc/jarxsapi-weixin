@@ -35,8 +35,10 @@ public class OpenApiServerActivator extends AbstractWeixinActivator implements A
 	 */
 	@PostConstruct
 	public void initialized() {
-		appId = System.getProperty(OpenWxConsts.KEY_APP_ID);
-		appSecret = System.getProperty(OpenWxConsts.KEY_APP_SECRET);
+		String value =  System.getProperty(OpenWxConsts.KEY_APP_ID);
+		if( value != null ) { appId = value; }
+		value =  System.getProperty(OpenWxConsts.KEY_APP_SECRET);
+		if( value != null ) { appSecret = value; }
 		baseUrl = System.getProperty(OpenWxConsts.BASE_URL, "https://api.weixin.qq.com");
 		// 构建缓存线程池
 		executor = Executors.newFixedThreadPool(Integer.valueOf(System.getProperty(OpenWxConsts.KEY_ACTIVATOR_THREAD_COUNT, "10")));

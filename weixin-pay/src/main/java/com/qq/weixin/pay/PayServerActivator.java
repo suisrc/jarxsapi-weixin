@@ -67,10 +67,8 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 	 */
 	@PostConstruct
 	public void initialized() {
-		appId = System.getProperty(PayWxConsts.KEY_APP_ID);
-		// appSecret = System.getProperty(PayWxConsts.KEY_APP_SECRET);
-		// token = System.getProperty(PayWxConsts.KEY_TOKEN);
-		// encodingAesKey = System.getProperty(PayWxConsts.KEY_ENCODING_AES_KEY);
+		String value =  System.getProperty(PayWxConsts.KEY_APP_ID);
+		if( value != null ) { appId = value; }
 		baseUrl = System.getProperty(PayWxConsts.BASE_URL, "https://api.mch.weixin.qq.com");
 		// 附加
 		keyStorePath = System.getProperty(PayWxConsts.KEY_API_CLIENT_CERT_P12_PATH, "");

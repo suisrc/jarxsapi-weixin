@@ -62,7 +62,7 @@ public class NSCFactory /* NativeServiceClientFactory */ {
 	 * @param clazzes
 	 */
 	public static void build( Class<? extends ApiActivator>... clazzes ) {
-		build( true, clazzes );
+		build( false, clazzes );
 	}
 	/**
 	 * 构建实体远程访问代理对象

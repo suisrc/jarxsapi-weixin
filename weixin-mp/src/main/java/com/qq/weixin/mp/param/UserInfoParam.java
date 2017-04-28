@@ -4,10 +4,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 
 import com.qq.weixin.mp.MpWxConsts;
-import com.qq.weixin.mp.api.TVH;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
-import com.suisrc.jaxrsapi.core.annotation.ThreadValue;
-import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
 
 /**
  * 开发者可通过OpenID来获取用户基本信息
@@ -28,7 +25,6 @@ public class UserInfoParam {
 	 * 普通用户的标识，对当前公众号唯一
 	 */
 	@QueryParam("openid")
-	@ValueHelper(TVH.class)
 	private String openid;
 	
 	/**
@@ -36,7 +32,6 @@ public class UserInfoParam {
 	 */
 	@QueryParam("lang") 
 	@DefaultValue("zh_CN")
-	@ThreadValue("12346")
 	private String lang;
 
 	public String getAccessToken() {

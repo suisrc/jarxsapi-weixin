@@ -89,7 +89,15 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	protected AtomicReference<WxAccessToken> accessToken = null;
 	
 //-----------------------------------------------------------------------------------------------//
-	
+	protected AbstractWeixinActivator() {
+		/*
+		 * 写在这里是方便后面初始化方法进行替换,更新
+		 */
+		appId = System.getProperty(WxConsts.KEY_CORE_APP_ID);
+		appSecret = System.getProperty(WxConsts.KEY_CORE_APP_SECRET);
+		token = System.getProperty(WxConsts.KEY_CORE_TOKEN);
+		encodingAesKey = System.getProperty(WxConsts.KEY_CORE_ENCODING_AES_KEY);
+	}
 	/**
 	 * 构造后被系统调用
 	 * 进行内容初始化
