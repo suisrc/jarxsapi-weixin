@@ -22,4 +22,10 @@ public interface Consts {
 	 * 多模式：同一个restful接口对应多台远程服务器
 	 */
 	String KEY_REMOTE_API_NULTI_MODE = "com.suisrc.remote-api.runtime.multi-mode";
+
+	
+	/**
+	 * 获取API的基本路径地址
+	 */
+	String BASE_URL = "BASE_URL";
 }

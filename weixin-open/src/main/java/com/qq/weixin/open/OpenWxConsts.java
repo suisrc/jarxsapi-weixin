@@ -8,28 +8,58 @@ import com.suisrc.weixin.core.WxConsts;
  *
  */
 public interface OpenWxConsts extends WxConsts {
+
+	/**
+	 * app id
+	 */
+	String KEY_APP_ID = "com.qq.weixin.open.endpoint.app-id";
+	
+	/**
+	 * app secret
+	 */
+	String KEY_APP_SECRET = "com.qq.weixin.open.endpoint.app-secret";
+	
+	//----------------------------open----------------------------//
 	
 	/**
 	 * 激活器key
 	 */
 	String NAMED = "com.qq.weixin.open.api";
-
-
-	String KEY_APP_ID = "com.qq.weixin.open.endpoint.app-id";
 	
 	/**
 	 * base url
 	 */
 	String BASE_URL = "com.qq.weixin.open.endpoint.base-url";
-
-	/**
-	 * pkcs12格式证书的位置
-	 */
-	String KEY_API_CLIENT_CERT_P12_PATH = "com.qq.weixin.open.endpoint.client-cert-p12";
 	
 	/**
 	 * 激活器中私有的线程数量
 	 */
 	String KEY_ACTIVATOR_THREAD_COUNT = "com.qq.weixin.open.activator.thread-count";
+	
+	//----------------------------open-api----------------------------//
+	
+	/**
+	 * 激活器key
+	 */
+	String NAMED_API = "com.qq.weixin.open-api.api";
+	
+	/**
+	 * base url
+	 */
+	String BASE_URL_API = "com.qq.weixin.open-api.endpoint.base-url";
+	
+	/**
+	 * 激活器中私有的线程数量
+	 */
+	String KEY_ACTIVATOR_THREAD_COUNT_API = "com.qq.weixin.open-api.activator.thread-count";
+	
+	//----------------------------consts------------------------------------//
+	
+	/**
+	 * OAuth跳转最后字符串
+	 */
+	String WECHAT_REDIRECT = "#wechat_redirect";
+
+
 
 }

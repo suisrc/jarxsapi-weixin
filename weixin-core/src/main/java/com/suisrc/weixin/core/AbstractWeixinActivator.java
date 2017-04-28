@@ -19,6 +19,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import com.suisrc.weixin.core.api.AccessTokenRest;
+import com.suisrc.weixin.core.bean.GrantType;
 import com.suisrc.weixin.core.bean.WxAccessToken;
 import com.suisrc.weixin.core.bean.WxAccessToken.Status;
 
@@ -161,6 +162,8 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 			return (T) getToken();
 		case WxConsts.ENCODING_AES_KEY:// 设置消息加解密密钥
 			return (T) getEncodingAesKey();
+		case WxConsts.BASE_URL: // 获取基础地址
+			return (T) getBaseUrl();
 		default:
 			return null;
 		}
@@ -247,7 +250,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 		if( accessToken.get().checkValid() == Status.VALID ) { return; } // 已经被其他线程同步过
 		try {
 			accessToken.get().getSync().set(true);  // 同步标识打开
-			WxAccessToken token = accessTokenRest.getToken(WxConsts.GRANT_TYPE, appId, appSecret);
+			WxAccessToken token = accessTokenRest.getToken(GrantType.client_credential.name(), appId, appSecret);
 			accessToken.set(token);
 		} finally {
 			accessToken.get().getSync().set(false); // 同步表示关闭

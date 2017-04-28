@@ -6,9 +6,12 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.Path;
 import javax.ws.rs.client.WebTarget;
 
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
@@ -18,8 +21,12 @@ import org.jboss.jandex.Type;
 
 import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.jaxrsapi.core.Consts;
+import com.suisrc.jaxrsapi.core.Global;
 import com.suisrc.jaxrsapi.core.ServiceClient;
+import com.suisrc.jaxrsapi.core.annotation.LogicProxy;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.ThreadValue;
+import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
 import com.suisrc.jaxrsapi.core.proxy.ProxyBuilder;
 import com.suisrc.jaxrsapi.core.util.Utils;
 
@@ -60,12 +67,21 @@ public class ClientServiceFactory {
 	 */
 	private static final String InitMethodModule = "{ proxy = " + ProxyBuilder.class.getCanonicalName() + ".builder({ApiType}.class, ("
 			+ WebTarget.class.getCanonicalName() + ")activator.getAdapter(" + WebTarget.class.getCanonicalName() + ".class)).build(); }";
+	private static final String GetBaseUrlModule = "String baseUrl = (String) activator.getAdapter(\"" + Consts.BASE_URL + "\"); ";
 	/**
 	 * 系统常数模版
 	 */
 	private static final String SystemReturnModule = "return proxy.{Method}({Params});";
-	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType})activator.getAdapter(\"{GetKey}\"); } ";
-	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType})activator.getAdapter(\"{GetKey}\")); } ";
+	private static final String LogicProxyReturnModule = "return new {LogicProxy}().proxy({URL},{Params});";
+	
+	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Activator}.{MethodName}(\"{Value}\"); } ";
+	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Activator}.{MethodName}(\"{Value}\")); } ";
+	
+	private static final String DefaultParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Activator}.{MethodName}({ParamType}.class, \"{Value}\"); } ";
+	private static final String DefaultFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Activator}.{MethodName}({FieldType}.class, \"{Value}\")); } ";
+	
+	private static final String ValueHelperParamModule = "${Param} = ({ParamType})new {Value}().revise(${Param}); ";
+	private static final String ValueHelperFieldModule = "${Param}.{SetField}(({FieldType})new {Value}().revise(${Param})); ";
 	
 	/**
 	 * 创建接口实现
@@ -109,14 +125,31 @@ public class ClientServiceFactory {
 		List<Type> parameters = method.parameters(); // 获取参数的
 		StringBuilder methodContent = new StringBuilder("{ ");
 		// SystemValue
-		for (AnnotationInstance anno : method.annotations()) {
+		List<AnnotationInstance> annos = method.annotations();
+		for (AnnotationInstance anno : annos) {
 			if (anno.name().toString().equals(SystemValue.class.getCanonicalName())) {
-				short position = anno.target().asMethodParameter().position();
-				String content = SystemParamModule
-						.replace("{Param}", position + 1 + "")
-						.replace("{ParamType}", parameters.get(position).name().toString())
-						.replace("{GetKey}", anno.value().asString());
-				methodContent.append(content);
+				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, "activator", "getAdapter"));
+			}
+		}
+		for (AnnotationInstance anno : annos) {
+			if (anno.name().toString().equals(ThreadValue.class.getCanonicalName())) {
+				AnnotationValue ave = anno.value("clazz");
+				String actname = ave != null ? ave.asClass().toString() : Global.class.getCanonicalName();
+				ave = anno.value("method");
+				String metname = ave != null ? ave.asString() : ThreadValue.defaultMethod;
+				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, actname, metname));
+			}
+		}
+		for (AnnotationInstance anno : annos) {
+			if (anno.name().toString().equals(DefaultValue.class.getCanonicalName())) {
+				methodContent.append(createParamModule(DefaultParamModule, anno, null, parameters, 
+						TransformUtils.class.getCanonicalName(), "transform"));
+			}
+		}
+		for (AnnotationInstance anno : annos) {
+			if (anno.name().toString().equals(ValueHelper.class.getCanonicalName())) {
+				String value = anno.value().asClass().name().toString();  
+				methodContent.append(createParamModule(ValueHelperParamModule, anno, value, parameters, "", ""));
 			}
 		}
 		
@@ -130,30 +163,47 @@ public class ClientServiceFactory {
 			
 			ClassInfo classInfo = index.getClassByName(paramType.name());
 			if( classInfo == null ) { continue; }
-			List<AnnotationInstance> annos = classInfo.annotations().get(DotName.createSimple(SystemValue.class.getName()));
-			if( annos == null || annos.isEmpty() ) { continue; }
-			for( AnnotationInstance anno : annos ) {
-				FieldInfo fieldInfo  = anno.target().asField();
-				String name = fieldInfo.name();
-				name = name.substring(0, 1).toUpperCase() + name.substring(1);
-				String getMethod = "get" + name;
-				String setMethod = "set" + name;
-				if( fieldInfo.declaringClass().method(getMethod) == null ) {
-					name = "is" + name;
+			annos = classInfo.annotations().get(DotName.createSimple(SystemValue.class.getName()));
+			if( annos != null && !annos.isEmpty() ) { 
+				for (AnnotationInstance anno : annos) {
+					methodContent.append(createFieldModule(SystemFieldModule, anno, null, i, "activator", "getAdapter"));
 				}
-				String content = SystemFieldModule
-						.replace("{Param}", i + 1 + "")
-						.replace("{FieldType}", fieldInfo.type().toString())
-						.replace("{GetField}", getMethod)
-						.replace("{SetField}", setMethod)
-						.replace("{GetKey}", anno.value().asString());
-				methodContent.append(content);
+			}
+			annos = classInfo.annotations().get(DotName.createSimple(ThreadValue.class.getName()));
+			if( annos != null && !annos.isEmpty() ) { 
+				for (AnnotationInstance anno : annos) {
+					AnnotationValue ave = anno.value("clazz");
+					String actname = ave != null ? ave.asClass().toString() : Global.class.getCanonicalName();
+					ave = anno.value("method");
+					String metname = ave != null ? ave.asString() : ThreadValue.defaultMethod;
+					methodContent.append(createFieldModule(SystemFieldModule, anno, null, i, actname, metname));
+				}
+			}
+			annos = classInfo.annotations().get(DotName.createSimple(DefaultValue.class.getName()));
+			if( annos != null && !annos.isEmpty() ) { 
+				for (AnnotationInstance anno : annos) {
+					methodContent.append(createFieldModule(DefaultFieldModule, anno, null, i,
+							TransformUtils.class.getCanonicalName(), "transform"));
+				}
+			}
+			annos = classInfo.annotations().get(DotName.createSimple(ValueHelper.class.getName()));
+			if( annos != null && !annos.isEmpty() ) { 
+				for (AnnotationInstance anno : annos) {
+					String value = anno.value().asClass().name().toString();  
+					methodContent.append(createFieldModule(ValueHelperFieldModule, anno, value, i, "", ""));
+				}
 			}
 		}
 		if( paramsContent.length() > 0 ) {
 			paramsContent.setLength(paramsContent.length() - 1);
 		}
-		methodContent.append(SystemReturnModule.replace("{Method}", method.name()).replace("{Params}", paramsContent));
+		
+		AnnotationInstance anno = method.annotation(DotName.createSimple(LogicProxy.class.getCanonicalName()));
+		if( anno != null ) {
+			methodContent.append(creatReturnContent(method, anno, paramsContent.toString()));
+		} else {
+			methodContent.append(SystemReturnModule.replace("{Method}", method.name()).replace("{Params}", paramsContent));
+		}
 		methodContent.append("}");
 		// 返回值
 		CtClass returnType = Utils.getCtClass(ctPool, method.returnType().name().toString());
@@ -165,6 +215,79 @@ public class ClientServiceFactory {
 		}
 		CtMethod ctMethod = CtNewMethod.make(returnType, method.name(), ctParameters, ctExceptions, methodContent.toString(), ctClass);
 		ctClass.addMethod(ctMethod);
+	}
+
+	/**
+	 * 创建返回内容
+	 * @param method
+	 * @param anno
+	 * @return
+	 */
+	private static String creatReturnContent(MethodInfo method, AnnotationInstance anno, String params) {
+		String proxyClass = anno.value().asClass().name().toString();
+		String path = "";
+		DotName pathAnnoName = DotName.createSimple(Path.class.getCanonicalName());
+		for( AnnotationInstance ai : method.declaringClass().classAnnotations() ) {
+			if( ai.name().equals(pathAnnoName) ) {
+				path += "/" + ai.value().asString();
+			}
+		}
+		AnnotationInstance ai = method.annotation(pathAnnoName);
+		if( ai != null ) {
+			path += "/" + ai.value().asString();
+		}
+		if( !path.isEmpty() ) {
+			path = path.replaceAll("/{2,}", "/");
+			if( path.charAt(path.length() - 1) == '/' ) {
+				path = path.substring(0, path.length() - 1);
+			}
+		}
+		String returnContent = LogicProxyReturnModule
+				.replace("{LogicProxy}", proxyClass)
+				.replace("{URL}", "baseUrl + \"" + path + "\"")
+				.replace("{Params}", params);
+		return GetBaseUrlModule + returnContent;
+	}
+	
+	/**
+	 * 
+	 * @param methodContent
+	 * @param anno
+	 * @param position
+	 */
+	private static String createFieldModule(String module, AnnotationInstance anno, String annoValue, int position, 
+			String activator, String methodName) {
+		FieldInfo fieldInfo  = anno.target().asField();
+		String name = fieldInfo.name();
+		name = name.substring(0, 1).toUpperCase() + name.substring(1);
+		String getMethod = "get" + name;
+		String setMethod = "set" + name;
+		if( fieldInfo.declaringClass().method(getMethod) == null ) {
+			name = "is" + name;
+		}
+		return module.replace("{Param}", position + 1 + "")
+				.replace("{FieldType}", fieldInfo.type().toString())
+				.replace("{Value}", annoValue != null ? annoValue : anno.value().asString())
+				.replace("{Activator}", activator)
+				.replace("{MethodName}",methodName)
+				.replace("{GetField}", getMethod)
+				.replace("{SetField}", setMethod);
+	}
+
+	/**
+	 * 
+	 * @param methodContent
+	 * @param anno
+	 * @param parameters
+	 */
+	private static String createParamModule(String module, AnnotationInstance anno, String annoValue, List<Type> parameters, 
+			String activator, String methodName) {
+		short position = anno.target().asMethodParameter().position();
+		return module.replace("{Param}", position + 1 + "")
+				.replace("{ParamType}", parameters.get(position).name().toString())
+				.replace("{Value}", annoValue != null ? annoValue : anno.value().asString())
+				.replace("{Activator}", activator)
+				.replace("{MethodName}",methodName);
 	}
 
 	/**

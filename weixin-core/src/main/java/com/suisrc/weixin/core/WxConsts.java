@@ -27,7 +27,7 @@ public interface WxConsts extends Consts {
 	 * 微信公众号的 access token
 	 */
 	String ACCESS_TOKEN = "ACCESS_TOKEN";
-	
+
 	/**
 	 * 微信公众号的 token
 	 */
@@ -38,11 +38,6 @@ public interface WxConsts extends Consts {
 	 */
 	String ENCODING_AES_KEY = "ENCODING_AES_KEY";
 	
-	/**
-	 * 
-	 */
-	String GRANT_TYPE = "client_credential";
-
 	/**
 	 * 加密方式
 	 */
