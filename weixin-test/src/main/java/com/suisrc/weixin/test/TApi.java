@@ -1,13 +1,14 @@
 package com.suisrc.weixin.test;
 
+import java.util.Map;
+import java.util.Properties;
+
+import javax.naming.InitialContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.suisrc.weixin.core.MessageFactory;
 import com.suisrc.weixin.core.media.ArticlesMedia;
 import com.suisrc.weixin.core.media.MediaInfo;
 import com.suisrc.weixin.core.media.MusicMedia;
@@ -74,15 +75,21 @@ public class TApi {
 		return reply;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void main(String[] args) throws Exception {
+//		TApi api = new TApi();
+//		ObjectMapper mapper = new ObjectMapper();
+//		String json = mapper.writeValueAsString(api.test2()); // java 2 json
+//		System.out.println(json);
+//		String xml = MessageFactory.beanToXml(api.test2());
+//		System.out.println(xml);
 
-
-	public static void main(String[] args) throws JsonProcessingException {
-		TApi api = new TApi();
-		ObjectMapper mapper = new ObjectMapper();
-		String json = mapper.writeValueAsString(api.test2()); // java 2 json
-		System.out.println(json);
-		String xml = MessageFactory.beanToXml(api.test2());
-		System.out.println(xml);
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial", "org.jnp.interfaces.NamingContextFactory");
+		props.setProperty("java.naming.provider.url", "localhost:1099");
+		InitialContext ctx = new InitialContext(props);
+		Map map = (Map) ctx.lookup("java://ee/name");
+		map.put("s", "hello");
 	}
-
+	
 }

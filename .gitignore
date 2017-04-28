@@ -9,3 +9,6 @@ pom.properties
 .externalToolBuilders/
 target/
 import.sql
+*.yml
+*_T.java
+*.obj
