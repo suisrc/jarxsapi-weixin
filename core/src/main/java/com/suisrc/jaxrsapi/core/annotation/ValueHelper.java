@@ -22,4 +22,9 @@ public @interface ValueHelper {
 	 * 辅助修正参数的内容
 	 */
 	Class<? extends ValueHandler<?>> value();
+	
+	/**
+	 * ValueHandler 构造的时候是否带有所有者信息
+	 */
+	String master() default "";
 }

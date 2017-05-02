@@ -18,6 +18,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.jaxrsapi.core.ServiceClient;
+import com.suisrc.jaxrsapi.core.provider.JacksonXMLProvider2;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -111,6 +112,8 @@ public class NSCFactory /* NativeServiceClientFactory */ {
 		ResteasyProviderFactory providerFactory = new LocalResteasyProviderFactory(ResteasyProviderFactory.newInstance());
 		RegisterBuiltin.register(providerFactory);
 		providerFactory.registerProvider(JacksonJsonProvider.class, true); // 装载翻译器
+//		providerFactory.registerProvider(JacksonXMLProvider.class, true); // 装载翻译器
+		providerFactory.registerProvider(JacksonXMLProvider2.class, true); // 装载翻译器
 		return providerFactory;
 	}
 	

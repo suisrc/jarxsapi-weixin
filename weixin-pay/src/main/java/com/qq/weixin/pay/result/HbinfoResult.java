@@ -1,7 +1,9 @@
 package com.qq.weixin.pay.result;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * 查询红包记录 返回参数
@@ -44,7 +46,74 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @author Y13
  *
  */
+@JacksonXmlRootElement(localName="xml")
 public class HbinfoResult {
+	
+	/**
+	 * 裂变红包接受信息
+	 * @author Y13
+	 *
+	 */
+	public static class HbinfoUnit {
+
+		/**
+		 * 字段名:领取红包的Openid
+		 * 必填:是
+		 * 示例值:ohO4GtzOAAYMp2yapORH3dQB3W18
+		 * 类型:String(32)
+		 * 说明:领取红包的openid
+		 */
+		@JacksonXmlCData
+		@JacksonXmlProperty(localName="openid")
+		private String openid;
+
+		/**
+		 * 字段名:金额
+		 * 必填:是
+		 * 示例值:100
+		 * 类型:int
+		 * 说明:领取金额
+		 */
+		@JacksonXmlCData
+		@JacksonXmlProperty(localName="amount")
+		private String amount;
+
+		/**
+		 * 字段名:接收时间
+		 * 必填:是
+		 * 示例值:2015-04-21 20:00:00
+		 * 类型:String(32)
+		 * 说明:领取红包的时间
+		 */
+		@JacksonXmlCData
+		@JacksonXmlProperty(localName="rcv_time")
+		private String rcvTime;
+
+		public String getOpenid() {
+			return openid;
+		}
+
+		public void setOpenid(String openid) {
+			this.openid = openid;
+		}
+
+		public String getAmount() {
+			return amount;
+		}
+
+		public void setAmount(String amount) {
+			this.amount = amount;
+		}
+
+		public String getRcvTime() {
+			return rcvTime;
+		}
+
+		public void setRcvTime(String rcvTime) {
+			this.rcvTime = rcvTime;
+		}
+		
+	}
 
 	/**
 	 * 字段名:返回状态码
@@ -295,41 +364,9 @@ public class HbinfoResult {
 	 * 说明:裂变红包的领取列表
 	 */
 	@JacksonXmlCData
-	@JacksonXmlProperty(localName="hblist")
-	private String hblist;
-
-	/**
-	 * 字段名:领取红包的Openid
-	 * 必填:是
-	 * 示例值:ohO4GtzOAAYMp2yapORH3dQB3W18
-	 * 类型:String(32)
-	 * 说明:领取红包的openid
-	 */
-	@JacksonXmlCData
-	@JacksonXmlProperty(localName="openid")
-	private String openid;
-
-	/**
-	 * 字段名:金额
-	 * 必填:是
-	 * 示例值:100
-	 * 类型:int
-	 * 说明:领取金额
-	 */
-	@JacksonXmlCData
-	@JacksonXmlProperty(localName="amount")
-	private String amount;
-
-	/**
-	 * 字段名:接收时间
-	 * 必填:是
-	 * 示例值:2015-04-21 20:00:00
-	 * 类型:String(32)
-	 * 说明:领取红包的时间
-	 */
-	@JacksonXmlCData
-	@JacksonXmlProperty(localName="rcv_time")
-	private String rcvTime;
+	@JacksonXmlElementWrapper(localName="hblist")
+	@JacksonXmlProperty(localName="hbinfo")
+	private HbinfoUnit[] hblist;
 
 	public String getReturnCode() {
 		return returnCode;
@@ -499,36 +536,12 @@ public class HbinfoResult {
 		this.actName = actName;
 	}
 
-	public String getHblist() {
+	public HbinfoUnit[] getHblist() {
 		return hblist;
 	}
 
-	public void setHblist(String hblist) {
+	public void setHblist(HbinfoUnit[] hblist) {
 		this.hblist = hblist;
-	}
-
-	public String getOpenid() {
-		return openid;
-	}
-
-	public void setOpenid(String openid) {
-		this.openid = openid;
-	}
-
-	public String getAmount() {
-		return amount;
-	}
-
-	public void setAmount(String amount) {
-		this.amount = amount;
-	}
-
-	public String getRcvTime() {
-		return rcvTime;
-	}
-
-	public void setRcvTime(String rcvTime) {
-		this.rcvTime = rcvTime;
 	}
 
 }

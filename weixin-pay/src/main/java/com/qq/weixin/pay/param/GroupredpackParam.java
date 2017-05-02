@@ -1,7 +1,10 @@
 package com.qq.weixin.pay.param;
 
+import javax.ws.rs.DefaultValue;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.qq.weixin.pay.PayWxConsts;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 
@@ -30,6 +33,7 @@ import com.suisrc.jaxrsapi.core.annotation.SystemValue;
  * @author Y13
  *
  */
+@JacksonXmlRootElement(localName="xml")
 public class GroupredpackParam {
 
 	/**
@@ -41,6 +45,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="nonce_str")
+	@SystemValue(PayWxConsts.AUTO_RANDOM_STR)
 	private String nonceStr;
 
 	/**
@@ -122,7 +127,8 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="total_amount")
-	private String totalAmount;
+	@DefaultValue("1")
+	private Integer totalAmount;
 
 	/**
 	 * 字段名:红包发放总人数
@@ -133,7 +139,8 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="total_num")
-	private String totalNum;
+	@DefaultValue("1")
+	private Integer totalNum;
 
 	/**
 	 * 字段名:红包金额设置方式
@@ -144,6 +151,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="amt_type")
+	@DefaultValue("ALL_RAND")
 	private String amtType;
 
 	/**
@@ -155,6 +163,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="wishing")
+	@DefaultValue("恭喜发财")
 	private String wishing;
 
 	/**
@@ -166,6 +175,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="act_name")
+	@DefaultValue("红包福利")
 	private String actName;
 
 	/**
@@ -177,6 +187,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="remark")
+	@DefaultValue("福利多多，恭喜发财")
 	private String remark;
 
 	/**
@@ -279,19 +290,19 @@ public class GroupredpackParam {
 		this.reOpenid = reOpenid;
 	}
 
-	public String getTotalAmount() {
+	public Integer getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(String totalAmount) {
+	public void setTotalAmount(Integer totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
-	public String getTotalNum() {
+	public Integer getTotalNum() {
 		return totalNum;
 	}
 
-	public void setTotalNum(String totalNum) {
+	public void setTotalNum(Integer totalNum) {
 		this.totalNum = totalNum;
 	}
 

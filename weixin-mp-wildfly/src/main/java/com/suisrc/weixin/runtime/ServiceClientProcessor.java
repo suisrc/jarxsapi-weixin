@@ -1,4 +1,4 @@
-package com.suisrc.weixin.mp.runtime;
+package com.suisrc.weixin.runtime;
 
 import java.io.IOException;
 import java.util.Map;

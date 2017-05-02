@@ -24,6 +24,7 @@ import com.qq.weixin.pay.api.MmpaymkttransfersRest;
 import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.WxConfig;
+import com.suisrc.weixin.core.crypto.WxCrypto;
 
 /**
  * 程序入口配置
@@ -53,6 +54,11 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 	private String mchId;
 	
 	/**
+	 * 商铺密钥
+	 */
+	private String mchKey;
+	
+	/**
 	 * 商铺名称
 	 */
 	private String sendName;
@@ -73,6 +79,7 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 		// 附加
 		keyStorePath = System.getProperty(PayWxConsts.KEY_API_CLIENT_CERT_P12_PATH, "");
 		mchId = System.getProperty(PayWxConsts.KEY_MCH_ID);
+		mchKey = System.getProperty(PayWxConsts.KEY_MCH_KEY);
 		sendName = System.getProperty(PayWxConsts.KEY_SEND_NAME);
 		clientIp = System.getProperty(PayWxConsts.KEY_CLIENT_IP, "");
 		if( clientIp.isEmpty() ) {
@@ -155,17 +162,29 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 		return clientIp;
 	}
 	
+	/**
+	 * 获取商铺密钥
+	 * @return
+	 */
+	public String getMchKey() {
+		return mchKey;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(String key) {
 		switch (key) {
 		case PayWxConsts.MCH_ID:
 			return (T) getMchId();
+		case PayWxConsts.MCH_KEY:
+			return (T) getMchKey();
 		case PayWxConsts.SEND_NAME:
 			return (T) getSendName();
 		case PayWxConsts.CLIENT_IP:
 			return (T) getClientIp();
 		case PayWxConsts.AUTO_MCH_BILLNO:
 			return (T) getAutoMchBillno();
+		case PayWxConsts.AUTO_RANDOM_STR:
+			return (T) WxCrypto.genRandomStr();
 		default: 
 			return super.getAdapter(key);
 		}

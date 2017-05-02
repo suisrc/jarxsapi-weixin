@@ -10,5 +10,7 @@ pom.properties
 target/
 import.sql
 *.yml
-*_T.java
 *.obj
+*_T.java
+*_T2.java
+*_T3.java

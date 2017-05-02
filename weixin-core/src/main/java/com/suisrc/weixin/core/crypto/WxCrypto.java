@@ -11,7 +11,9 @@ package com.suisrc.weixin.core.crypto;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -26,7 +28,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author Y13
  *
  */
-public class WxCrypt {
+public class WxCrypto {
 
 	private static final Base64 base64 = new Base64();
 	private static final Charset CHARSET = Charset.forName("utf-8");
@@ -35,7 +37,7 @@ public class WxCrypt {
 	protected String token;
 	protected String appidOrCorpid;
 
-	public WxCrypt() {
+	public WxCrypto() {
 		super();
 	}
 
@@ -45,7 +47,7 @@ public class WxCrypt {
 	 * @param encodingAesKey 公众平台上，开发者设置的EncodingAESKey
 	 * @param appidOrCorpid 公众平台appid/corpid
 	 */
-	public WxCrypt(String token, String encodingAesKey, String appidOrCorpid) {
+	public WxCrypto(String token, String encodingAesKey, String appidOrCorpid) {
 		this.token = token;
 		this.appidOrCorpid = appidOrCorpid;
 		this.aesKey = Base64.decodeBase64(encodingAesKey + "=");
@@ -203,4 +205,15 @@ public class WxCrypt {
 		return DigestUtils.sha1Hex(sb.toString());
 	}
 
+	/**
+	 * 排序，加密, 用于红包数据签名
+	 */
+	public static String genMD5(TreeMap<String, String> datas, String signKey) {
+		StringBuilder sb = new StringBuilder();
+		for( Entry<String, String> entry : datas.entrySet() ) {
+			sb.append(entry.getKey()).append('=').append(entry.getValue()).append('&');
+		}
+		sb.append("key=").append(signKey);
+		return DigestUtils.md5Hex(sb.toString()).toUpperCase();
+	}
 }

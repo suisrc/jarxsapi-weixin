@@ -1,16 +1,19 @@
 package com.qq.weixin.pay.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.qq.weixin.pay.handler.CheckSignHandler;
 import com.qq.weixin.pay.param.GroupredpackParam;
 import com.qq.weixin.pay.param.HbinfoParam;
 import com.qq.weixin.pay.param.RedpackParam;
 import com.qq.weixin.pay.result.HbinfoResult;
 import com.qq.weixin.pay.result.RedpackResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
+import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
 
 /**
  * 微信公众号接口
@@ -98,7 +101,8 @@ public interface MmpaymkttransfersRest {
 	@POST
 	@Path("sendredpack")
 	@Produces(MediaType.APPLICATION_XML)
-	RedpackResult sendredpack(RedpackParam param);
+	@Consumes(MediaType.APPLICATION_XML)
+	RedpackResult sendredpack(@ValueHelper(value=CheckSignHandler.class, master="this")RedpackParam param);
 	
 	/**
 	 * 发放裂变红包
@@ -112,7 +116,8 @@ public interface MmpaymkttransfersRest {
 	@POST
 	@Path("sendgroupredpack")
 	@Produces(MediaType.APPLICATION_XML)
-	RedpackResult sendgroupredpack(GroupredpackParam param);
+	@Consumes(MediaType.APPLICATION_XML)
+	RedpackResult sendgroupredpack(@ValueHelper(value=CheckSignHandler.class, master="this")GroupredpackParam param);
 	
 	/**
 	 * 查询红包记录
@@ -125,8 +130,9 @@ public interface MmpaymkttransfersRest {
 	 * @return
 	 */
 	@POST
-	@Path("sendredpack")
+	@Path("gethbinfo")
 	@Produces(MediaType.APPLICATION_XML)
-	HbinfoResult gethbinfo(HbinfoParam param);
+	@Consumes(MediaType.APPLICATION_XML)
+	HbinfoResult gethbinfo(@ValueHelper(value=CheckSignHandler.class, master="this")HbinfoParam param);
 
 }

@@ -15,6 +15,11 @@ public interface PayWxConsts extends WxConsts {
 	String MCH_ID = "MCH_ID";
 	
 	/**
+	 * 商铺密钥
+	 */
+	String MCH_KEY = "MCH_KEY";
+	
+	/**
 	 * 商铺名称
 	 */
 	String SEND_NAME = "SEND_NAME";
@@ -28,6 +33,11 @@ public interface PayWxConsts extends WxConsts {
 	 * 订单编号
 	 */
 	String AUTO_MCH_BILLNO = "AUTO_MCH_BILLNO";
+	
+	/**
+	 * 获取随机数
+	 */
+	String AUTO_RANDOM_STR = "AUTO_RANDOM_STR";
 
 //---------------------------------KEY---------------------------------//
 	
@@ -36,7 +46,9 @@ public interface PayWxConsts extends WxConsts {
 	 */
 	String NAMED = "com.qq.weixin.pay.api";
 
-
+	/**
+	 * 应用主键
+	 */
 	String KEY_APP_ID = "com.qq.weixin.pay.endpoint.app-id";
 	
 	/**
@@ -53,6 +65,11 @@ public interface PayWxConsts extends WxConsts {
 	 * 商铺ID
 	 */
 	String KEY_MCH_ID = "com.qq.weixin.pay.endpoint.mch-id";
+	
+	/**
+	 * 商铺密钥
+	 */
+	String KEY_MCH_KEY = "com.qq.weixin.pay.endpoint.mch-key";
 
 	/**
 	 * 商铺名称
@@ -68,5 +85,6 @@ public interface PayWxConsts extends WxConsts {
 	 * 激活器中私有的线程数量
 	 */
 	String KEY_ACTIVATOR_THREAD_COUNT = "com.qq.weixin.pay.activator.thread-count";
+
 
 }

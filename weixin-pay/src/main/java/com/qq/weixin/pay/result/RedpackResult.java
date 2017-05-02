@@ -2,6 +2,7 @@ package com.qq.weixin.pay.result;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * 发放普通红包 返回参数
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @author Y13
  *
  */
+@JacksonXmlRootElement(localName="xml")
 public class RedpackResult {
 
 	/**

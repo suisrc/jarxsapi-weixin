@@ -1,6 +1,8 @@
 package com.suisrc.jaxrsapi.core.runtime;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -85,8 +87,8 @@ public class ClientServiceFactory {
 	private static final String DefaultParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Activator}.{MethodName}({ParamType}.class, \"{Value}\"); } ";
 	private static final String DefaultFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Activator}.{MethodName}({FieldType}.class, \"{Value}\")); } ";
 	
-	private static final String ValueHelperParamModule = "${Param} = ({ParamType})new {Value}().revise(${Param}); ";
-	private static final String ValueHelperFieldModule = "${Param}.{SetField}(({FieldType})new {Value}().revise(${Param})); ";
+	private static final String ValueHelperParamModule = "${Param} = ({ParamType})new {Value}({Master}).revise(${Param}); ";
+	private static final String ValueHelperFieldModule = "${Param}.{SetField}(({FieldType})new {Value}({Master}).revise(${Param})); ";
 	
 	/**
 	 * 创建接口实现
@@ -145,14 +147,14 @@ public class ClientServiceFactory {
 
 		List<Type> parameters = method.parameters(); // 获取参数的
 		StringBuilder methodContent = new StringBuilder("{ ");
-		// SystemValue
-		List<AnnotationInstance> annos = method.annotations();
-		for (AnnotationInstance anno : annos) {
+		//-----------------------------------------------------------------------------------//
+		List<AnnotationInstance> annos_m = method.annotations();
+		for (AnnotationInstance anno : annos_m) {
 			if (anno.name().toString().equals(SystemValue.class.getCanonicalName())) {
 				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, "activator", "getAdapter"));
 			}
 		}
-		for (AnnotationInstance anno : annos) {
+		for (AnnotationInstance anno : annos_m) {
 			if (anno.name().toString().equals(ThreadValue.class.getCanonicalName())) {
 				AnnotationValue ave = anno.value("clazz");
 				String actname = ave != null ? ave.asClass().toString() : Global.class.getCanonicalName();
@@ -161,16 +163,10 @@ public class ClientServiceFactory {
 				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, actname, metname));
 			}
 		}
-		for (AnnotationInstance anno : annos) {
+		for (AnnotationInstance anno : annos_m) {
 			if (anno.name().toString().equals(DefaultValue.class.getCanonicalName())) {
 				methodContent.append(createParamModule(DefaultParamModule, anno, null, parameters, 
 						TransformUtils.class.getCanonicalName(), "transform"));
-			}
-		}
-		for (AnnotationInstance anno : annos) {
-			if (anno.name().toString().equals(ValueHelper.class.getCanonicalName())) {
-				String value = anno.value().asClass().name().toString();  
-				methodContent.append(createParamModule(ValueHelperParamModule, anno, value, parameters, "", ""));
 			}
 		}
 		
@@ -184,15 +180,15 @@ public class ClientServiceFactory {
 			
 			ClassInfo classInfo = index.getClassByName(paramType.name());
 			if( classInfo == null ) { continue; }
-			annos = classInfo.annotations().get(DotName.createSimple(SystemValue.class.getName()));
-			if( annos != null && !annos.isEmpty() ) { 
-				for (AnnotationInstance anno : annos) {
+			List<AnnotationInstance> annos_f = classInfo.annotations().get(DotName.createSimple(SystemValue.class.getName()));
+			if( annos_f != null && !annos_f.isEmpty() ) { 
+				for (AnnotationInstance anno : annos_f) {
 					methodContent.append(createFieldModule(SystemFieldModule, anno, null, i, "activator", "getAdapter"));
 				}
 			}
-			annos = classInfo.annotations().get(DotName.createSimple(ThreadValue.class.getName()));
-			if( annos != null && !annos.isEmpty() ) { 
-				for (AnnotationInstance anno : annos) {
+			annos_f = classInfo.annotations().get(DotName.createSimple(ThreadValue.class.getName()));
+			if( annos_f != null && !annos_f.isEmpty() ) { 
+				for (AnnotationInstance anno : annos_f) {
 					AnnotationValue ave = anno.value("clazz");
 					String actname = ave != null ? ave.asClass().toString() : Global.class.getCanonicalName();
 					ave = anno.value("method");
@@ -200,21 +196,34 @@ public class ClientServiceFactory {
 					methodContent.append(createFieldModule(SystemFieldModule, anno, null, i, actname, metname));
 				}
 			}
-			annos = classInfo.annotations().get(DotName.createSimple(DefaultValue.class.getName()));
-			if( annos != null && !annos.isEmpty() ) { 
-				for (AnnotationInstance anno : annos) {
+			annos_f = classInfo.annotations().get(DotName.createSimple(DefaultValue.class.getName()));
+			if( annos_f != null && !annos_f.isEmpty() ) { 
+				for (AnnotationInstance anno : annos_f) {
 					methodContent.append(createFieldModule(DefaultFieldModule, anno, null, i,
 							TransformUtils.class.getCanonicalName(), "transform"));
 				}
 			}
-			annos = classInfo.annotations().get(DotName.createSimple(ValueHelper.class.getName()));
-			if( annos != null && !annos.isEmpty() ) { 
-				for (AnnotationInstance anno : annos) {
-					String value = anno.value().asClass().name().toString();  
-					methodContent.append(createFieldModule(ValueHelperFieldModule, anno, value, i, "", ""));
+			//----------------------------------最后的数据修正---------------------------------------------//
+			annos_f = classInfo.annotations().get(DotName.createSimple(ValueHelper.class.getName()));
+			if( annos_f != null && !annos_f.isEmpty() ) { 
+				for (AnnotationInstance anno : annos_f) {
+					String value = anno.value().asClass().name().toString();
+					String master = anno.value("master").asString();
+					String module = ValueHelperFieldModule.replace("{Master}", master);
+					methodContent.append(createFieldModule(module, anno, value, i, "", ""));
 				}
 			}
 		}
+		//----------------------------------最后的数据修正---------------------------------------------//
+		for (AnnotationInstance anno : annos_m) {
+			if (anno.name().toString().equals(ValueHelper.class.getCanonicalName())) {
+				String value = anno.value().asClass().name().toString();  
+				String master = anno.value("master").asString();
+				String module = ValueHelperParamModule.replace("{Master}", master);
+				methodContent.append(createParamModule(module, anno, value, parameters, "", ""));
+			}
+		}
+		//-----------------------------------------------------------------------------------------------------//
 		if( paramsContent.length() > 0 ) {
 			paramsContent.setLength(paramsContent.length() - 1);
 		}
@@ -388,8 +397,17 @@ public class ClientServiceFactory {
 	public static void processIndex(Index index, CallBack acceptThen) throws Exception {
 		ClassPool ctPool = ClassPool.getDefault();
 		List<ClassInfo> activatorClasses = index.getKnownDirectImplementors((DotName.createSimple(ApiActivator.class.getName())));
+		Set<Class<?>> activatorSet = new HashSet<>();
+		Set<Class<?>> subclasses = new HashSet<>(); // 用于判断是否为其他实体的继承
 		for( ClassInfo activatorClass : activatorClasses ) {
-			Class<?> classActivator = (Class<?>)Class.forName(activatorClass.name().toString());
+			try {// 加载对象
+				Class<?> classActivator = (Class<?>)Class.forName(activatorClass.name().toString());
+				activatorSet.add(classActivator);
+				subclasses.add(classActivator.getSuperclass());
+			} catch (Exception e) { e.printStackTrace(); }
+		}
+		for( Class<?> classActivator : activatorSet ) {
+			if( subclasses.contains(classActivator)) { continue; } // 有激活器继承该激活器，舍弃不予加载
 			if( classActivator.isInterface() || Modifier.isAbstract(classActivator.getModifiers()) ) { continue; }
 			ApiActivator activator = (ApiActivator) classActivator.newInstance();
 			createImpl(activator, index, ctPool, acceptThen);

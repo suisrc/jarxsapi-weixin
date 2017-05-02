@@ -18,7 +18,7 @@ import com.suisrc.weixin.core.WxConfig;
 import com.suisrc.weixin.core.WxConsts;
 import com.suisrc.weixin.core.bean.WxEncryptSignature;
 import com.suisrc.weixin.core.bean.WxJsapiSignature;
-import com.suisrc.weixin.core.crypto.WxCrypt;
+import com.suisrc.weixin.core.crypto.WxCrypto;
 import com.suisrc.weixin.core.listener.ListenerManager;
 import com.suisrc.weixin.core.msg.BaseMessage;
 import com.suisrc.weixin.core.msg.EncryptMessage;
@@ -85,7 +85,7 @@ public class WxBinding {
 			return "非法请求";
 		}
 		// 进行验证
-		String signature = WxCrypt.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
+		String signature = WxCrypto.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
 		if( signature.equals(sign.getSignature()) ) {
 			return sign.getEchostr();
 		} else {
@@ -107,7 +107,7 @@ public class WxBinding {
 		}
 		if( sign.getSignature() != null ) {
 			// 服务器验证
-			String signature = WxCrypt.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
+			String signature = WxCrypto.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
 			if( !signature.equals(sign.getSignature()) ) {
 				// 消息签名不正确，说明不是公众平台发过来的消息
 				return Response.ok().entity("非法请求").type(MediaType.TEXT_PLAIN).build();
@@ -119,15 +119,15 @@ public class WxBinding {
 		}
 		//--------------------------------消息签名验证------------------------------------//
 		// 处理消息内容
-		WxCrypt wxCrypt = null;
+		WxCrypto wxCrypt = null;
 		String xmlContent;
 		if( WxConsts.ENCRYPT_TYPE_AES.equals(sign.getEncryptType()) ) {
 			// 使用AES加密
-			wxCrypt = new WxCrypt(config.getToken(), config.getEncodingAesKey(), config.getAppId());
+			wxCrypt = new WxCrypto(config.getToken(), config.getEncodingAesKey(), config.getAppId());
 			// 解析网络数据
 			EncryptMessage encryptMsg= MessageFactory.xmlToBean(data, EncryptMessage.class);
 			// 验证数据签名
-			String signature = WxCrypt.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
+			String signature = WxCrypto.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
 			if( !signature.equals(sign.getMsgSignature()) ) {
 				return Response.ok().entity("数据签名异常").type(MediaType.TEXT_PLAIN).build();
 			}
@@ -156,10 +156,10 @@ public class WxBinding {
 			// 构建返回对象
 			EncryptMessage encryptMsg = new EncryptMessage();
 			encryptMsg.setEncrypt(encryText);
-			encryptMsg.setNonce(WxCrypt.genRandomStr());
+			encryptMsg.setNonce(WxCrypto.genRandomStr());
 			encryptMsg.setTimeStamp(System.currentTimeMillis());
 			// 生成签名
-			String signature = WxCrypt.genSHA1(wxCrypt.getToken(), encryptMsg.getTimeStamp(), encryptMsg.getNonce(), encryText);
+			String signature = WxCrypto.genSHA1(wxCrypt.getToken(), encryptMsg.getTimeStamp(), encryptMsg.getNonce(), encryText);
 			encryptMsg.setMsgSignature(signature);
 			// 生成xml内容
 			reault = MessageFactory.beanToXml(encryptMsg);

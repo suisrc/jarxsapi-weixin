@@ -1,4 +1,4 @@
-package com.suisrc.jaxrsapi.core.filter;
+package com.suisrc.weixin.filter;
 
 import java.io.IOException;
 

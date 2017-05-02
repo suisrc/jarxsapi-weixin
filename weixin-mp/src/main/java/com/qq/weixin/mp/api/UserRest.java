@@ -1,6 +1,6 @@
 package com.qq.weixin.mp.api;
 
-import javax.ws.rs.BeanParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -8,7 +8,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.qq.weixin.mp.MpWxConsts;
-import com.qq.weixin.mp.param.UserInfoParam;
 import com.qq.weixin.mp.result.UserInfoResult;
 import com.qq.weixin.mp.result.UserListResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
@@ -35,7 +34,15 @@ public interface UserRest {
 	@GET
 	@Path("info")
 	@Produces(MediaType.APPLICATION_JSON)
-	UserInfoResult getUserInfo(@BeanParam UserInfoParam userInfo);
+//	UserInfoResult getUserInfo(@BeanParam UserInfoParam userInfo);
+	UserInfoResult getUserInfo(
+			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("openid")                                            String openid, 
+			@QueryParam("lang")        @DefaultValue("zh_CN")                String lang);
+	
+	default UserInfoResult getUserInfo( String openid ) {
+		return getUserInfo(null, openid, null);
+	}
 
 	/**
 	 * 公众号可通过本接口来获取帐号的关注者列表，关注者列表由一串OpenID（加密后的微信号，每个用户对每个公众号的OpenID是唯一的）组成。

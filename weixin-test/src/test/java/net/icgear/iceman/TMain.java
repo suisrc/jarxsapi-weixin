@@ -5,7 +5,7 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.wildfly.swarm.Swarm;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 
-import com.suisrc.weixin.mp.runtime.ServiceClientProcessor;
+import com.suisrc.weixin.runtime.ServiceClientProcessor;
 
 /**
  * 程序入口

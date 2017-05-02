@@ -1,5 +1,7 @@
 package com.qq.weixin.pay.param;
 
+import javax.ws.rs.DefaultValue;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -43,6 +45,7 @@ public class RedpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="nonce_str")
+	@SystemValue(PayWxConsts.AUTO_RANDOM_STR)
 	private String nonceStr;
 	
 
@@ -128,6 +131,7 @@ public class RedpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="total_amount")
+	@DefaultValue("1")
 	private Integer totalAmount;
 
 	/**
@@ -139,6 +143,7 @@ public class RedpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="total_num")
+	@DefaultValue("1")
 	private Integer totalNum;
 
 	/**
@@ -150,6 +155,7 @@ public class RedpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="wishing")
+	@DefaultValue("恭喜发财")
 	private String wishing;
 
 	/**
@@ -173,6 +179,7 @@ public class RedpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="act_name")
+	@DefaultValue("红包福利")
 	private String actName;
 
 	/**
@@ -184,6 +191,7 @@ public class RedpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="remark")
+	@DefaultValue("福利多多，恭喜发财")
 	private String remark;
 
 	/**

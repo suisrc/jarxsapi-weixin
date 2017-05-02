@@ -1,7 +1,10 @@
 package com.qq.weixin.pay.param;
 
+import javax.ws.rs.DefaultValue;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.qq.weixin.pay.PayWxConsts;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 
@@ -18,6 +21,7 @@ import com.suisrc.jaxrsapi.core.annotation.SystemValue;
  * @author Y13
  *
  */
+@JacksonXmlRootElement(localName="xml")
 public class HbinfoParam {
 
 	/**
@@ -29,6 +33,7 @@ public class HbinfoParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="nonce_str")
+	@SystemValue(PayWxConsts.AUTO_RANDOM_STR)
 	private String nonceStr;
 
 	/**
@@ -51,7 +56,6 @@ public class HbinfoParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="mch_billno")
-	@SystemValue(PayWxConsts.AUTO_MCH_BILLNO)
 	private String mchBillno;
 
 	/**
@@ -87,7 +91,9 @@ public class HbinfoParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="bill_type")
+	@DefaultValue("MCHT")
 	private String billType;
+	
 
 	public String getNonceStr() {
 		return nonceStr;
