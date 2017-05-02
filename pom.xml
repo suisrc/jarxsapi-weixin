@@ -26,6 +26,7 @@
 		<version.asm>5.2</version.asm>
 		<version.fasterxml>2.7.4</version.fasterxml>
 		<version.woodstox>4.4.1</version.woodstox>
+		<version.deltaspike>1.7.2</version.deltaspike>
 		<!-- test -->
 		<version.junit>4.12</version.junit>
 	</properties>
@@ -114,5 +115,9 @@
 
 	<modules>
 		<module>core</module>
+		<module>weixin-core</module>
+		<module>weixin-mp</module>
+		<module>weixin-open</module>
+		<module>weixin-pay</module>
 	</modules>
 </project>

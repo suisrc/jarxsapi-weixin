@@ -50,9 +50,13 @@ public interface SnsOAuth2Rest {
 	@Produces(MediaType.APPLICATION_JSON)
 	OAuth2AccessToken getAccessToken(
 			@QueryParam("appid")     @SystemValue(OpenWxConsts.APP_ID)     String appid, 
-			@QueryParam("secret")    @SystemValue(OpenWxConsts.APP_SECRET) String redirectUri, 
+			@QueryParam("secret")    @SystemValue(OpenWxConsts.APP_SECRET) String secret, 
 			@QueryParam("code")                                            String code, 
 			@QueryParam("grant_type")@DefaultValue("authorization_code")   String grantType);
+	
+	default OAuth2AccessToken getAccessToken(String code) {
+		return getAccessToken(null, null, code, null);
+	}
 	
 	/**
 	 * 刷新access_token（如果需要）
@@ -74,6 +78,10 @@ public interface SnsOAuth2Rest {
 			@QueryParam("appid")        @SystemValue(OpenWxConsts.APP_ID) String appid, 
 			@QueryParam("grant_type")   @DefaultValue("refresh_token")    String grantType,
 			@QueryParam("refresh_token")@ThreadValue("refresh_token")     String refreshToken);
+	
+	default OAuth2AccessToken refreshToken(String refreshTokn) {
+		return refreshToken(null, null, refreshTokn);
+	}
 	
 	/**
 	 * 拉取用户信息(需scope为 snsapi_userinfo)

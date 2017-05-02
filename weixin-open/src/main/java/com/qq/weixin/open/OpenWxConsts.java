@@ -8,6 +8,18 @@ import com.suisrc.weixin.core.WxConsts;
  *
  */
 public interface OpenWxConsts extends WxConsts {
+	
+	/**
+	 * 当前登录用于的open id
+	 */
+	String OPEN_ID = "OPEN_ID";
+
+	/**
+	 * 当前登录用户open_id保存在cookie中的key
+	 */
+	String COOKIE_OPEN_ID = "openid";
+	
+	//------------------------------key--------------------------//
 
 	/**
 	 * app id
@@ -59,7 +71,5 @@ public interface OpenWxConsts extends WxConsts {
 	 * OAuth跳转最后字符串
 	 */
 	String WECHAT_REDIRECT = "#wechat_redirect";
-
-
 
 }

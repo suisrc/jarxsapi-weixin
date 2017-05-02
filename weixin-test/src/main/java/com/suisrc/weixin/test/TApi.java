@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.qq.weixin.open.intercept.WxOAuth2;
 import com.suisrc.weixin.core.media.ArticlesMedia;
 import com.suisrc.weixin.core.media.MediaInfo;
 import com.suisrc.weixin.core.media.MusicMedia;
@@ -28,6 +29,7 @@ public class TApi {
 	@GET
 	@Path("test1")
 	@Produces(MediaType.TEXT_PLAIN)
+	@WxOAuth2
 	public String test1() {
 		return "test1";
 	}

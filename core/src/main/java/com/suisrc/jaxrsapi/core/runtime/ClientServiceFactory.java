@@ -6,7 +6,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.WebTarget;
 
@@ -24,6 +28,7 @@ import com.suisrc.jaxrsapi.core.Consts;
 import com.suisrc.jaxrsapi.core.Global;
 import com.suisrc.jaxrsapi.core.ServiceClient;
 import com.suisrc.jaxrsapi.core.annotation.LogicProxy;
+import com.suisrc.jaxrsapi.core.annotation.NonProxy;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 import com.suisrc.jaxrsapi.core.annotation.ThreadValue;
 import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
@@ -101,15 +106,31 @@ public class ClientServiceFactory {
 		CtClass ctClass = ctPool.makeClass(implName);
 		crateBaseInfo(ctPool, classInfo, named, ctClass);
 		for( MethodInfo methodInfo : classInfo.methods() ) {
-			if( methodInfo.name().equals("<init>") || methodInfo.name().startsWith("as") ) {
-				continue;
+			if( isProxyMethod( methodInfo ) ) {
+				createMethod(index, ctPool, ctClass, methodInfo);
 			}
-			createMethod(index, ctPool, ctClass, methodInfo);
 		}
 		debugCtClass(ctClass);
 		return ctClass;
 	}
-
+	
+	/**
+	 * 是否需要进行代理
+	 * 判断是否需要执行代理
+	 * @param info
+	 * @return
+	 */
+	private static boolean isProxyMethod(MethodInfo methodInfo) {
+		if( methodInfo.name().equals("<init>") || methodInfo.name().startsWith("as")
+				|| methodInfo.hasAnnotation(DotName.createSimple(NonProxy.class.getCanonicalName()))) {
+			return false; // 一些初始化和构造方法
+		}
+		return methodInfo.hasAnnotation(DotName.createSimple(GET.class.getCanonicalName()))
+				|| methodInfo.hasAnnotation(DotName.createSimple(POST.class.getCanonicalName()))
+				|| methodInfo.hasAnnotation(DotName.createSimple(PUT.class.getCanonicalName()))
+				|| methodInfo.hasAnnotation(DotName.createSimple(DELETE.class.getCanonicalName()));
+	}
+	
 	/**
 	 * 构建代理的方法
 	 * @param index 

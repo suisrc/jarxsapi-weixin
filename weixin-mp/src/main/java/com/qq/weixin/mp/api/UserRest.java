@@ -53,5 +53,9 @@ public interface UserRest {
 	UserListResult getUserGet(
 			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("next_openid")                                       String openid);
+	
+	default UserListResult getUserGet( String openid ) {
+		return getUserGet(null, openid);
+	}
 
 }

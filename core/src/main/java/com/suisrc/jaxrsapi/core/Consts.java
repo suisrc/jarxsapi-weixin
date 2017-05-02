@@ -28,4 +28,9 @@ public interface Consts {
 	 * 获取API的基本路径地址
 	 */
 	String BASE_URL = "BASE_URL";
+
+	/**
+	 * 请求内容key,用于线程缓存中获取请求内容
+	 */
+	String CONTAINER_REQUEST_CONTEXT = "one-container-request-context";
 }

@@ -63,4 +63,8 @@ public interface OpenOAuth2Rest {
 			@QueryParam("response_type")@DefaultValue("code")                    String responseType, 
 			@QueryParam("scope")        @DefaultValue("snsapi_base")             String scope, 
 			@QueryParam("state")        @ValueHelper(WeChatRedirectHandler.class)String state);
+	
+	default String authorize( String redirectUri, String scope, String state ) {
+		return authorize(null, redirectUri, null, scope, state);
+	}
 }
