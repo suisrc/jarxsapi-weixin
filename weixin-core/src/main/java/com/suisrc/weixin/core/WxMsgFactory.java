@@ -15,7 +15,7 @@ import com.suisrc.weixin.core.msg.BaseMessage;
  * @author Y13
  *
  */
-public class MessageFactory {
+public class WxMsgFactory {
 	
 	/**
 	 * 每一个线程上一个XmlMapper，加快分析进度。

@@ -77,7 +77,7 @@ public interface SnsOAuth2Rest {
 	OAuth2AccessToken refreshToken(
 			@QueryParam("appid")        @SystemValue(OpenWxConsts.APP_ID) String appid, 
 			@QueryParam("grant_type")   @DefaultValue("refresh_token")    String grantType,
-			@QueryParam("refresh_token")@ThreadValue("refresh_token")     String refreshToken);
+			@QueryParam("refresh_token")                                  String refreshToken);
 	
 	default OAuth2AccessToken refreshToken(String refreshTokn) {
 		return refreshToken(null, null, refreshTokn);
@@ -99,10 +99,13 @@ public interface SnsOAuth2Rest {
 	@Path("userinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	UserInfoResult getUserinfo(
-			@QueryParam("access_token")@ThreadValue("access_token") String accessToken, 
-			@QueryParam("openid")      @ThreadValue("openid")       String openid,
-			@QueryParam("lang")        @DefaultValue("zh_CN")       String lang);
+			@QueryParam("access_token")@SystemValue(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("openid")      @SystemValue(OpenWxConsts.OPEN_ID)      String openid,
+			@QueryParam("lang")        @DefaultValue("zh_CN")                  String lang);
 	
+	default UserInfoResult getUserinfo() {
+		return getUserinfo(null, null, null);
+	}
 	/**
 	 * 检验授权凭证（access_token）是否有效
 	 * 
@@ -116,6 +119,6 @@ public interface SnsOAuth2Rest {
 	@Path("userinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	WxErrCode auth(
-			@QueryParam("access_token")@ThreadValue("access_token") String accessToken, 
+			@QueryParam("access_token")@SystemValue(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("openid")      @ThreadValue("openid")       String openid);
 }

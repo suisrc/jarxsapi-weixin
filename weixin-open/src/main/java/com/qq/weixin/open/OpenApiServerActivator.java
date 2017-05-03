@@ -9,7 +9,9 @@ import javax.inject.Named;
 
 import com.google.common.collect.Sets;
 import com.qq.weixin.open.api.SnsOAuth2Rest;
+import com.qq.weixin.open.result.OAuth2AccessToken;
 import com.suisrc.jaxrsapi.core.ApiActivator;
+import com.suisrc.jaxrsapi.core.Global;
 import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.WxConfig;
 
@@ -46,6 +48,27 @@ public class OpenApiServerActivator extends AbstractWeixinActivator implements A
 		super.initialized();
 	}
 	
+	/**
+	 * 数据适配器
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAdapter(String key) {
+		if( OpenWxConsts.OPEN_ID.equals(key) ) {
+			return (T) getOpenId();
+		}
+		return super.getAdapter(key);
+	}
+	
+	/**
+	 * 获取open id
+	 * @return
+	 */
+	protected String getOpenId() {
+		OAuth2AccessToken token = Global.getThreadCache(OpenWxConsts.ACCESS_TOKEN);
+		return token == null ? null : token.getOpenid();
+	}
+	
 	//------------------------access token---------------------------//
 	/**
 	 * 支付平台不需要access token
@@ -54,10 +77,13 @@ public class OpenApiServerActivator extends AbstractWeixinActivator implements A
 	protected void initAccessToken() {
 	}
 	
+	/**
+	 * 网页授权access token
+	 */
 	@Override
 	public String getAccessToken() {
-		// do nothing
-		return null;
+		OAuth2AccessToken token = Global.getThreadCache(OpenWxConsts.ACCESS_TOKEN);
+		return token == null ? null : token.getAccessToken();
 	}
 	
 	@Override

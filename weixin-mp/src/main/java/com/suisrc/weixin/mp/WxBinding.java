@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.qq.weixin.mp.MpWxConsts;
-import com.suisrc.weixin.core.MessageFactory;
+import com.suisrc.weixin.core.WxMsgFactory;
 import com.suisrc.weixin.core.WxConfig;
 import com.suisrc.weixin.core.WxConsts;
 import com.suisrc.weixin.core.bean.WxEncryptSignature;
@@ -125,7 +125,7 @@ public class WxBinding {
 			// 使用AES加密
 			wxCrypt = new WxCrypto(config.getToken(), config.getEncodingAesKey(), config.getAppId());
 			// 解析网络数据
-			EncryptMessage encryptMsg= MessageFactory.xmlToBean(data, EncryptMessage.class);
+			EncryptMessage encryptMsg= WxMsgFactory.xmlToBean(data, EncryptMessage.class);
 			// 验证数据签名
 			String signature = WxCrypto.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
 			if( !signature.equals(sign.getMsgSignature()) ) {
@@ -138,7 +138,7 @@ public class WxBinding {
 		}
 		//--------------------------------消息内容处理------------------------------------//
 		// 解析消息内容
-		BaseMessage message = MessageFactory.xmlToWxMessage(xmlContent); // 转换为bean
+		BaseMessage message = WxMsgFactory.xmlToWxMessage(xmlContent); // 转换为bean
 		if( message == null ) {
 			return Response.ok().entity("消息内容无法解析").type(MediaType.TEXT_PLAIN).build();
 		}
@@ -149,7 +149,7 @@ public class WxBinding {
 		}
 		//--------------------------------响应结果解析------------------------------------//
 		// 分析结果
-		String reault = bean instanceof String ? bean.toString() : MessageFactory.beanToXml(bean);
+		String reault = bean instanceof String ? bean.toString() : WxMsgFactory.beanToXml(bean);
 		if( wxCrypt != null ) {
 			// 消息内容需要加密返回
 			String encryText = wxCrypt.encrypt(reault);
@@ -162,7 +162,7 @@ public class WxBinding {
 			String signature = WxCrypto.genSHA1(wxCrypt.getToken(), encryptMsg.getTimeStamp(), encryptMsg.getNonce(), encryText);
 			encryptMsg.setMsgSignature(signature);
 			// 生成xml内容
-			reault = MessageFactory.beanToXml(encryptMsg);
+			reault = WxMsgFactory.beanToXml(encryptMsg);
 		}
 		//--------------------------------返回处理的结果------------------------------------//
 		return Response.ok().entity(reault).type(MediaType.TEXT_PLAIN).build();

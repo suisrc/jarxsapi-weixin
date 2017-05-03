@@ -49,14 +49,12 @@ public class DefaultWxOAuth2Handler implements WxOAuth2Handler {
 		if( cookie != null ) {
 			OAuth2AccessToken token = tokenHandler.getByOpenid(cookie.getValue()); // 查找系统中的访问access token
 			if( token != null ) {
-				Global.putThreadCache(OpenWxConsts.OPEN_ID, token.getOpenid());
 				Global.putThreadCache(OpenWxConsts.ACCESS_TOKEN, token);
 				return;
 			}
 		}
 		OAuth2AccessToken token = getAccessToken(ctx, request);
 		// 保存token, 正常返回
-		Global.putThreadCache(OpenWxConsts.OPEN_ID, token.getOpenid());
 		Global.putThreadCache(OpenWxConsts.COOKIE_OPEN_ID, token.getOpenid()); // 用于结束访问后，保存到cookies中
 		Global.putThreadCache(OpenWxConsts.ACCESS_TOKEN, token);
 	}

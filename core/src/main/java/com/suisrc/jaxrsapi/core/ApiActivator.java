@@ -16,6 +16,7 @@ public interface ApiActivator {
 	 * 初始化
 	 */
 	void initialized();
+	
 	/**
 	 * 获取基础路径地址
 	 * @return

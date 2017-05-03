@@ -15,9 +15,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
+import org.jboss.resteasy.client.jaxrs.HttpClientBuilder43_s;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
+import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.weixin.core.api.AccessTokenRest;
 import com.suisrc.weixin.core.bean.GrantType;
 import com.suisrc.weixin.core.bean.WxAccessToken;
@@ -28,7 +30,7 @@ import com.suisrc.weixin.core.filter.WxClientResponseFilter;
  * 程序入口配置抽象
  * @author Y13
  */
-public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConfig */ {
+public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig {
 	
 	/**
 	 * access token需要记性同步处理
@@ -114,7 +116,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	 * 初始化远程访问的客户端
 	 */
 	protected Client getTargetClient() {
-		ClientBuilder clientBuilder = getClientBuilder();// 配置网络通信内容
+		ClientBuilder clientBuilder = createClientBuilder();// 配置网络通信内容
 		if (clientBuilder instanceof ResteasyClientBuilder) {
 			ResteasyClientBuilder rcb = (ResteasyClientBuilder) clientBuilder;
 			if (executor != null) {
@@ -123,6 +125,7 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 			if (providerFactory != null) {
 				rcb.providerFactory(providerFactory);
 			}
+			rcb.httpEngine(HttpClientBuilder43_s.initDefaultEngine43(rcb));
 		}
 		Client client = clientBuilder.build();
 		// 加入Produces矫正监听器
@@ -133,8 +136,9 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 	/**
 	 * 获取一个Client Builder
 	 */
-	protected ClientBuilder getClientBuilder() {
+	protected ClientBuilder createClientBuilder() {
 		return ClientBuilder.newBuilder();
+//		return ResteasyClientBuilder();
 	}
 
 	/**

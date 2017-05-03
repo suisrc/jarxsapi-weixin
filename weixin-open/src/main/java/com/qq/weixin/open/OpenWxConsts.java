@@ -13,7 +13,7 @@ public interface OpenWxConsts extends WxConsts {
 	 * 当前登录用于的open id
 	 */
 	String OPEN_ID = "OPEN_ID";
-	
+
 	//------------------------------key--------------------------//
 
 	/**

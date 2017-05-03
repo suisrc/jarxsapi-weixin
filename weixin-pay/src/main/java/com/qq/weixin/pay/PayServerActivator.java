@@ -115,8 +115,8 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 	/**
 	 * 初始化远程访问的客户端
 	 */
-	protected ClientBuilder getClientBuilder() {
-		ClientBuilder builder = super.getClientBuilder();// 配置网络通信内容
+	protected ClientBuilder createClientBuilder() {
+		ClientBuilder builder = super.createClientBuilder();// 配置网络通信内容
 		File keyStoreFile = new File(getKeyStorePath());
 		if( !keyStoreFile.exists() ) {
 			// 商铺证书不存在

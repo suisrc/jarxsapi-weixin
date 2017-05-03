@@ -1,7 +1,7 @@
 package com.qq.weixin.open.result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.suisrc.weixin.core.bean.WxErrCode;
+import com.suisrc.weixin.core.bean.WxAccessToken;
 
 /**
  * 微信网页授权的Access token
@@ -14,20 +14,20 @@ import com.suisrc.weixin.core.bean.WxErrCode;
  * @author Y13
  *
  */
-public class OAuth2AccessToken extends WxErrCode {
+public class OAuth2AccessToken extends WxAccessToken {
 	private static final long serialVersionUID = 5125197622619178049L;
 
 	/**
 	 * 网页授权接口调用凭证,注意：此access_token与基础支持的access_token不同
 	 */
-	@JsonProperty("access_token")
-	private String accessToken;
+//	@JsonProperty("access_token")
+//	private String accessToken;
 
 	/**
 	 * access_token接口调用凭证超时时间，单位（秒）
 	 */
-	@JsonProperty("expires_in")
-	private String expiresIn;
+//	@JsonProperty("expires_in")
+//	private long expiresIn;
 
 	/**
 	 * 用户刷新access_token
@@ -48,19 +48,19 @@ public class OAuth2AccessToken extends WxErrCode {
 	private String scope;
 
 	public String getAccessToken() {
-		return accessToken;
+		return super.getAccessToken();
 	}
 
 	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+		super.setAccessToken(accessToken);
 	}
 
-	public String getExpiresIn() {
-		return expiresIn;
+	public long getExpiresIn() {
+		return super.getExpiresIn();
 	}
 
-	public void setExpiresIn(String expiresIn) {
-		this.expiresIn = expiresIn;
+	public void setExpiresIn(long expiresIn) {
+		super.setExpiresIn(expiresIn);
 	}
 
 	public String getRefreshToken() {
@@ -86,6 +86,5 @@ public class OAuth2AccessToken extends WxErrCode {
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
-	
 	
 }
