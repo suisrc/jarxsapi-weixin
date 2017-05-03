@@ -17,11 +17,6 @@
 			<artifactId>javaee-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<version>${version.resteasy}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${version.reflections}</version>
@@ -51,8 +46,12 @@
 			<artifactId>woodstox-core-asl</artifactId>
 			<version>${version.woodstox}</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.ow2.asm</groupId> <artifactId>asm-all</artifactId> 
-			<version>${version.asm}</version> </dependency> -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>provided</scope>
+			<version>${version.resteasy}</version>
+		</dependency>
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>

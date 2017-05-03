@@ -26,5 +26,7 @@ public @interface ValueHelper {
 	/**
 	 * ValueHandler 构造的时候是否带有所有者信息
 	 */
-	String master() default "";
+	String master() default NONE;
+	
+	String NONE = "";
 }

@@ -24,6 +24,7 @@ import org.jboss.resteasy.util.IsHttpMethod;
  * 从RESTEasy借用初步工作
  * 代码参考
  * @see org.wildfly.swarm.cdi.jaxrsapi.deployment.ProxyBuilder
+ * @see org.jboss.resteasy.client.jaxrs.ProxyBuilder
  */
 public class ProxyBuilder<T> {
 	private static final Class<?>[] cClassArgArray = { Class.class };

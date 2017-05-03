@@ -17,6 +17,12 @@
 			<artifactId>weixin-core</artifactId>
 			<version>${module.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>provided</scope>
+			<version>${version.resteasy}</version>
+		</dependency>
 		<!-- junit -->
 		<dependency>
 			<groupId>junit</groupId>

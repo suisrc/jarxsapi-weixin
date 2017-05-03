@@ -22,6 +22,7 @@ import com.suisrc.weixin.core.api.AccessTokenRest;
 import com.suisrc.weixin.core.bean.GrantType;
 import com.suisrc.weixin.core.bean.WxAccessToken;
 import com.suisrc.weixin.core.bean.WxAccessToken.Status;
+import com.suisrc.weixin.core.filter.WxClientResponseFilter;
 
 /**
  * 程序入口配置抽象
@@ -106,13 +107,13 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 		// 初始化
 		initAccessToken();
 		// 构建客户端创建器
-		initTargetClient();
+		client = getTargetClient();
 	}
 	
 	/**
 	 * 初始化远程访问的客户端
 	 */
-	protected void initTargetClient() {
+	protected Client getTargetClient() {
 		ClientBuilder clientBuilder = getClientBuilder();// 配置网络通信内容
 		if (clientBuilder instanceof ResteasyClientBuilder) {
 			ResteasyClientBuilder rcb = (ResteasyClientBuilder) clientBuilder;
@@ -123,7 +124,10 @@ public abstract class AbstractWeixinActivator /* implements ApiActivator, WxConf
 				rcb.providerFactory(providerFactory);
 			}
 		}
-		client = clientBuilder.build();
+		Client client = clientBuilder.build();
+		// 加入Produces矫正监听器
+		client.register(WxClientResponseFilter.class);
+		return client;
 	}
 	
 	/**

@@ -8,7 +8,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>weixin-test</artifactId>
+	<artifactId>ztest</artifactId>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -53,31 +53,23 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.suisrc.jaxrsapi</groupId>
-			<artifactId>weixin-wildfly</artifactId>
-			<version>${module.version}</version>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.suisrc.jaxrsapi</groupId>
-			<artifactId>weixin-mp</artifactId>
-			<version>${module.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.suisrc.jaxrsapi</groupId>
-			<artifactId>weixin-open</artifactId>
-			<version>${module.version}</version>
-		</dependency>
+		<!-- wildfly-swarm -->
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>cdi</artifactId>
+			<artifactId>spi</artifactId>
+			<version>${version.wildfly.swarm}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
 			<artifactId>jaxrs</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.wildfly.swarm</groupId>
-			<artifactId>jaxrs-cdi</artifactId>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>${version.reflections}</version>
 		</dependency>
 		<!-- junit -->
 		<dependency>

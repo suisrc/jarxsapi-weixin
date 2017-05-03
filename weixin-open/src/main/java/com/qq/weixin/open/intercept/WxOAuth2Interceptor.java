@@ -6,6 +6,8 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import com.qq.weixin.open.handler.WxOAuth2Handler;
+
 /**
  * OAuth2.0认证拦截
  * @author Y13

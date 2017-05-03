@@ -1,0 +1,2 @@
+com.suisrc.jaxrsapi.core.provider.JacksonJsonProvider2
+com.suisrc.jaxrsapi.core.provider.JacksonXMLProvider2

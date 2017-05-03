@@ -8,9 +8,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.common.collect.Sets;
 import com.qq.weixin.mp.api.UserRest;
 import com.suisrc.jaxrsapi.core.ApiActivator;
-import com.suisrc.jaxrsapi.core.util.Utils;
 import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.WxConfig;
 import com.suisrc.weixin.core.api.AccessTokenRest;
@@ -30,9 +30,10 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
 	 * 如何企业号和公众号同时使用的时候，接口可能出现问题，请注意
 	 */
 	public Set<Class<?>> getClasses() {
-		return Utils.getRemoteApiClasses(null, false, 
-				UserRest.class.getPackage().getName(),
-				AccessTokenRest.class.getPackage().getName());
+//		return Utils.getRemoteApiClasses(null, false, 
+//				UserRest.class.getPackage().getName(),
+//				AccessTokenRest.class.getPackage().getName());
+		return Sets.newHashSet(UserRest.class, AccessTokenRest.class);
 		
 	}
 	

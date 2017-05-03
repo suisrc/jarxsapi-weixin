@@ -43,6 +43,11 @@ public interface WxConsts extends Consts {
 	 */
 	String ENCRYPT_TYPE_AES = "aes";
 
+	/**
+	 * 当前登录用户open_id保存在cookie中的key
+	 */
+	String COOKIE_OPEN_ID = "openid";
+
 //---------------------------------KEY---------------------------------//
 	
 	/**

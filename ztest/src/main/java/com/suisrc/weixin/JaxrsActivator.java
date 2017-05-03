@@ -16,6 +16,11 @@ public class JaxrsActivator extends Application {
 //	 */
 //	@Override
 //	public Set<Class<?>> getClasses() {
-//		return Sets.newHashSet(WxBinding.class, TApi.class);
+//		return Sets.newHashSet(TApi.class);
+//	}
+//	
+//	@Override
+//	public Set<Object> getSingletons() {
+//		return Sets.newHashSet(new SyRequestFilter());
 //	}
 }

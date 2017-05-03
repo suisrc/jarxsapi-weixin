@@ -81,14 +81,14 @@ public class ClientServiceFactory {
 	private static final String SystemReturnModule = "return proxy.{Method}({Params});";
 	private static final String LogicProxyReturnModule = "return new {LogicProxy}().proxy({URL},{Params});";
 	
-	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Activator}.{MethodName}(\"{Value}\"); } ";
-	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Activator}.{MethodName}(\"{Value}\")); } ";
+	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Master}.{MethodName}(\"{Value}\"); } ";
+	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Master}.{MethodName}(\"{Value}\")); } ";
 	
-	private static final String DefaultParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Activator}.{MethodName}({ParamType}.class, \"{Value}\"); } ";
-	private static final String DefaultFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Activator}.{MethodName}({FieldType}.class, \"{Value}\")); } ";
+	private static final String DefaultParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Master}.{MethodName}({ParamType}.class, \"{Value}\"); } ";
+	private static final String DefaultFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Master}.{MethodName}({FieldType}.class, \"{Value}\")); } ";
 	
-	private static final String ValueHelperParamModule = "${Param} = ({ParamType})new {Value}({Master}).revise(${Param}); ";
-	private static final String ValueHelperFieldModule = "${Param}.{SetField}(({FieldType})new {Value}({Master}).revise(${Param})); ";
+	private static final String ValueHelperParamModule = "${Param} = ({ParamType})new {Value}({Master}).{MethodName}(${Param}); ";
+	private static final String ValueHelperFieldModule = "${Param}.{SetField}(({FieldType})new {Value}({Master}).{MethodName}(${Param})); ";
 	
 	/**
 	 * 创建接口实现
@@ -208,19 +208,19 @@ public class ClientServiceFactory {
 			if( annos_f != null && !annos_f.isEmpty() ) { 
 				for (AnnotationInstance anno : annos_f) {
 					String value = anno.value().asClass().name().toString();
-					String master = anno.value("master").asString();
-					String module = ValueHelperFieldModule.replace("{Master}", master);
-					methodContent.append(createFieldModule(module, anno, value, i, "", ""));
+					AnnotationValue annoValue = anno.value("master");
+					String master = annoValue == null ? ValueHelper.NONE : annoValue.asString();
+					methodContent.append(createFieldModule(ValueHelperFieldModule, anno, value, i, master, "revise"));
 				}
 			}
 		}
 		//----------------------------------最后的数据修正---------------------------------------------//
 		for (AnnotationInstance anno : annos_m) {
 			if (anno.name().toString().equals(ValueHelper.class.getCanonicalName())) {
-				String value = anno.value().asClass().name().toString();  
-				String master = anno.value("master").asString();
-				String module = ValueHelperParamModule.replace("{Master}", master);
-				methodContent.append(createParamModule(module, anno, value, parameters, "", ""));
+				String value = anno.value().asClass().name().toString();
+				AnnotationValue annoValue = anno.value("master");
+				String master = annoValue == null ? ValueHelper.NONE : annoValue.asString();
+				methodContent.append(createParamModule(ValueHelperParamModule, anno, value, parameters, master, "revise"));
 			}
 		}
 		//-----------------------------------------------------------------------------------------------------//
@@ -286,7 +286,7 @@ public class ClientServiceFactory {
 	 * @param position
 	 */
 	private static String createFieldModule(String module, AnnotationInstance anno, String annoValue, int position, 
-			String activator, String methodName) {
+			String master, String methodName) {
 		FieldInfo fieldInfo  = anno.target().asField();
 		String name = fieldInfo.name();
 		name = name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -298,7 +298,7 @@ public class ClientServiceFactory {
 		return module.replace("{Param}", position + 1 + "")
 				.replace("{FieldType}", fieldInfo.type().toString())
 				.replace("{Value}", annoValue != null ? annoValue : anno.value().asString())
-				.replace("{Activator}", activator)
+				.replace("{Master}", master)
 				.replace("{MethodName}",methodName)
 				.replace("{GetField}", getMethod)
 				.replace("{SetField}", setMethod);
@@ -311,12 +311,12 @@ public class ClientServiceFactory {
 	 * @param parameters
 	 */
 	private static String createParamModule(String module, AnnotationInstance anno, String annoValue, List<Type> parameters, 
-			String activator, String methodName) {
+			String master, String methodName) {
 		short position = anno.target().asMethodParameter().position();
 		return module.replace("{Param}", position + 1 + "")
 				.replace("{ParamType}", parameters.get(position).name().toString())
 				.replace("{Value}", annoValue != null ? annoValue : anno.value().asString())
-				.replace("{Activator}", activator)
+				.replace("{Master}", master)
 				.replace("{MethodName}",methodName);
 	}
 
