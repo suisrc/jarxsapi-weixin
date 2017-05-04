@@ -118,14 +118,14 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	protected Client getTargetClient() {
 		ClientBuilder clientBuilder = createClientBuilder();// 配置网络通信内容
 		if (clientBuilder instanceof ResteasyClientBuilder) {
-			ResteasyClientBuilder rcb = (ResteasyClientBuilder) clientBuilder;
+			ResteasyClientBuilder rcBuilder = (ResteasyClientBuilder) clientBuilder;
 			if (executor != null) {
-				rcb.asyncExecutor(executor); // 配置线程池，默认使用线程池为固定大小最大10个线程
+				rcBuilder.asyncExecutor(executor); // 配置线程池，默认使用线程池为固定大小最大10个线程
 			}
 			if (providerFactory != null) {
-				rcb.providerFactory(providerFactory);
+				rcBuilder.providerFactory(providerFactory);
 			}
-			rcb.httpEngine(HttpClientBuilder43_s.initDefaultEngine43(rcb));
+			rcBuilder.httpEngine(HttpClientBuilder43_s.initDefaultEngine43(rcBuilder));
 		}
 		Client client = clientBuilder.build();
 		// 加入Produces矫正监听器
@@ -137,8 +137,8 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	 * 获取一个Client Builder
 	 */
 	protected ClientBuilder createClientBuilder() {
-		return ClientBuilder.newBuilder();
-//		return ResteasyClientBuilder();
+//		return ClientBuilder.newBuilder();
+		return new ResteasyClientBuilder();
 	}
 
 	/**
