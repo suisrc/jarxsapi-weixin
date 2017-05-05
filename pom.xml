@@ -20,13 +20,15 @@
 		<version.maven-compiler-plugin>2.3.2</version.maven-compiler-plugin>
 		<!-- frame -->
 		<javaee.version>7.0</javaee.version>
-		<version.resteasy>3.1.0.Final</version.resteasy>
+		<version.resteasy>3.1.2.Final</version.resteasy>
 		<version.reflections>0.9.10</version.reflections>
 		<version.jandex>2.0.3.Final</version.jandex>
 		<version.asm>5.2</version.asm>
 		<version.fasterxml>2.7.4</version.fasterxml>
 		<version.woodstox>4.4.1</version.woodstox>
 		<version.deltaspike>1.7.2</version.deltaspike>
+		<version.httpclient>4.5.2</version.httpclient>
+		<version.commons-codec>1.9</version.commons-codec>
 		<!-- test -->
 		<version.junit>4.12</version.junit>
 	</properties>

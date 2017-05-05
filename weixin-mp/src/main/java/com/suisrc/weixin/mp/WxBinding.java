@@ -76,7 +76,7 @@ public class WxBinding {
 	 * @throws AesException 
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
 	public String doGet(@BeanParam WxJsapiSignature sign) {
 		if( config.getToken() == null 
 			|| sign.getTimestamp() == null 
@@ -98,7 +98,7 @@ public class WxBinding {
 	 * @throws AesException 
 	 */
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XML)
 	public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
 		//--------------------------------服务器验证------------------------------------//
 		if( isEncrypt && sign.isValid() ) {
@@ -165,7 +165,7 @@ public class WxBinding {
 			reault = WxMsgFactory.beanToXml(encryptMsg);
 		}
 		//--------------------------------返回处理的结果------------------------------------//
-		return Response.ok().entity(reault).type(MediaType.TEXT_PLAIN).build();
+		return Response.ok().entity(reault).build();
 	}
 
 }

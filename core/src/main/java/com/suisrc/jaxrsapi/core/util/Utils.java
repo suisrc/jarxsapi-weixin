@@ -3,6 +3,8 @@ package com.suisrc.jaxrsapi.core.util;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.reflections.Reflections;
@@ -100,6 +102,90 @@ public class Utils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
+		}
+	}
+
+	/**
+	 * 执行无法明显调用的方法
+	 * 主要用于兼容旧系统
+	 * @param clazz
+	 * @param owner
+	 * @param methodName
+	 * @param parameterTypes
+	 * @param parameters
+	 * @return
+	 */
+	public static Object invoke(Class<?> ownerType, Object owner, String methodName, Class<?>[] parameterTypes, Object[] parameters) {
+		try {
+			Method method = (ownerType != null ? ownerType : owner.getClass()).getMethod(methodName, parameterTypes);
+			return method.invoke(owner, parameters);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * 执行无法明显调用的方法
+	 * 主要用于兼容旧系统
+	 * @param clazz
+	 * @param owner
+	 * @param methodName
+	 * @param parameterTypes
+	 * @param parameters
+	 * @return
+	 */
+	public static Object invokeDecared(Class<?> ownerType, Object owner, String methodName, Class<?>[] parameterTypes, Object[] parameters) {
+		try {
+			Method method = (ownerType != null ? ownerType : owner.getClass()).getDeclaredMethod(methodName, parameterTypes);
+			method.setAccessible(true);
+			Object result = method.invoke(owner, parameters);
+			method.setAccessible(false);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * 执行多层Get方法获取数据
+	 * @param owner
+	 * @param methodName
+	 * @return
+	 */
+	public static Object invokeGet(Object owner, String... methods) {
+		try {
+			Object result = owner;
+			for( String name : methods ) {
+				Method method = result.getClass().getMethod(name);
+				result = method.invoke(result);
+				if( result == null ) { return null; }
+			}
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * 获取私有和保护的对象属性
+	 * @param clazz
+	 * @param owner
+	 * @param methodName
+	 * @return
+	 */
+	public static Object invokeGetField(Class<?> ownerType, Object owner, String fieldName) {
+		try {
+			Field field = ownerType.getDeclaredField(fieldName);
+			field.setAccessible(true);
+			Object result = field.get(owner);
+			field.setAccessible(false);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

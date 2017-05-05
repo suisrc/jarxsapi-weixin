@@ -110,6 +110,7 @@ public class NSCFactory /* NativeServiceClientFactory */ {
 	public static ResteasyProviderFactory getNativeProviderFactory() {
 		// create a new one
 		ResteasyProviderFactory providerFactory = new LocalResteasyProviderFactory(ResteasyProviderFactory.newInstance());
+//		ResteasyProviderFactory providerFactory = new LocalResteasyProviderFactory(ResteasyProviderFactory.getInstance());
 		RegisterBuiltin.register(providerFactory);
 		providerFactory.registerProvider(JacksonJsonProvider.class, true); // 装载翻译器
 		providerFactory.registerProvider(JacksonXMLProvider.class, true); // 装载翻译器

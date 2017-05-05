@@ -99,7 +99,7 @@ public abstract class BaseMessage {
 	 */
 	public <T extends BaseMessage> T reverse(T msg) {
 		msg.setToUserName(this.getFromUserName());
-		msg.setFromUserName(this.toUserName);
+		msg.setFromUserName(this.getToUserName());
 		return msg;
 	}
 }

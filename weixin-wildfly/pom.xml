@@ -19,16 +19,19 @@
 		<dependency>
 			<groupId>com.suisrc.jaxrsapi</groupId>
 			<artifactId>weixin-core</artifactId>
+			<scope>provided</scope>
 			<version>${module.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
 			<artifactId>spi</artifactId>
+			<scope>provided</scope>
 			<version>${version.wildfly.swarm}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.wildfly.swarm</groupId>
 			<artifactId>jaxrs</artifactId>
+			<scope>provided</scope>
 			<version>${version.wildfly.swarm}</version>
 		</dependency>
 		<!-- junit -->

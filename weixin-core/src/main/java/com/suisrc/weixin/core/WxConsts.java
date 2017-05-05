@@ -12,7 +12,7 @@ public interface WxConsts extends Consts {
 	/**
 	 * 测试表示
 	 */
-	boolean DEBUG = true;
+	boolean DEBUG = Boolean.getBoolean("debug");
 	/**
 	 * 微信公众号的appid
 	 */

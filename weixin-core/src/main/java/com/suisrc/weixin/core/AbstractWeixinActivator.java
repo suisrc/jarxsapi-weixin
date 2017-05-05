@@ -15,7 +15,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
-import org.jboss.resteasy.client.jaxrs.HttpClientBuilder43_s;
+import org.jboss.resteasy.client.jaxrs.ClientBuilderFactory;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
@@ -125,7 +125,7 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 			if (providerFactory != null) {
 				rcBuilder.providerFactory(providerFactory);
 			}
-			rcBuilder.httpEngine(HttpClientBuilder43_s.initDefaultEngine43(rcBuilder));
+			ClientBuilderFactory.initHttpEngineThreadSaft(rcBuilder);
 		}
 		Client client = clientBuilder.build();
 		// 加入Produces矫正监听器
@@ -138,7 +138,7 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	 */
 	protected ClientBuilder createClientBuilder() {
 //		return ClientBuilder.newBuilder();
-		return new ResteasyClientBuilder();
+		return ClientBuilderFactory.newBuilder();
 	}
 
 	/**
@@ -271,9 +271,7 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 		} finally {
 			accessToken.get().getSync().set(false); // 同步表示关闭
 		}
-		if( WxConsts.DEBUG ) { //把 access token以对象的形式写入文件中
-			writeTempObject(accessToken.get());
-		}
+		writeTempObject(accessToken.get());
 	}
 	
 	/**
@@ -289,6 +287,8 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	 * @param token
 	 */
 	protected void writeTempObject(Object obj) {
+		if( !WxConsts.DEBUG ) { return; }
+		
 		String filename = getTempFileName();
 		if( filename == null || filename.isEmpty() ) { return; }
 		try {
@@ -307,6 +307,8 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	 * @return
 	 */
 	protected Object readTempObject() {
+		if( !WxConsts.DEBUG ) { return null; }
+		
 		String filename = getTempFileName();
 		if( filename == null || filename.isEmpty() ) { return null; }
 		File file = new File(filename);

@@ -78,7 +78,6 @@ import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
  *
  */
 @RemoteApi
-@Path("mmpaymkttransfers")
 public interface MmpaymkttransfersRest {
 	
 
@@ -99,7 +98,7 @@ public interface MmpaymkttransfersRest {
 	 * @return
 	 */
 	@POST
-	@Path("sendredpack")
+	@Path("mmpaymkttransfers/sendredpack")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
 	RedpackResult sendredpack(@ValueHelper(value=CheckSignHandler.class, master="this")RedpackParam param);
@@ -114,7 +113,7 @@ public interface MmpaymkttransfersRest {
 	 * @return
 	 */
 	@POST
-	@Path("sendgroupredpack")
+	@Path("mmpaymkttransfers/sendgroupredpack")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
 	RedpackResult sendgroupredpack(@ValueHelper(value=CheckSignHandler.class, master="this")GroupredpackParam param);
@@ -130,7 +129,7 @@ public interface MmpaymkttransfersRest {
 	 * @return
 	 */
 	@POST
-	@Path("gethbinfo")
+	@Path("mmpaymkttransfers/gethbinfo")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
 	HbinfoResult gethbinfo(@ValueHelper(value=CheckSignHandler.class, master="this")HbinfoParam param);

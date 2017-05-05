@@ -8,7 +8,7 @@ import javax.ws.rs.core.Application;
  * @author Y13
  *
  */
-@ApplicationPath("t")
+@ApplicationPath("s")
 public class JaxrsActivator extends Application {
 
 //	/**

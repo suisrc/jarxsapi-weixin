@@ -29,7 +29,6 @@ import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
  *
  */
 @RemoteApi
-@Path("connect/oauth2")
 public interface OpenOAuth2Rest {
 
 	/**
@@ -54,7 +53,7 @@ public interface OpenOAuth2Rest {
 	 * @return
 	 */
 	@GET
-	@Path("authorize")
+	@Path("connect/oauth2/authorize")
 	@Produces(MediaType.APPLICATION_JSON)
 	@LogicProxy(Oauth2AuthorizeProxy.class)
 	String authorize(

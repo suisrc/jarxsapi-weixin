@@ -4,6 +4,7 @@ import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Listener;
 import com.suisrc.weixin.core.msg.pm.TextMessage;
+import com.suisrc.weixin.core.msg.r.ReplyTextMessage;
 
 /**
  * 监听文本消息
@@ -19,6 +20,8 @@ public class TextMessageListener implements Listener<TextMessage> {
 	 */
 	@Override
 	public Object accept(TextMessage message) {
-		return "TextMessageListener";
+		ReplyTextMessage msg = message.reverse(new ReplyTextMessage());
+		msg.setContent("TextMessageListener->" + message.getContent());
+		return msg;
 	}
 }

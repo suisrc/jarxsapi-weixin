@@ -27,7 +27,6 @@ import com.suisrc.weixin.core.bean.WxErrCode;
  *
  */
 @RemoteApi
-@Path("sns/oauth2")
 public interface SnsOAuth2Rest {
 
 	/**
@@ -46,7 +45,7 @@ public interface SnsOAuth2Rest {
 	 * @return
 	 */
 	@GET
-	@Path("access_token")
+	@Path("sns/oauth2/access_token")
 	@Produces(MediaType.APPLICATION_JSON)
 	OAuth2AccessToken getAccessToken(
 			@QueryParam("appid")     @SystemValue(OpenWxConsts.APP_ID)     String appid, 
@@ -72,7 +71,7 @@ public interface SnsOAuth2Rest {
 	 * @return
 	 */
 	@GET
-	@Path("refresh_token")
+	@Path("sns/oauth2/refresh_token")
 	@Produces(MediaType.APPLICATION_JSON)
 	OAuth2AccessToken refreshToken(
 			@QueryParam("appid")        @SystemValue(OpenWxConsts.APP_ID) String appid, 
@@ -96,7 +95,7 @@ public interface SnsOAuth2Rest {
 	 * @return
 	 */
 	@GET
-	@Path("userinfo")
+	@Path("sns/oauth2/userinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	UserInfoResult getUserinfo(
 			@QueryParam("access_token")@SystemValue(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
@@ -116,7 +115,7 @@ public interface SnsOAuth2Rest {
 	 * @return
 	 */
 	@GET
-	@Path("userinfo")
+	@Path("sns/oauth2/userinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	WxErrCode auth(
 			@QueryParam("access_token")@SystemValue(OpenWxConsts.ACCESS_TOKEN) String accessToken, 

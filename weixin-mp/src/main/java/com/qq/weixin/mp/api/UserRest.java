@@ -20,7 +20,6 @@ import com.suisrc.jaxrsapi.core.annotation.SystemValue;
  *
  */
 @RemoteApi
-@Path("cgi-bin/user")
 public interface UserRest {
 
 	/**
@@ -32,7 +31,7 @@ public interface UserRest {
 	 * @return
 	 */
 	@GET
-	@Path("info")
+	@Path("cgi-bin/user/info")
 	@Produces(MediaType.APPLICATION_JSON)
 //	UserInfoResult getUserInfo(@BeanParam UserInfoParam userInfo);
 	UserInfoResult getUserInfo(
@@ -55,7 +54,7 @@ public interface UserRest {
 	 * @return
 	 */
 	@GET
-	@Path("get")
+	@Path("cgi-bin/user/get")
 	@Produces(MediaType.APPLICATION_JSON)
 	UserListResult getUserGet(
 			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 

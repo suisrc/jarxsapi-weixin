@@ -16,7 +16,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
-import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.engines.factory.ApacheHttpClient4EngineFactory;
 import org.jboss.resteasy.client.jaxrs.internal.ClientInvocation;
@@ -28,7 +27,7 @@ import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
  * @author Y13
  *
  */
-public class ClientHttpEngineProxy extends ApacheHttpClient43Engine implements ClientHttpEngine {
+public class ClientHttpEngineProxy43 extends ApacheHttpClient43Engine implements ClientHttpEngine  {
 
 	/**
 	 * 解决多线程问题 每一个线程上都会有一个http客户端引擎
@@ -55,52 +54,52 @@ public class ClientHttpEngineProxy extends ApacheHttpClient43Engine implements C
 
 	protected int maxPooledPerRoute;
 
-	public ClientHttpEngineProxy setRequestConfigBuilder_s(RequestConfig.Builder rcBuilder) {
+	public ClientHttpEngineProxy43 setRequestConfigBuilderSafe(RequestConfig.Builder rcBuilder) {
 		this.rcBuilder = rcBuilder;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setProxy_s(HttpHost proxy) {
+	public ClientHttpEngineProxy43 setProxySafe(HttpHost proxy) {
 		this.proxy = proxy;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setResponseBufferSize_s(int responseBufferSize) {
+	public ClientHttpEngineProxy43 setResponseBufferSizeSafe(int responseBufferSize) {
 		this.responseBufferSize = responseBufferSize;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setHostnameVerifier_s(HostnameVerifier hostnameVerifier) {
+	public ClientHttpEngineProxy43 setHostnameVerifierSafe(HostnameVerifier hostnameVerifier) {
 		this.hostnameVerifier = hostnameVerifier;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setSslContext_s(SSLContext sslContext) {
+	public ClientHttpEngineProxy43 setSslContextSafe(SSLContext sslContext) {
 		this.sslContext = sslContext;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setRegistry_s(Registry<ConnectionSocketFactory> registry) {
+	public ClientHttpEngineProxy43 setRegistrySafe(Registry<ConnectionSocketFactory> registry) {
 		this.registry = registry;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setConnectionPoolSize_s(int connectionPoolSize) {
+	public ClientHttpEngineProxy43 setConnectionPoolSizeSafe(int connectionPoolSize) {
 		this.connectionPoolSize = connectionPoolSize;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setConnectionTTLUnit_s(TimeUnit connectionTTLUnit) {
+	public ClientHttpEngineProxy43 setConnectionTTLUnitSafe(TimeUnit connectionTTLUnit) {
 		this.connectionTTLUnit = connectionTTLUnit;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setConnectionTTL_s(long connectionTTL) {
+	public ClientHttpEngineProxy43 setConnectionTTLSafe(long connectionTTL) {
 		this.connectionTTL = connectionTTL;
 		return this;
 	}
 
-	public ClientHttpEngineProxy setMaxPooledPerRoute_s(int maxPooledPerRoute) {
+	public ClientHttpEngineProxy43 setMaxPooledPerRouteSafe(int maxPooledPerRoute) {
 		this.maxPooledPerRoute = maxPooledPerRoute;
 		return this;
 	}
@@ -170,7 +169,32 @@ public class ClientHttpEngineProxy extends ApacheHttpClient43Engine implements C
 	}
 
 	// -------------------------------------ApacheHttpClient4Engine--------------------------------//
-
+	
+//	@Override
+//	public SSLContext getSslContext() {
+//		return get().getSslContext();
+//	}
+//
+//	@Override
+//	public HostnameVerifier getHostnameVerifier() {
+//		return get().getHostnameVerifier();
+//	}
+//
+//	@Override
+//	public HttpHost getDefaultProxy() {
+//		return get().getDefaultProxy();
+//	}
+//
+//	@Override
+//	public ClientResponse invoke(ClientInvocation request) {
+//		return get().invoke(request);
+//	}
+//
+//	@Override
+//	public void close() {
+//		get().close();
+//	}
+	
 	@Override
 	public int getResponseBufferSize() {
 		return get().getResponseBufferSize();
@@ -225,41 +249,16 @@ public class ClientHttpEngineProxy extends ApacheHttpClient43Engine implements C
 	public void setHttpContext(HttpContext httpContext) {
 		get().setHttpContext(httpContext);
 	}
-
-//	@Override
-//	public SSLContext getSslContext() {
-//		return get().getSslContext();
-//	}
 	
 	@Override
 	public void setSslContext(SSLContext sslContext) {
 		get().setSslContext(sslContext);
 	}
 
-//	@Override
-//	public HostnameVerifier getHostnameVerifier() {
-//		return get().getHostnameVerifier();
-//	}
-
 	@Override
 	public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
 		get().setHostnameVerifier(hostnameVerifier);
 	}
-
-//	@Override
-//	public HttpHost getDefaultProxy() {
-//		return get().getDefaultProxy();
-//	}
-
-//	@Override
-//	public ClientResponse invoke(ClientInvocation request) {
-//		return get().invoke(request);
-//	}
-
-//	@Override
-//	public void close() {
-//		get().close();
-//	}
 
 	@Override
 	public boolean isClosed() {

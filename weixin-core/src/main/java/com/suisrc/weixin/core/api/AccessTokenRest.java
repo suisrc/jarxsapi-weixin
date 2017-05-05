@@ -18,7 +18,6 @@ import com.suisrc.weixin.core.bean.WxAccessToken;
  *
  */
 @RemoteApi
-@Path("cgi-bin/token")
 public interface AccessTokenRest {
 
 	/**
@@ -29,6 +28,7 @@ public interface AccessTokenRest {
 	 * @return
 	 */
 	@GET
+	@Path("cgi-bin/token")
 	@Produces(MediaType.APPLICATION_JSON)
 	WxAccessToken getToken(@QueryParam("grant_type") String grantType, @QueryParam("appid") String appid, @QueryParam("secret") String secret);
 }

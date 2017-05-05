@@ -17,7 +17,6 @@ import com.suisrc.weixin.core.bean.ServerIpResult;
  *
  */
 @RemoteApi
-@Path("cgi-bin")
 public interface WxServerInfoRest {
 
 	/**
@@ -30,7 +29,7 @@ public interface WxServerInfoRest {
 	 * @return
 	 */
 	@GET
-	@Path("getcallbackip")
+	@Path("cgi-bin/getcallbackip")
 	@Produces(MediaType.APPLICATION_JSON)
 	ServerIpResult getCallbackIp(@QueryParam("access_token")@SystemValue(WxConsts.ACCESS_TOKEN) String accessToken);
 }

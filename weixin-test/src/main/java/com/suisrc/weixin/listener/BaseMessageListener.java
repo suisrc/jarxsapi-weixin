@@ -31,6 +31,6 @@ public class BaseMessageListener implements Listener<BaseMessage> {
 	 */
 	@Override
 	public int priority() {
-		return Listener.super.priority() - 1;
+		return Listener.super.priority() + 1;
 	}
 }

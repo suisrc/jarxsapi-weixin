@@ -27,9 +27,9 @@ import org.jboss.resteasy.client.jaxrs.engines.PassthroughTrustManager;
  * @author Y13
  *
  */
-public class HttpClientBuilder43_s {
+public class ClientHttpEngineBuilder43 {
 
-	public static ClientHttpEngineProxy initDefaultEngine43(ResteasyClientBuilder that) {
+	public static ClientHttpEngine initDefaultEngine43(ResteasyClientBuilder that) {
 		HostnameVerifier verifier = null;
 		if (that.verifier != null) {
 			verifier = new ResteasyClientBuilder.VerifierWrapper(that.verifier);
@@ -110,22 +110,23 @@ public class HttpClientBuilder43_s {
 				rcBuilder.setConnectionRequestTimeout(that.connectionCheckoutTimeoutMs);
 			}
 
-			ClientHttpEngineProxy proxy = new ClientHttpEngineProxy();
-			proxy.setRegistry_s(registry);
-			proxy.setConnectionPoolSize_s(that.connectionPoolSize);
-			proxy.setConnectionTTL_s(that.connectionTTL);
-			proxy.setConnectionTTLUnit_s(that.connectionTTLUnit);
-			proxy.setMaxPooledPerRoute_s(that.maxPooledPerRoute);
-			proxy.setRequestConfigBuilder_s(rcBuilder);
-//			proxy.setConnManager_s(cm);
-			proxy.setProxy_s(that.defaultProxy);
-			proxy.setResponseBufferSize_s(that.responseBufferSize);
-			proxy.setHostnameVerifier_s(verifier);
+			ClientHttpEngineProxy43 proxy = new ClientHttpEngineProxy43();
+			proxy.setRegistrySafe(registry);
+			proxy.setConnectionPoolSizeSafe(that.connectionPoolSize);
+			proxy.setConnectionTTLSafe(that.connectionTTL);
+			proxy.setConnectionTTLUnitSafe(that.connectionTTLUnit);
+			proxy.setMaxPooledPerRouteSafe(that.maxPooledPerRoute);
+			proxy.setRequestConfigBuilderSafe(rcBuilder);
+//			proxy.setConnManagerSafe(cm);
+			proxy.setProxySafe(that.defaultProxy);
+			proxy.setResponseBufferSizeSafe(that.responseBufferSize);
+			proxy.setHostnameVerifierSafe(verifier);
 			// theContext may be null. We can't really support this with Apache Client.
-			proxy.setSslContext_s(theContext);
+			proxy.setSslContextSafe(theContext);
 			return proxy;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+	
 }
