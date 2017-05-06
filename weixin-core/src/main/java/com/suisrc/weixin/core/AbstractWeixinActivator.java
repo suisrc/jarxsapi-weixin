@@ -20,8 +20,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import com.suisrc.jaxrsapi.core.ApiActivator;
-import com.suisrc.weixin.core.api.AccessTokenRest;
-import com.suisrc.weixin.core.bean.GrantType;
 import com.suisrc.weixin.core.bean.WxAccessToken;
 import com.suisrc.weixin.core.bean.WxAccessToken.Status;
 import com.suisrc.weixin.core.filter.WxClientResponseFilter;
@@ -38,11 +36,6 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	protected static final Map<String, AtomicReference<WxAccessToken>> accessTokenMap = new ConcurrentHashMap<>(1, 1); // 线程安全
 	
 //------------------------------------------------------------------------------------------------------------------//
-
-	/**
-	 * 注入远程获取AccessTokenRest接口
-	 */
-	private AccessTokenRest accessTokenRest;
 
 	/**
 	 * 微信公众号的appid
@@ -140,26 +133,6 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 //		return ClientBuilder.newBuilder();
 		return ClientBuilderFactory.newBuilder();
 	}
-
-	/**
-	 * 初始化构造AccessToken
-	 */
-	protected void initAccessToken() {
-		String key = null;
-		if( getAppId() != null && getAppSecret() != null ) {
-			key = getAppId() + "$#->" + getAppSecret();
-			accessToken = accessTokenMap.get(key);
-			if( accessToken != null ) { return; }
-		}
-
-		if (accessToken == null) {
-			accessToken = new AtomicReference<>();
-			WxAccessToken token = (WxAccessToken) readTempObject(); // 读取系统文件中的access token
-			if (token == null) { token = new WxAccessToken(); } // 初始化一个无效凭证
-			accessToken.set(token);
-		}
-		if( key != null ) { accessTokenMap.put(key, accessToken); }
-	}
 	
 	/**
 	 * 获取系统中常用的数据配置
@@ -194,8 +167,6 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 			return (T) client.target(getBaseUrl() );
 		} else if( type == Client.class ) { 
 			return (T)client;
-		} else if( type == AccessTokenRest.class ) {
-			return (T) accessToken;
 		} else if ( type == ResteasyProviderFactory.class ) {
 			return (T) providerFactory;
 		}
@@ -208,8 +179,6 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	public <T> void setAdapter(Class<T> type, T value) {
 		if( type == ResteasyProviderFactory.class ) {
 			providerFactory = (ResteasyProviderFactory) value;
-		} else if( type == AccessTokenRest.class ) {
-			accessTokenRest = (AccessTokenRest) value;
 		}
 	}
 
@@ -232,6 +201,26 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	public String getEncodingAesKey() {
 		return encodingAesKey;
 	}
+
+	/**
+	 * 初始化构造AccessToken
+	 */
+	protected void initAccessToken() {
+		String key = null;
+		if( getAppId() != null && getAppSecret() != null ) {
+			key = getAppId() + "$#->" + getAppSecret();
+			accessToken = accessTokenMap.get(key);
+			if( accessToken != null ) { return; }
+		}
+
+		if (accessToken == null) {
+			accessToken = new AtomicReference<>();
+			WxAccessToken token = (WxAccessToken) readTempObject(); // 读取系统文件中的access token
+			if (token == null) { token = new WxAccessToken(); } // 初始化一个无效凭证
+			accessToken.set(token);
+		}
+		if( key != null ) { accessTokenMap.put(key, accessToken); }
+	}  
 	
 	/**
 	 * 获取access token
@@ -260,13 +249,21 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	}
 	
 	/**
+	 * 获取 weixin access token, 不允许保证线程安全，获取新的token对象
+	 * @return
+	 */
+	protected WxAccessToken getWxAccessToken() {
+		throw new RuntimeException("method 'getWxAccessToken' isn't implement!");
+	}
+	
+	/**
 	 * 更新access token
 	 */
 	private synchronized void newAccessToken() {
 		if( accessToken.get().checkValid() == Status.VALID ) { return; } // 已经被其他线程同步过
 		try {
 			accessToken.get().getSync().set(true);  // 同步标识打开
-			WxAccessToken token = accessTokenRest.getToken(GrantType.client_credential.name(), appId, appSecret);
+			WxAccessToken token = getWxAccessToken();
 			accessToken.set(token);
 		} finally {
 			accessToken.get().getSync().set(false); // 同步表示关闭

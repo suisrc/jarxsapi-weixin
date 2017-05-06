@@ -11,8 +11,14 @@ import java.io.Serializable;
 public class WxErrCode implements Serializable {
 	private static final long serialVersionUID = 1237064203482294732L;
 
+	/**
+	 * 	返回码
+	 */
 	private String errcode = null;
 	
+	/**
+	 * 对返回码的文本描述内容
+	 */
 	private String errmsg = null;
 	
 	public String getErrcode() {

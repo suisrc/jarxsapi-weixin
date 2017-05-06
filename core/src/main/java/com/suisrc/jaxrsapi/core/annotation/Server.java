@@ -8,11 +8,13 @@ import java.lang.annotation.Target;
 
 /**
  * 服务器基本信息配置
+ * 该字段暂时没有使用
  * @author Y13
  *
  */
 @Target({ TYPE/*, METHOD, FIELD*/ })
 @Retention(RUNTIME)
+@Deprecated
 public @interface Server {
 
 	/**

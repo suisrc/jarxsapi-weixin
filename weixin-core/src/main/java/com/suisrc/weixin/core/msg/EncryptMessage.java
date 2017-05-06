@@ -5,9 +5,16 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
  * 加密文件存储
+ * 公众号
  * <xml>
  *    <ToUserName><![CDATA[123]]></ToUserName>
  *    <Encrypt><![CDATA[DPqPNL5x3Xp+X+yLkwjkbE8Vl+R5CJch8DZeISOTq1A]]></Encrypt>
+ * </xml>
+ * 企业号
+ * <xml> 
+ *    <ToUserName><![CDATA[toUser]]</ToUserName>
+ *    <AgentID><![CDATA[toAgentID]]</AgentID>
+ *    <Encrypt><![CDATA[msg_encrypt]]</Encrypt>
  * </xml>
  * @author Y13
  *
@@ -15,14 +22,23 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 public class EncryptMessage {
 	
 	/**
-	 * 开发者微信号
+	 * ToUserName为公众号AppId或者企业号的CorpID
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="ToUserName")
 	private String toUserName;
 	
 	/**
+	 * 为接收的应用id，可在应用的设置页面获取
+	 * 只有企业号，该字段才有值
+	 */
+	@JacksonXmlCData
+	@JacksonXmlProperty(localName="AgentID")
+	private String agentID;
+	
+	/**
 	 * 密文
+	 * encrypt为经过加密的密文（消息明文格式参见 接收普通消息 ，事件明文格式参见 接收事件）
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="Encrypt")
@@ -54,6 +70,14 @@ public class EncryptMessage {
 
 	public void setToUserName(String toUserName) {
 		this.toUserName = toUserName;
+	}
+	
+	public String getAgentID() {
+		return agentID;
+	}
+	
+	public void setAgentID(String agentID) {
+		this.agentID = agentID;
 	}
 
 	public String getEncrypt() {

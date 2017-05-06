@@ -188,4 +188,26 @@ public class Utils {
 			return null;
 		}
 	}
+
+	/**
+	 * 获取Bean的结构
+	 * @param result
+	 * @return
+	 */
+	public static String print(Object result) {
+		try {
+			StringBuilder sbir = new StringBuilder();
+			Method[] methods = result.getClass().getMethods();
+			for( Method method : methods ) {
+				if( !method.getName().startsWith("get") ) { continue; }
+				
+				String name = method.getName().substring("get".length());
+				sbir.append(name).append(" : ");
+				sbir.append(method.invoke(result)).append('\n');
+			}
+			return sbir.toString();
+		} catch (Exception e) {
+			return "error";
+		}
+	}
 }

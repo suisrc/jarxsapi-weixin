@@ -24,6 +24,7 @@ import com.qq.weixin.pay.api.MmpaymkttransfersRest;
 import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.WxConfig;
+import com.suisrc.weixin.core.bean.WxAccessToken;
 import com.suisrc.weixin.core.crypto.WxCrypto;
 
 /**
@@ -196,6 +197,11 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 	 */
 	protected String getKeyStorePath() {
 		return keyStorePath;
+	}
+
+	@Override
+	protected WxAccessToken getWxAccessToken() {
+		return null;
 	}
 	
 //	@Override

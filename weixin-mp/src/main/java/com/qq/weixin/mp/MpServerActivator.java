@@ -9,11 +9,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.collect.Sets;
+import com.qq.weixin.mp.api.AccessTokenRest;
 import com.qq.weixin.mp.api.UserRest;
+import com.qq.weixin.mp.api.WxServerInfoRest;
 import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.WxConfig;
-import com.suisrc.weixin.core.api.AccessTokenRest;
+import com.suisrc.weixin.core.bean.GrantType;
+import com.suisrc.weixin.core.bean.WxAccessToken;
 
 /**
  * 程序入口配置
@@ -33,8 +36,30 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
 //		return Utils.getRemoteApiClasses(null, false, 
 //				UserRest.class.getPackage().getName(),
 //				AccessTokenRest.class.getPackage().getName());
-		return Sets.newHashSet(UserRest.class, AccessTokenRest.class);
+		return Sets.newHashSet(UserRest.class, AccessTokenRest.class, WxServerInfoRest.class);
 		
+	}
+	
+	/**
+	 * 注入远程获取AccessTokenRest接口
+	 */
+	private AccessTokenRest accessTokenRest;
+	
+	/**
+	 * 设定access token api接口
+	 * 默认使用自己AccessToken，如果需要使用统一的接口，需要单独主动调用该方法，替换系统原来的接口实现
+	 * 如果需要主动修改，请使用setAdapter方法进行修改。
+	 * @param atr
+	 */
+	@SuppressWarnings("cdi-ambiguous-dependency")
+	@Inject @Named(MpWxConsts.NAMED + "/AccessTokenRest")
+	protected void setAccessTokenRest(AccessTokenRest atr) {
+		setAdapter(AccessTokenRest.class, atr);
+	}
+
+	@Override
+	protected WxAccessToken getWxAccessToken() {
+		return accessTokenRest.getToken(GrantType.client_credential.name(), getAppId(), getAppSecret());
 	}
 	
 	/**
@@ -58,16 +83,16 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
 		super.initialized();
 	}
 	
+	
 	/**
-	 * 设定access token api接口
-	 * 默认使用自己AccessToken，如果需要使用统一的接口，需要单独主动调用该方法，替换系统原来的接口实现
-	 * 如果需要主动修改，请使用setAdapter方法进行修改。
-	 * @param atr
+	 * 主要是为了防止不支持javaee7.0标准的反向内容注入
 	 */
-	@SuppressWarnings("cdi-ambiguous-dependency")
-	@Inject @Named(MpWxConsts.NAMED + "/AccessTokenRest")
-	protected void setAccessTokenRest(AccessTokenRest atr) {
-		setAdapter(AccessTokenRest.class, atr);
+	public <T> void setAdapter(Class<T> type, T value) {
+		if( type == AccessTokenRest.class ) {
+			accessTokenRest = (AccessTokenRest) value;
+		} else {
+			super.setAdapter(type, value);
+		}
 	}
 
 	@Override

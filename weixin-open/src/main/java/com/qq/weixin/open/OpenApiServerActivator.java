@@ -29,7 +29,6 @@ public class OpenApiServerActivator extends AbstractWeixinActivator implements A
 	 */
 	public Set<Class<?>> getClasses() {
 		return Sets.newHashSet(SnsOAuth2Rest.class);
-
 	}
 
 	/**
