@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.qq.weixin.pay.PayWxConsts;
 import com.suisrc.jaxrsapi.core.ServiceClient;
-import com.suisrc.jaxrsapi.core.func.ValueHandler;
+import com.suisrc.jaxrsapi.core.func.InterceptHandler;
 import com.suisrc.weixin.core.crypto.WxCrypto;
 
 /**
@@ -15,7 +15,7 @@ import com.suisrc.weixin.core.crypto.WxCrypto;
  * @author Y13
  *
  */
-public class CheckSignHandler implements ValueHandler<Object> {
+public class CheckSignHandler implements InterceptHandler<Object> {
 	
 	/**
 	 * 远程访问客户端
@@ -35,7 +35,7 @@ public class CheckSignHandler implements ValueHandler<Object> {
 	}
 
 	@Override
-	public Object revise(Object value) {
+	public Object accept(Object value) {
 		try {
 			TreeMap<String, String> datas = new TreeMap<>();
 			// 判断是否有sign字段

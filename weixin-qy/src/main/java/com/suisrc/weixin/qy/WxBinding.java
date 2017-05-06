@@ -17,7 +17,6 @@ import com.suisrc.weixin.core.listener.ListenerManager;
 /**
  * 跟微信服务器捆绑
  * @author Y13
- *
  */
 @Path("wx/qy")
 @ApplicationScoped

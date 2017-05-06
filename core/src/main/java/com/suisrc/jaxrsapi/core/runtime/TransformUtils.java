@@ -7,6 +7,11 @@ package com.suisrc.jaxrsapi.core.runtime;
 public class TransformUtils {
 
 	/**
+	 * 转换的方法
+	 */
+	static final String METHOD = "transform";
+
+	/**
 	 * 数据转换
 	 * @param type   返回的类型
 	 * @param value  数值

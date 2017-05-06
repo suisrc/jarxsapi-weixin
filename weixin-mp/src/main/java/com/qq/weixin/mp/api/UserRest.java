@@ -10,8 +10,11 @@ import javax.ws.rs.core.MediaType;
 import com.qq.weixin.mp.MpWxConsts;
 import com.qq.weixin.mp.result.UserInfoResult;
 import com.qq.weixin.mp.result.UserListResult;
+import com.suisrc.jaxrsapi.core.Consts;
+import com.suisrc.jaxrsapi.core.annotation.InterceptResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.weixin.core.filter.WxTokenCheck;
 
 /**
  * 微信公众号接口
@@ -54,6 +57,7 @@ public interface UserRest {
 	@GET
 	@Path("cgi-bin/user/info")
 	@Produces(MediaType.APPLICATION_JSON)
+	@InterceptResult(value = WxTokenCheck.class, master=Consts.FIELD_ACTIVATOR)
 //	UserInfoResult getUserInfo(@BeanParam UserInfoParam userInfo);
 	UserInfoResult getUserInfo(
 			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 

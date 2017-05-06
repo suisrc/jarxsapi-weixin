@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
  * 微信卡券信息
- * @author LYS
+ * @author Y13
  *
  */
 public class Wxcard {

@@ -5,12 +5,14 @@ package com.suisrc.jaxrsapi.core.func;
  * @author Y13
  *
  */
-public interface ValueHandler<T> {
+public interface InterceptHandler<T> {
+	/** 方法名称 */
+	final String METHOD = "accept";
 
 	/**
 	 * 具体如何修正数据
 	 * @param value
 	 * @return
 	 */
-	public T revise( T value );
+	public T accept( T value );
 }

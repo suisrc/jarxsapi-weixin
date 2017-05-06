@@ -186,6 +186,8 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 			return (T) getAutoMchBillno();
 		case PayWxConsts.AUTO_RANDOM_STR:
 			return (T) WxCrypto.genRandomStr();
+		case PayWxConsts.BASE_URL:
+			return (T) getBaseUrl();
 		default: 
 			return super.getAdapter(key);
 		}

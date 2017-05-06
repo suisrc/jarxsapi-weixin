@@ -14,9 +14,12 @@ import java.lang.annotation.Target;
  * 通常情况下请求的方法必须通过GET, POST, PUT, DELETE进行标记，
  * 但是如果有这些标记，而且不想实现代理内容，可以通过该字段标记进行代理请求的忽略
  * 忽略后，需要保证该请求的可实现性，否则系统处理时候会发生错误
+ * 
+ * 预留字段，暂时没有使用
  *
  */
 @Target({ METHOD })
 @Retention(RUNTIME)
+@Deprecated
 public @interface NonProxy {
 }

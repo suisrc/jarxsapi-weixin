@@ -29,11 +29,12 @@ import com.suisrc.jaxrsapi.core.ApiActivator;
 import com.suisrc.jaxrsapi.core.Consts;
 import com.suisrc.jaxrsapi.core.Global;
 import com.suisrc.jaxrsapi.core.ServiceClient;
+import com.suisrc.jaxrsapi.core.annotation.InterceptParam;
+import com.suisrc.jaxrsapi.core.annotation.InterceptResult;
 import com.suisrc.jaxrsapi.core.annotation.LogicProxy;
-import com.suisrc.jaxrsapi.core.annotation.NonProxy;
 import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 import com.suisrc.jaxrsapi.core.annotation.ThreadValue;
-import com.suisrc.jaxrsapi.core.annotation.ValueHelper;
+import com.suisrc.jaxrsapi.core.func.InterceptHandler;
 import com.suisrc.jaxrsapi.core.proxy.ProxyBuilder;
 import com.suisrc.jaxrsapi.core.util.Utils;
 
@@ -70,25 +71,33 @@ public class ClientServiceFactory {
 	private static volatile int baseOffset = 0;
 	
 	/**
+	 * 结果
+	 */
+	private static final String RESULT = "result";
+	
+	/**
 	 * 代理生成模版
 	 */
-	private static final String InitMethodModule = "{ proxy = " + ProxyBuilder.class.getCanonicalName() + ".builder({ApiType}.class, ("
-			+ WebTarget.class.getCanonicalName() + ")activator.getAdapter(" + WebTarget.class.getCanonicalName() + ".class)).build(); }";
-	private static final String GetBaseUrlModule = "String baseUrl = (String) activator.getAdapter(\"" + Consts.BASE_URL + "\"); ";
+	// { proxy = ProxyBuilder.builder( ApiType.class, (WebTarget)activator.getAdapter(WebTarget.class) ).build(); }
+	private static final String InitMethodModule = "{ " + Consts.FIELD_PROXY + " = " + ProxyBuilder.class.getCanonicalName() + ".builder({ApiType}.class, ("
+			+ WebTarget.class.getCanonicalName() + ")"+ Consts.FIELD_ACTIVATOR +".getAdapter(" + WebTarget.class.getCanonicalName() + ".class)).build(); }";
+	// String baseUrl = (String)activator.getAdatper("base url");
+//	private static final String GetBaseUrlModule = "String " + BASE_URL + " = (String) " + Consts.FIELD_ACTIVATOR + ".getAdapter(\"" + Consts.BASE_URL + "\"); ";
 	/**
 	 * 系统常数模版
 	 */
-	private static final String SystemReturnModule = "return proxy.{Method}({Params});";
-	private static final String LogicProxyReturnModule = "return new {LogicProxy}().proxy({URL},{Params});";
-	
 	private static final String SystemParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Master}.{MethodName}(\"{Value}\"); } ";
 	private static final String SystemFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Master}.{MethodName}(\"{Value}\")); } ";
 	
 	private static final String DefaultParamModule = "if( ${Param} == null ) { ${Param} = ({ParamType}){Master}.{MethodName}({ParamType}.class, \"{Value}\"); } ";
 	private static final String DefaultFieldModule = "if( ${Param}.{GetField}() == null ) { ${Param}.{SetField}(({FieldType}){Master}.{MethodName}({FieldType}.class, \"{Value}\")); } ";
 	
-	private static final String ValueHelperParamModule = "${Param} = ({ParamType})new {Value}({Master}).{MethodName}(${Param}); ";
-	private static final String ValueHelperFieldModule = "${Param}.{SetField}(({FieldType})new {Value}({Master}).{MethodName}(${Param})); ";
+	private static final String InterceptorParamModule = "${Param} = ({ParamType})new {Value}({Master}).{MethodName}(${Param}); ";
+	private static final String InterceptorFieldModule = "${Param}.{SetField}(({FieldType})new {Value}({Master}).{MethodName}(${Param})); ";
+
+	private static final String InterceptorResultModule = InterceptorParamModule.replace("$", ""); // 结果拦截内容和参数拦截内容相同
+	// Type result = proxy.Method(params); Interceptor return result;
+	private static final String ReturnModule = "{ReturnType} " + RESULT + " = {Proxy}.{Method}({Params}); {Interceptor}return " + RESULT + ";";
 	
 	/**
 	 * 创建接口实现
@@ -123,8 +132,8 @@ public class ClientServiceFactory {
 	 * @return
 	 */
 	private static boolean isProxyMethod(MethodInfo methodInfo) {
-		if( methodInfo.name().equals("<init>") || methodInfo.name().startsWith("as")
-				|| methodInfo.hasAnnotation(DotName.createSimple(NonProxy.class.getCanonicalName()))) {
+		if( methodInfo.name().equals("<init>") || methodInfo.name().startsWith("as")) {
+//				|| methodInfo.hasAnnotation(DotName.createSimple(NonProxy.class.getCanonicalName()))) {
 			return false; // 一些初始化和构造方法
 		}
 		return methodInfo.hasAnnotation(DotName.createSimple(GET.class.getCanonicalName()))
@@ -149,12 +158,12 @@ public class ClientServiceFactory {
 		StringBuilder methodContent = new StringBuilder("{ ");
 		//-----------------------------------------------------------------------------------//
 		List<AnnotationInstance> annos_m = method.annotations();
-		for (AnnotationInstance anno : annos_m) {
+		for (AnnotationInstance anno : annos_m) { // SystemValue
 			if (anno.name().toString().equals(SystemValue.class.getCanonicalName())) {
-				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, "activator", "getAdapter"));
+				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, Consts.FIELD_ACTIVATOR, "getAdapter"));
 			}
 		}
-		for (AnnotationInstance anno : annos_m) {
+		for (AnnotationInstance anno : annos_m) { // ThreadValue
 			if (anno.name().toString().equals(ThreadValue.class.getCanonicalName())) {
 				AnnotationValue ave = anno.value("clazz");
 				String actname = ave != null ? ave.asClass().toString() : Global.class.getCanonicalName();
@@ -163,10 +172,10 @@ public class ClientServiceFactory {
 				methodContent.append(createParamModule(SystemParamModule, anno, null, parameters, actname, metname));
 			}
 		}
-		for (AnnotationInstance anno : annos_m) {
+		for (AnnotationInstance anno : annos_m) { // DefaultValue
 			if (anno.name().toString().equals(DefaultValue.class.getCanonicalName())) {
 				methodContent.append(createParamModule(DefaultParamModule, anno, null, parameters, 
-						TransformUtils.class.getCanonicalName(), "transform"));
+						TransformUtils.class.getCanonicalName(), TransformUtils.METHOD));
 			}
 		}
 		
@@ -182,13 +191,13 @@ public class ClientServiceFactory {
 			if( classInfo == null ) { continue; }
 			List<AnnotationInstance> annos_f = classInfo.annotations().get(DotName.createSimple(SystemValue.class.getName()));
 			if( annos_f != null && !annos_f.isEmpty() ) { 
-				for (AnnotationInstance anno : annos_f) {
-					methodContent.append(createFieldModule(SystemFieldModule, anno, null, i, "activator", "getAdapter"));
+				for (AnnotationInstance anno : annos_f) { // SystemValue
+					methodContent.append(createFieldModule(SystemFieldModule, anno, null, i, Consts.FIELD_ACTIVATOR, "getAdapter"));
 				}
 			}
 			annos_f = classInfo.annotations().get(DotName.createSimple(ThreadValue.class.getName()));
 			if( annos_f != null && !annos_f.isEmpty() ) { 
-				for (AnnotationInstance anno : annos_f) {
+				for (AnnotationInstance anno : annos_f) { // ThreadValue
 					AnnotationValue ave = anno.value("clazz");
 					String actname = ave != null ? ave.asClass().toString() : Global.class.getCanonicalName();
 					ave = anno.value("method");
@@ -198,43 +207,37 @@ public class ClientServiceFactory {
 			}
 			annos_f = classInfo.annotations().get(DotName.createSimple(DefaultValue.class.getName()));
 			if( annos_f != null && !annos_f.isEmpty() ) { 
-				for (AnnotationInstance anno : annos_f) {
+				for (AnnotationInstance anno : annos_f) { // DefaultValue
 					methodContent.append(createFieldModule(DefaultFieldModule, anno, null, i,
 							TransformUtils.class.getCanonicalName(), "transform"));
 				}
 			}
-			//----------------------------------最后的数据修正---------------------------------------------//
-			annos_f = classInfo.annotations().get(DotName.createSimple(ValueHelper.class.getName()));
+			//----------------------------------最后的数据修正拦截---------------------------------------------//
+			annos_f = classInfo.annotations().get(DotName.createSimple(InterceptParam.class.getName()));
 			if( annos_f != null && !annos_f.isEmpty() ) { 
-				for (AnnotationInstance anno : annos_f) {
+				for (AnnotationInstance anno : annos_f) { // InterceptParam
 					String value = anno.value().asClass().name().toString();
 					AnnotationValue annoValue = anno.value("master");
-					String master = annoValue == null ? ValueHelper.NONE : annoValue.asString();
-					methodContent.append(createFieldModule(ValueHelperFieldModule, anno, value, i, master, "revise"));
+					String master = annoValue == null ? InterceptParam.NONE : annoValue.asString();
+					methodContent.append(createFieldModule(InterceptorFieldModule, anno, value, i, master, InterceptHandler.METHOD));
 				}
 			}
 		}
-		//----------------------------------最后的数据修正---------------------------------------------//
-		for (AnnotationInstance anno : annos_m) {
-			if (anno.name().toString().equals(ValueHelper.class.getCanonicalName())) {
+		//----------------------------------最后的数据修正拦截---------------------------------------------//
+		for (AnnotationInstance anno : annos_m) { // InterceptParam
+			if (anno.name().toString().equals(InterceptParam.class.getCanonicalName())) {
 				String value = anno.value().asClass().name().toString();
 				AnnotationValue annoValue = anno.value("master");
-				String master = annoValue == null ? ValueHelper.NONE : annoValue.asString();
-				methodContent.append(createParamModule(ValueHelperParamModule, anno, value, parameters, master, "revise"));
+				String master = annoValue == null ? InterceptParam.NONE : annoValue.asString();
+				methodContent.append(createParamModule(InterceptorParamModule, anno, value, parameters, master, InterceptHandler.METHOD));
 			}
 		}
 		//-----------------------------------------------------------------------------------------------------//
 		if( paramsContent.length() > 0 ) {
 			paramsContent.setLength(paramsContent.length() - 1);
 		}
-		
-		AnnotationInstance anno = method.annotation(DotName.createSimple(LogicProxy.class.getCanonicalName()));
-		if( anno != null ) {
-			methodContent.append(creatReturnContent(method, anno, paramsContent.toString()));
-		} else {
-			methodContent.append(SystemReturnModule.replace("{Method}", method.name()).replace("{Params}", paramsContent));
-		}
-		methodContent.append("}");
+
+		methodContent.append(creatReturnContent(method, paramsContent.toString())).append("}");
 		// 返回值
 		CtClass returnType = Utils.getCtClass(ctPool, method.returnType().name().toString());
 		// 异常
@@ -249,12 +252,49 @@ public class ClientServiceFactory {
 
 	/**
 	 * 创建返回内容
+	 * "{ReturnType} " + RESULT + " = {Proxy}.{Method}({Params}); {Interceptor}return " + RESULT + ";";
+	 * "${Param} = ({ParamType})new {Value}({Master}).{MethodName}(${Param}); ";
 	 * @param method
 	 * @param anno
 	 * @return
 	 */
-	private static String creatReturnContent(MethodInfo method, AnnotationInstance anno, String params) {
-		String proxyClass = anno.value().asClass().name().toString();
+	private static String creatReturnContent(MethodInfo method, String params) {
+		String proxy = Consts.FIELD_PROXY; // 代理对象
+		String methodName = method.name(); // 代理方法
+		AnnotationInstance anno = method.annotation(DotName.createSimple(LogicProxy.class.getCanonicalName()));
+		if( anno != null ) {
+			params = "\"" + getMethodUri(method) + "\"," + params; // 参数增加URI
+
+			String className = anno.value().asClass().name().toString(); // 代理的类型
+			AnnotationValue annoValue = anno.value("master");
+			String construct = annoValue == null ? LogicProxy.NONE : annoValue.asString();
+			annoValue = anno.value("method");
+			methodName = annoValue == null ? LogicProxy.defaultMethod : annoValue.asString();
+			proxy = "new " + className + "(" + construct + ")";
+		}
+		String returnType = method.returnType().name().toString(); // 返回值类型
+		String interceptor = "";
+		anno = method.annotation(DotName.createSimple(InterceptResult.class.getCanonicalName()));
+		if( anno != null ) {
+			String className = anno.value().asClass().name().toString();
+			AnnotationValue annoValue = anno.value("master");
+			String construct = annoValue == null ? LogicProxy.NONE : annoValue.asString();
+			interceptor = createResultModule(InterceptorResultModule, RESULT, returnType, className, construct, InterceptHandler.METHOD);
+		}
+		if( interceptor.isEmpty() ) { // 简化代码生成
+			return "return " + proxy + "." + methodName + "(" + params + ");";
+		}
+		return ReturnModule.replace("{ReturnType}", returnType)
+				.replace("{Proxy}", proxy)
+				.replace("{Method}", methodName)
+				.replace("{Params}", params)
+				.replace("{Interceptor}", interceptor);
+	}
+	
+	/**
+	 * 获取uri
+	 */
+	private static String getMethodUri(MethodInfo method) {
 		String path = "";
 		DotName pathAnnoName = DotName.createSimple(Path.class.getCanonicalName());
 		for( AnnotationInstance ai : method.declaringClass().classAnnotations() ) {
@@ -272,11 +312,7 @@ public class ClientServiceFactory {
 				path = path.substring(0, path.length() - 1);
 			}
 		}
-		String returnContent = LogicProxyReturnModule
-				.replace("{LogicProxy}", proxyClass)
-				.replace("{URL}", "baseUrl + \"" + path + "\"")
-				.replace("{Params}", params);
-		return GetBaseUrlModule + returnContent;
+		return path;
 	}
 	
 	/**
@@ -321,6 +357,20 @@ public class ClientServiceFactory {
 	}
 
 	/**
+	 * 
+	 * @param methodContent
+	 * @param anno
+	 * @param parameters
+	 */
+	private static String createResultModule(String module, String result, String type, String clazz, String master, String method) {
+		return module.replace("{Param}", result)
+				.replace("{ParamType}", type)
+				.replace("{Value}", clazz)
+				.replace("{Master}", master)
+				.replace("{MethodName}",method);
+	}
+
+	/**
 	 * 构建基础信息
 	 * @param ctPool
 	 * @param classInfo
@@ -354,7 +404,7 @@ public class ClientServiceFactory {
 		/*
 		 * private UserRest proxy;
 		 */
-		CtField ctProxyField = new CtField(ctApiClass, "proxy", ctClass); // 执行代理
+		CtField ctProxyField = new CtField(ctApiClass, Consts.FIELD_PROXY, ctClass); // 执行代理
 		ctProxyField.setModifiers(Modifier.PRIVATE );
 		ctClass.addField(ctProxyField);
 		
@@ -363,7 +413,7 @@ public class ClientServiceFactory {
 		 * private ApiActivator activator; 
 		 */
 		CtClass ctApiActivatorClass = Utils.getCtClass(ctPool, ApiActivator.class);
-		CtField ctApiActivatorField = new CtField(ctApiActivatorClass, "activator", ctClass); // 执行代理
+		CtField ctApiActivatorField = new CtField(ctApiActivatorClass, Consts.FIELD_ACTIVATOR, ctClass); // 执行代理
 		// 增加注解
 		attribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 		annotation = new Annotation(Inject.class.getCanonicalName(), constPool);

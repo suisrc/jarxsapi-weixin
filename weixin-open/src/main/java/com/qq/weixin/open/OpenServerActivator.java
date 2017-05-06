@@ -45,6 +45,19 @@ public class OpenServerActivator extends AbstractWeixinActivator implements ApiA
 		super.initialized();
 	}
 	
+	/**
+	 * 万能接口
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAdapter(String key) {
+		if (OpenWxConsts.BASE_URL.equals(key)) {
+			return (T) getBaseUrl();
+		} else {
+			return super.getAdapter(key);
+		}
+	}
+	
 	//------------------------access token---------------------------//
 	/**
 	 * 支付平台不需要access token

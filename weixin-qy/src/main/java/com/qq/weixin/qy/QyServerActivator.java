@@ -82,6 +82,18 @@ public class QyServerActivator extends AbstractWeixinActivator implements ApiAct
 		super.initialized();
 	}
 	
+	/**
+	 * 万能接口
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAdapter(String key) {
+		if (QyWxConsts.BASE_URL.equals(key)) {
+			return (T) getBaseUrl();
+		} else {
+			return super.getAdapter(key);
+		}
+	}
 	
 	/**
 	 * 主要是为了防止不支持javaee7.0标准的反向内容注入

@@ -3,6 +3,9 @@ package com.qq.weixin.open.proxy;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import com.qq.weixin.open.OpenWxConsts;
+import com.suisrc.jaxrsapi.core.ServiceClient;
+
 /**
  * 虚拟远程代理服务器
  * 
@@ -15,6 +18,24 @@ import java.net.URLEncoder;
  *
  */
 public class Oauth2AuthorizeProxy {
+	
+	private ServiceClient client;
+	
+	/**
+	 * 构造
+	 * @param client
+	 */
+	public Oauth2AuthorizeProxy(ServiceClient client) {
+		this.client = client;
+	}
+	
+	/**
+	 * 获取基础路径
+	 * @return
+	 */
+	private String getBaseUrl() {
+		return (String)client.getAdapter(OpenWxConsts.BASE_URL);
+	}
 
 	/**
 	 * 执行Oauth2认证路径
@@ -26,14 +47,15 @@ public class Oauth2AuthorizeProxy {
 	 * @param state
 	 * @return
 	 */
-	public String proxy(String url, String appid, String redirect_uri, String response_type, String scope, String state) {
-		String uri = redirect_uri;
+	public String proxy(String uri, String appid, String redirect_uri, String response_type, String scope, String state) {
+		
+		String url= redirect_uri;
 		try {
-			uri = URLEncoder.encode(uri, "UTF-8");
+			url = URLEncoder.encode(url, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		StringBuilder sbir = new StringBuilder(url).append('?');
+		StringBuilder sbir = new StringBuilder(getBaseUrl()).append(uri).append('?');
 		sbir.append("appid=").append(appid).append('&');
 		sbir.append("redirect_uri=").append(uri).append('&');
 		sbir.append("response_type=").append(response_type).append('&');

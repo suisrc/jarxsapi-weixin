@@ -6,6 +6,21 @@ package com.suisrc.jaxrsapi.core;
  *
  */
 public interface Consts {
+
+	//----------------------------proxy----------------------------------//
+	/**
+	 * 客户端代理的名字
+	 */
+	final String FIELD_PROXY = "proxy";
+	/**
+	 * 客户端激活器的名字
+	 */
+	final String FIELD_ACTIVATOR = "activator";
+	/**
+	 * 客户端的本身自己的名字
+	 */
+	final String FIELD_THIS = "this";
+	
 	/**
 	 * 注入的时候@Named的间隔符
 	 */
