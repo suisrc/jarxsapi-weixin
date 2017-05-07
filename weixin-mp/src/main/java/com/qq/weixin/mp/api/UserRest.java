@@ -58,7 +58,6 @@ public interface UserRest {
 	@Path("cgi-bin/user/info")
 	@Produces(MediaType.APPLICATION_JSON)
 	@InterceptResult(value = WxTokenCheck.class, master=Consts.FIELD_ACTIVATOR)
-//	UserInfoResult getUserInfo(@BeanParam UserInfoParam userInfo);
 	UserInfoResult getUserInfo(
 			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("openid")                                            String openid, 

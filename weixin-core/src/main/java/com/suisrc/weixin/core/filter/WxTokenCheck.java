@@ -21,6 +21,9 @@ public class WxTokenCheck implements InterceptHandler<Object> {
 	 */
 	private static final List<String> errList = Arrays.asList( "40001", "40014", "42001" );
 	
+	/**
+	 * 方法激活器，管理接口
+	 */
 	private AbstractWeixinActivator activator;
 	
 	public WxTokenCheck( ApiActivator activator ) {
