@@ -40,11 +40,12 @@
 	}
 ```
 3.参数定义
+
 ```java
 
 	/**
 	* 参数定义
-	*/
+	* /
 	public class UserInfoParam {
 	
 		@QueryParam("access_token")
