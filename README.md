@@ -1,6 +1,6 @@
 # jaxrsapi-weixin
 >该项目是使用远程restful规范远程访问框架jaxrsapi构建的微信API的java版
-##项目所用
+## 项目作用
 >对jaxrsapi框架的可行性的一种验证
 ## 项目优势
 >腾讯公众号api是不提供java版，我开始想借鉴aliyun的api的java版,我表示用过，感觉很好，很简单。
