@@ -45,7 +45,7 @@
 
 	/**
 	* 参数定义
-	* /
+	*/
 	public class UserInfoParam {
 	
 		@QueryParam("access_token")
