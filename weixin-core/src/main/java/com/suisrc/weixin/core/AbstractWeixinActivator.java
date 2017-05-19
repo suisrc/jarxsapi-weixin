@@ -154,7 +154,7 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 		case WxConsts.BASE_URL: // 获取基础地址
 			return (T) getBaseUrl();
 		default:
-			return null;
+			return ApiActivator.super.getAdapter(key);
 		}
 	}
 	
