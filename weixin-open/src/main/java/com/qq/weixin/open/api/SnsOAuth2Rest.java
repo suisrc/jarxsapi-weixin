@@ -11,8 +11,8 @@ import com.qq.weixin.open.OpenWxConsts;
 import com.qq.weixin.open.result.OAuth2AccessToken;
 import com.qq.weixin.open.result.UserInfoResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
 import com.suisrc.jaxrsapi.core.annotation.ThreadValue;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 import com.suisrc.weixin.core.bean.WxErrCode;
 
 /**
@@ -48,8 +48,8 @@ public interface SnsOAuth2Rest {
 	@Path("sns/oauth2/access_token")
 	@Produces(MediaType.APPLICATION_JSON)
 	OAuth2AccessToken getAccessToken(
-			@QueryParam("appid")     @SystemValue(OpenWxConsts.APP_ID)     String appid, 
-			@QueryParam("secret")    @SystemValue(OpenWxConsts.APP_SECRET) String secret, 
+			@QueryParam("appid")     @Value(OpenWxConsts.APP_ID)     String appid, 
+			@QueryParam("secret")    @Value(OpenWxConsts.APP_SECRET) String secret, 
 			@QueryParam("code")                                            String code, 
 			@QueryParam("grant_type")@DefaultValue("authorization_code")   String grantType);
 	
@@ -74,7 +74,7 @@ public interface SnsOAuth2Rest {
 	@Path("sns/oauth2/refresh_token")
 	@Produces(MediaType.APPLICATION_JSON)
 	OAuth2AccessToken refreshToken(
-			@QueryParam("appid")        @SystemValue(OpenWxConsts.APP_ID) String appid, 
+			@QueryParam("appid")        @Value(OpenWxConsts.APP_ID) String appid, 
 			@QueryParam("grant_type")   @DefaultValue("refresh_token")    String grantType,
 			@QueryParam("refresh_token")                                  String refreshToken);
 	
@@ -98,8 +98,8 @@ public interface SnsOAuth2Rest {
 	@Path("sns/oauth2/userinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	UserInfoResult getUserinfo(
-			@QueryParam("access_token")@SystemValue(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
-			@QueryParam("openid")      @SystemValue(OpenWxConsts.OPEN_ID)      String openid,
+			@QueryParam("access_token")@Value(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("openid")      @Value(OpenWxConsts.OPEN_ID)      String openid,
 			@QueryParam("lang")        @DefaultValue("zh_CN")                  String lang);
 	
 	default UserInfoResult getUserinfo() {
@@ -118,6 +118,6 @@ public interface SnsOAuth2Rest {
 	@Path("sns/oauth2/userinfo")
 	@Produces(MediaType.APPLICATION_JSON)
 	WxErrCode auth(
-			@QueryParam("access_token")@SystemValue(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("access_token")@Value(OpenWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("openid")      @ThreadValue("openid")       String openid);
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.suisrc.jaxrsapi</groupId>
 		<artifactId>weixin-parent</artifactId>
-		<version>1.0.0-GA</version>
+		<version>1.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>weixin-test</artifactId>

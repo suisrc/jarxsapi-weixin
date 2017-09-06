@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.qq.weixin.pay.PayWxConsts;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 
 /**
  * 查询红包记录 请求参数
@@ -33,7 +33,7 @@ public class HbinfoParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="nonce_str")
-	@SystemValue(PayWxConsts.AUTO_RANDOM_STR)
+	@Value(PayWxConsts.AUTO_RANDOM_STR)
 	private String nonceStr;
 
 	/**
@@ -67,7 +67,7 @@ public class HbinfoParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="mch_id")
-	@SystemValue(PayWxConsts.MCH_ID)
+	@Value(PayWxConsts.MCH_ID)
 	private String mchId;
 
 	/**
@@ -79,7 +79,7 @@ public class HbinfoParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="appid")
-	@SystemValue(PayWxConsts.APP_ID)
+	@Value(PayWxConsts.APP_ID)
 	private String appid;
 
 	/**

@@ -11,9 +11,9 @@ import com.qq.weixin.mp.MpWxConsts;
 import com.qq.weixin.mp.result.UserInfoResult;
 import com.qq.weixin.mp.result.UserListResult;
 import com.suisrc.jaxrsapi.core.Consts;
-import com.suisrc.jaxrsapi.core.annotation.InterceptResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Reviser;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 import com.suisrc.weixin.core.filter.WxTokenCheck;
 
 /**
@@ -39,7 +39,7 @@ public interface UserRest {
 	@Path("cgi-bin/user/get")
 	@Produces(MediaType.APPLICATION_JSON)
 	UserListResult getUserGet(
-			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("access_token")@Value(MpWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("next_openid")                                       String openid);
 	
 	default UserListResult getUserGet( String openid ) {
@@ -57,9 +57,9 @@ public interface UserRest {
 	@GET
 	@Path("cgi-bin/user/info")
 	@Produces(MediaType.APPLICATION_JSON)
-	@InterceptResult(value = WxTokenCheck.class, master=Consts.FIELD_ACTIVATOR)
+	@Reviser(value = WxTokenCheck.class, master=Consts.FIELD_ACTIVATOR)
 	UserInfoResult getUserInfo(
-			@QueryParam("access_token")@SystemValue(MpWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("access_token")@Value(MpWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("openid")                                            String openid, 
 			@QueryParam("lang")        @DefaultValue("zh_CN")                String lang);
 	

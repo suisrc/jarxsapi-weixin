@@ -98,7 +98,8 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
 	 * 构造后被系统调用
 	 * 进行内容初始化
 	 */
-	public void initialized() {
+	@Override
+	public void init() {
 		// 初始化
 		initAccessToken();
 		// 构建客户端创建器

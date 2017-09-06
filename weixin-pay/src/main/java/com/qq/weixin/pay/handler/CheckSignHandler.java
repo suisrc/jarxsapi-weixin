@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.qq.weixin.pay.PayWxConsts;
 import com.suisrc.jaxrsapi.core.ServiceClient;
-import com.suisrc.jaxrsapi.core.func.InterceptHandler;
+import com.suisrc.jaxrsapi.core.function.ReviseHandler;
 import com.suisrc.weixin.core.crypto.WxCrypto;
 
 /**
@@ -15,7 +15,7 @@ import com.suisrc.weixin.core.crypto.WxCrypto;
  * @author Y13
  *
  */
-public class CheckSignHandler implements InterceptHandler<Object> {
+public class CheckSignHandler implements ReviseHandler<Object> {
 	
 	/**
 	 * 远程访问客户端

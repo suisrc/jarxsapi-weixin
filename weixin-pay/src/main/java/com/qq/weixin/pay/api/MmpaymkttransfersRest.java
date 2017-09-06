@@ -13,8 +13,8 @@ import com.qq.weixin.pay.param.RedpackParam;
 import com.qq.weixin.pay.result.HbinfoResult;
 import com.qq.weixin.pay.result.RedpackResult;
 import com.suisrc.jaxrsapi.core.Consts;
-import com.suisrc.jaxrsapi.core.annotation.InterceptParam;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
+import com.suisrc.jaxrsapi.core.annotation.Reviser;
 
 /**
  * 微信公众号接口
@@ -102,7 +102,7 @@ public interface MmpaymkttransfersRest {
 	@Path("mmpaymkttransfers/sendredpack")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
-	RedpackResult sendredpack(@InterceptParam(value=CheckSignHandler.class, master=Consts.FIELD_THIS)RedpackParam param);
+	RedpackResult sendredpack(@Reviser(value=CheckSignHandler.class, master=Consts.FIELD_THIS)RedpackParam param);
 	
 	/**
 	 * 发放裂变红包
@@ -117,7 +117,7 @@ public interface MmpaymkttransfersRest {
 	@Path("mmpaymkttransfers/sendgroupredpack")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
-	RedpackResult sendgroupredpack(@InterceptParam(value=CheckSignHandler.class, master=Consts.FIELD_THIS)GroupredpackParam param);
+	RedpackResult sendgroupredpack(@Reviser(value=CheckSignHandler.class, master=Consts.FIELD_THIS)GroupredpackParam param);
 	
 	/**
 	 * 查询红包记录
@@ -133,6 +133,6 @@ public interface MmpaymkttransfersRest {
 	@Path("mmpaymkttransfers/gethbinfo")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
-	HbinfoResult gethbinfo(@InterceptParam(value=CheckSignHandler.class, master=Consts.FIELD_THIS)HbinfoParam param);
+	HbinfoResult gethbinfo(@Reviser(value=CheckSignHandler.class, master=Consts.FIELD_THIS)HbinfoParam param);
 
 }

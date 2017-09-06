@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.suisrc.jaxrsapi.core.ApiActivator;
-import com.suisrc.jaxrsapi.core.func.InterceptHandler;
+import com.suisrc.jaxrsapi.core.function.ReviseHandler;
 import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.bean.WxErrCode;
 
@@ -14,7 +14,7 @@ import com.suisrc.weixin.core.bean.WxErrCode;
  * @author Y13
  *
  */
-public class WxTokenCheck implements InterceptHandler<Object> {
+public class WxTokenCheck implements ReviseHandler<Object> {
 	
 	/** 
 	 * AccessToken 异常的code

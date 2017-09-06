@@ -11,10 +11,10 @@ import com.qq.weixin.open.OpenWxConsts;
 import com.qq.weixin.open.handler.WeChatRedirectHandler;
 import com.qq.weixin.open.proxy.Oauth2AuthorizeProxy;
 import com.suisrc.jaxrsapi.core.Consts;
-import com.suisrc.jaxrsapi.core.annotation.InterceptParam;
-import com.suisrc.jaxrsapi.core.annotation.LogicProxy;
+import com.suisrc.jaxrsapi.core.annotation.LocalProxy;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Reviser;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 
 /**
  * 网站应用微信登录是基于OAuth2.0协议标准构建的微信OAuth2.0授权登录系统。
@@ -56,13 +56,13 @@ public interface OpenOAuth2Rest {
 	@GET
 	@Path("connect/oauth2/authorize")
 	@Produces(MediaType.APPLICATION_JSON)
-	@LogicProxy(value=Oauth2AuthorizeProxy.class, master=Consts.FIELD_THIS)
+	@LocalProxy(value=Oauth2AuthorizeProxy.class, master=Consts.FIELD_THIS)
 	String authorize(
-			@QueryParam("appid")        @SystemValue(OpenWxConsts.APP_ID)           String appid, 
+			@QueryParam("appid")        @Value(OpenWxConsts.APP_ID)           String appid, 
 			@QueryParam("redirect_uri")                                             String redirectUri, 
 			@QueryParam("response_type")@DefaultValue("code")                       String responseType, 
 			@QueryParam("scope")        @DefaultValue("snsapi_base")                String scope, 
-			@QueryParam("state")        @InterceptParam(WeChatRedirectHandler.class)String state);
+			@QueryParam("state")        @Reviser(WeChatRedirectHandler.class)String state);
 	
 	default String authorize( String redirectUri, String scope, String state ) {
 		return authorize(null, redirectUri, null, scope, state);

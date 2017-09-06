@@ -67,7 +67,8 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
 	 * 进行内容初始化
 	 */
 	@PostConstruct
-	public void initialized() {
+	@Override
+	public void init() {
 		String value =  System.getProperty(MpWxConsts.KEY_APP_ID);
 		if( value != null ) { appId = value; }
 		value =  System.getProperty(MpWxConsts.KEY_APP_SECRET);
@@ -80,7 +81,7 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
 		// 构建缓存线程池
 		executor = Executors.newFixedThreadPool(Integer.valueOf(System.getProperty(MpWxConsts.KEY_ACTIVATOR_THREAD_COUNT, "10")));
 		
-		super.initialized();
+		super.init();
 	}
 	
 	/**

@@ -4,7 +4,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 
 import com.qq.weixin.mp.MpWxConsts;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 
 /**
  * 开发者可通过OpenID来获取用户基本信息
@@ -18,7 +18,7 @@ public class UserInfoParam {
 	 * 不需要给出，null代理
 	 */
 	@QueryParam("access_token")
-	@SystemValue(MpWxConsts.ACCESS_TOKEN) 
+	@Value(MpWxConsts.ACCESS_TOKEN) 
 	private String accessToken;
 	
 	/**

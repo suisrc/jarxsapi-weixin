@@ -1,7 +1,7 @@
 package com.qq.weixin.open.handler;
 
 import com.qq.weixin.open.OpenWxConsts;
-import com.suisrc.jaxrsapi.core.func.InterceptHandler;
+import com.suisrc.jaxrsapi.core.function.ReviseHandler;
 
 /**
  * 微信跳转后缀
@@ -10,7 +10,7 @@ import com.suisrc.jaxrsapi.core.func.InterceptHandler;
  * @author Y13
  *
  */
-public class WeChatRedirectHandler implements InterceptHandler<String> {
+public class WeChatRedirectHandler implements ReviseHandler<String> {
 
 	@Override
 	public String accept(String value) {

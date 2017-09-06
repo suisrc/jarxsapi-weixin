@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.qq.weixin.mp.result.ServerIpResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 import com.suisrc.weixin.core.WxConsts;
 
 /**
@@ -31,5 +31,5 @@ public interface WxServerInfoRest {
 	@GET
 	@Path("cgi-bin/getcallbackip")
 	@Produces(MediaType.APPLICATION_JSON)
-	ServerIpResult getCallbackIp(@QueryParam("access_token")@SystemValue(WxConsts.ACCESS_TOKEN) String accessToken);
+	ServerIpResult getCallbackIp(@QueryParam("access_token")@Value(WxConsts.ACCESS_TOKEN) String accessToken);
 }

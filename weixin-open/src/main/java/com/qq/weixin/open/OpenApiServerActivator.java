@@ -35,7 +35,8 @@ public class OpenApiServerActivator extends AbstractWeixinActivator implements A
 	 * 构造后被系统调用 进行内容初始化
 	 */
 	@PostConstruct
-	public void initialized() {
+	@Override
+	public void init() {
 		String value =  System.getProperty(OpenWxConsts.KEY_APP_ID);
 		if( value != null ) { appId = value; }
 		value =  System.getProperty(OpenWxConsts.KEY_APP_SECRET);
@@ -44,7 +45,7 @@ public class OpenApiServerActivator extends AbstractWeixinActivator implements A
 		// 构建缓存线程池
 		executor = Executors.newFixedThreadPool(Integer.valueOf(System.getProperty(OpenWxConsts.KEY_ACTIVATOR_THREAD_COUNT_API, "10")));
 
-		super.initialized();
+		super.init();
 	}
 	
 	/**

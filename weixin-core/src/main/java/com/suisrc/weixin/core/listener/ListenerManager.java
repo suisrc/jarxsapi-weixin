@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.inject.Named;
 
 import com.google.common.collect.Sets;
-import com.suisrc.jaxrsapi.core.util.Utils;
+import com.suisrc.jaxrsapi.core.util.JaxrsapiUtils;
 
 /**
  * 监听事件管理器 用于管理微信中所有回调监听
@@ -246,7 +246,7 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
 	 * 构建监听器，通过包扫描，增加监听
 	 */
 	public void scanPackages(String... pkgs) {
-		Collection<Class<? extends Listener>> listenters = Utils.getSubclasses(Listener.class, pkgs);
+		Collection<Class<? extends Listener>> listenters = JaxrsapiUtils.getSubclasses(Listener.class, pkgs);
 		if (listenters == null || listenters.isEmpty()) {
 			return;
 		}

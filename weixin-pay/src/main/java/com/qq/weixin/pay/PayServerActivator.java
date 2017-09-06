@@ -73,7 +73,8 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 	 * 构造后被系统调用 进行内容初始化
 	 */
 	@PostConstruct
-	public void initialized() {
+	@Override
+	public void init() {
 		String value =  System.getProperty(PayWxConsts.KEY_APP_ID);
 		if( value != null ) { appId = value; }
 		baseUrl = System.getProperty(PayWxConsts.BASE_URL, "https://api.mch.weixin.qq.com");
@@ -90,7 +91,7 @@ public class PayServerActivator extends AbstractWeixinActivator implements ApiAc
 		// 构建缓存线程池
 		executor = Executors.newFixedThreadPool(Integer.valueOf(System.getProperty(PayWxConsts.KEY_ACTIVATOR_THREAD_COUNT, "10")));
 
-		super.initialized();
+		super.init();
 	}
 	
 	//------------------------access token---------------------------//

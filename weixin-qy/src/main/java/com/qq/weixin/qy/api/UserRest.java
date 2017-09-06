@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import com.qq.weixin.qy.QyWxConsts;
 import com.qq.weixin.qy.result.UserInfoResult;
 import com.suisrc.jaxrsapi.core.annotation.RemoteApi;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 
 /**
  * 微信公众号接口
@@ -32,7 +32,7 @@ public interface UserRest {
 	@Path("cgi-bin/user/get")
 	@Produces(MediaType.APPLICATION_JSON)
 	UserInfoResult getUserInfo(
-			@QueryParam("access_token")@SystemValue(QyWxConsts.ACCESS_TOKEN) String accessToken, 
+			@QueryParam("access_token")@Value(QyWxConsts.ACCESS_TOKEN) String accessToken, 
 			@QueryParam("userid")                                            String userid);
 	
 	default UserInfoResult getUserInfo( String userid ) {

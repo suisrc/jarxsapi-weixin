@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.qq.weixin.pay.PayWxConsts;
-import com.suisrc.jaxrsapi.core.annotation.SystemValue;
+import com.suisrc.jaxrsapi.core.annotation.Value;
 
 /**
  * 发放裂变红包 请求参数
@@ -45,7 +45,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="nonce_str")
-	@SystemValue(PayWxConsts.AUTO_RANDOM_STR)
+	@Value(PayWxConsts.AUTO_RANDOM_STR)
 	private String nonceStr;
 
 	/**
@@ -68,7 +68,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="mch_billno")
-	@SystemValue(PayWxConsts.AUTO_MCH_BILLNO)
+	@Value(PayWxConsts.AUTO_MCH_BILLNO)
 	private String mchBillno;
 
 	/**
@@ -80,7 +80,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="mch_id")
-	@SystemValue(PayWxConsts.MCH_ID)
+	@Value(PayWxConsts.MCH_ID)
 	private String mchId;
 
 	/**
@@ -92,7 +92,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="wxappid")
-	@SystemValue(PayWxConsts.APP_ID)
+	@Value(PayWxConsts.APP_ID)
 	private String wxappid;
 
 	/**
@@ -104,7 +104,7 @@ public class GroupredpackParam {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="send_name")
-	@SystemValue(PayWxConsts.SEND_NAME)
+	@Value(PayWxConsts.SEND_NAME)
 	private String sendName;
 
 	/**
