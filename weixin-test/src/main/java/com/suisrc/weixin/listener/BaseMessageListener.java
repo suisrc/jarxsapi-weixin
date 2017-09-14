@@ -4,9 +4,9 @@ import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Include;
 import com.suisrc.weixin.core.listener.Listener;
-import com.suisrc.weixin.core.msg.BaseMessage;
-import com.suisrc.weixin.core.msg.pm.TextMessage;
-import com.suisrc.weixin.core.msg.pm.VoiceMessage;
+import com.suisrc.weixin.mp.msg.base.BaseMessage;
+import com.suisrc.weixin.mp.msg.msg.TextMessage;
+import com.suisrc.weixin.mp.msg.msg.VoiceMessage;
 
 /**
  * 监听文本消息

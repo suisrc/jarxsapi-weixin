@@ -3,8 +3,8 @@ package com.suisrc.weixin.listener;
 import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Listener;
-import com.suisrc.weixin.core.msg.pm.TextMessage;
-import com.suisrc.weixin.core.msg.r.ReplyTextMessage;
+import com.suisrc.weixin.mp.msg.msg.TextMessage;
+import com.suisrc.weixin.mp.msg.reply.ReplyTextMessage;
 
 /**
  * 监听文本消息

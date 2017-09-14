@@ -3,10 +3,6 @@ package com.suisrc.weixin.core;
 import java.time.LocalDateTime;
 
 import javax.ws.rs.BeanParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -14,8 +10,8 @@ import com.suisrc.weixin.core.bean.WxEncryptSignature;
 import com.suisrc.weixin.core.bean.WxJsapiSignature;
 import com.suisrc.weixin.core.crypto.WxCrypto;
 import com.suisrc.weixin.core.listener.ListenerManager;
-import com.suisrc.weixin.core.msg.BaseMessage;
 import com.suisrc.weixin.core.msg.EncryptMessage;
+import com.suisrc.weixin.core.msg.IMessage;
 
 /**
  * 跟微信服务器捆绑
@@ -55,13 +51,17 @@ public abstract class AbstractWxBinding {
     protected void setWxConfig(WxConfig config) {
         this.config = config;
     }
-
+    
+    /**
+     * 把xml转换为消息
+     * @param xml
+     * @return
+     */
+    protected abstract IMessage xml2Message(String xml);
+    
     /**
      * 后台微信请求服务器运行状态
      */
-    @GET
-    @Path("info")
-    @Produces(MediaType.TEXT_PLAIN)
     public String getServerInfo() {
         return "Server is Running! time:" + LocalDateTime.now();
     }
@@ -69,10 +69,7 @@ public abstract class AbstractWxBinding {
     /**
      * 微信回调URL绑定
      * 
-     * @throws AesException
      */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
     public String doGet(@BeanParam WxJsapiSignature sign) {
         if (config.getToken() == null || !sign.isValid()) {
             return "非法请求";
@@ -89,10 +86,7 @@ public abstract class AbstractWxBinding {
     /**
      * 微信回调请求绑定
      * 
-     * @throws AesException
      */
-    @POST
-    @Produces(MediaType.APPLICATION_XML)
     public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
         // --------------------------------服务器验证------------------------------------//
         if (isEncrypt && (config.getToken() == null || !sign.isValid())) {
@@ -119,7 +113,7 @@ public abstract class AbstractWxBinding {
             // 使用AES加密
             wxCrypt = new WxCrypto(config.getToken(), config.getEncodingAesKey(), config.getAppId());
             // 解析网络数据
-            EncryptMessage encryptMsg = WxMsgFactory.xmlToBean(data, EncryptMessage.class);
+            EncryptMessage encryptMsg = WxMsgCrFactory.xmlToBean(data, EncryptMessage.class);
             // 验证数据签名
             String signature = WxCrypto.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
             if (!signature.equals(sign.getMsgSignature())) {
@@ -132,7 +126,7 @@ public abstract class AbstractWxBinding {
         }
         // --------------------------------消息内容处理------------------------------------//
         // 解析消息内容
-        BaseMessage message = WxMsgFactory.xmlToWxMessage(xmlContent); // 转换为bean
+        IMessage message = xml2Message(xmlContent); // 转换为bean
         if (message == null) {
             return Response.ok().entity("消息内容无法解析").type(MediaType.TEXT_PLAIN).build();
         }
@@ -143,7 +137,7 @@ public abstract class AbstractWxBinding {
         }
         // --------------------------------响应结果解析------------------------------------//
         // 分析结果
-        String reault = bean instanceof String ? bean.toString() : WxMsgFactory.beanToXml(bean);
+        String reault = bean instanceof String ? bean.toString() : WxMsgCrFactory.beanToXml(bean);
         if (wxCrypt != null) {
             // 消息内容需要加密返回
             String encryText = wxCrypt.encrypt(reault);
@@ -156,7 +150,7 @@ public abstract class AbstractWxBinding {
             String signature = WxCrypto.genSHA1(wxCrypt.getToken(), encryptMsg.getTimeStamp(), encryptMsg.getNonce(), encryText);
             encryptMsg.setMsgSignature(signature);
             // 生成xml内容
-            reault = WxMsgFactory.beanToXml(encryptMsg);
+            reault = WxMsgCrFactory.beanToXml(encryptMsg);
         }
         // --------------------------------返回处理的结果------------------------------------//
         return Response.ok().entity(reault).build();
