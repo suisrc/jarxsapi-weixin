@@ -121,7 +121,11 @@ public enum WxMsgType {
     /**
      * 发送卡券
      */
-    wxcard("发送卡券消息", null);
+    wxcard("发送卡券消息", null),
+    /**
+     * 微信小程序
+     */
+    miniprogrampage("微信小程序", null);
 
     /** 消息内容 */
     public final String value;

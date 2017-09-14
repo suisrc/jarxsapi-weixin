@@ -1,8 +1,5 @@
 package com.suisrc.weixin.mp.msg.base;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.suisrc.weixin.core.msg.IMessage;
@@ -18,7 +15,7 @@ import com.suisrc.weixin.core.msg.IMessage;
  * </xml>
  * @author Y13
  */
-@JsonAutoDetect(getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE) // 禁止方法检测
+//@JsonAutoDetect(getterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE) // 禁止方法检测
 //@JsonIgnoreProperties(ignoreUnknown=true) // 忽略位置属性
 public abstract class BaseMessage implements IMessage {
 
@@ -34,7 +31,6 @@ public abstract class BaseMessage implements IMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "ToUserName")
-    @JsonProperty("touser")
     private String toUserName;
 
     /**
@@ -55,7 +51,6 @@ public abstract class BaseMessage implements IMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "MsgType")
-    @JsonProperty("msgtype")
     private String msgType;
 
     /**
