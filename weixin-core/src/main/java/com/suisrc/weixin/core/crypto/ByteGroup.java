@@ -7,6 +7,11 @@ package com.suisrc.weixin.core.crypto;
 
 import java.util.ArrayList;
 
+/**
+ * 腾讯实例工程截取
+ * @author Y13
+ *
+ */
 public class ByteGroup {
 	
 	private ArrayList<Byte> byteContainer = new ArrayList<>();

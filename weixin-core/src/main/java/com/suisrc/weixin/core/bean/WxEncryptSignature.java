@@ -3,7 +3,7 @@ package com.suisrc.weixin.core.bean;
 import javax.ws.rs.QueryParam;
 
 /**
- * jspai signature
+ * jsapi signature
  */
 public class WxEncryptSignature extends WxJsapiSignature {
 	private static final long serialVersionUID = 6178170380018311930L;
@@ -37,10 +37,8 @@ public class WxEncryptSignature extends WxJsapiSignature {
 	 */
 	public boolean isValid() {
 		return this.getEncryptType() != null
-			|| this.getMsgSignature() != null
-			|| this.getNonce() != null
-			|| this.getSignature() != null
-			|| this.getTimestamp() != null;
+			&& this.getMsgSignature() != null
+			&& super.isValid();
 	}
 	
 }

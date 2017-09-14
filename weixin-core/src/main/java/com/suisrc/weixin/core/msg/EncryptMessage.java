@@ -45,76 +45,128 @@ public class EncryptMessage {
 	private String encrypt;
 	
 	/**
-	 * 密文
+	 * 密文签名
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="MsgSignature")
 	private String msgSignature;
 	
 	/**
-	 * 密文
+	 * 密文时间戳
 	 */
 	@JacksonXmlProperty(localName="TimeStamp")
 	private String timeStamp;
 	
 	/**
-	 * 密文
+	 * 密文随机码
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="Nonce")
 	private String nonce;
+    
+    /**
+     * 获取ToUserName为公众号AppId或者企业号的CorpID
+     * @return the toUserName
+     */
+    public String getToUserName() {
+        return toUserName;
+    }
 
-	public String getToUserName() {
-		return toUserName;
-	}
+    /**
+     * 设定ToUserName为公众号AppId或者企业号的CorpID
+     * @param toUserName the toUserName to set
+     */
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
 
-	public void setToUserName(String toUserName) {
-		this.toUserName = toUserName;
-	}
-	
-	public String getAgentID() {
-		return agentID;
-	}
-	
-	public void setAgentID(String agentID) {
-		this.agentID = agentID;
-	}
+    /**
+     * 获取为接收的应用id，可在应用的设置页面获取 只有企业号，该字段才有值
+     * @return the agentID
+     */
+    public String getAgentID() {
+        return agentID;
+    }
 
-	public String getEncrypt() {
-		return encrypt;
-	}
+    /**
+     * 设定为接收的应用id，可在应用的设置页面获取 只有企业号，该字段才有值
+     * @param agentID the agentID to set
+     */
+    public void setAgentID(String agentID) {
+        this.agentID = agentID;
+    }
 
-	public void setEncrypt(String encrypt) {
-		this.encrypt = encrypt;
-	}
+    /**
+     * 获取密文 encrypt为经过加密的密文（消息明文格式参见 接收普通消息 ，事件明文格式参见 接收事件）
+     * @return the encrypt
+     */
+    public String getEncrypt() {
+        return encrypt;
+    }
 
-	public String getMsgSignature() {
-		return msgSignature;
-	}
+    /**
+     * 设定密文 encrypt为经过加密的密文（消息明文格式参见 接收普通消息 ，事件明文格式参见 接收事件）
+     * @param encrypt the encrypt to set
+     */
+    public void setEncrypt(String encrypt) {
+        this.encrypt = encrypt;
+    }
 
-	public void setMsgSignature(String msgSignature) {
-		this.msgSignature = msgSignature;
-	}
+    /**
+     * 获取密文签名
+     * @return the msgSignature
+     */
+    public String getMsgSignature() {
+        return msgSignature;
+    }
 
-	public String getTimeStamp() {
-		return timeStamp;
-	}
+    /**
+     * 设定密文签名
+     * @param msgSignature the msgSignature to set
+     */
+    public void setMsgSignature(String msgSignature) {
+        this.msgSignature = msgSignature;
+    }
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-	
-	public void setTimeStamp(long time) {
-		this.timeStamp = String.valueOf( time / 1000l );
-	}
+    /**
+     * 获取密文时间戳
+     * @return the timeStamp
+     */
+    public String getTimeStamp() {
+        return timeStamp;
+    }
 
-	public String getNonce() {
-		return nonce;
-	}
+    /**
+     * 设定密文时间戳
+     * @param timeStamp the timeStamp to set
+     */
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
-	public void setNonce(String nonce) {
-		this.nonce = nonce;
-	}
-	
+    /**
+     * 获取密文随机码
+     * @return the nonce
+     */
+    public String getNonce() {
+        return nonce;
+    }
+
+    /**
+     * 设定密文随机码
+     * @param nonce the nonce to set
+     */
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
+    }
+
+    /**
+     * 设定密文时间戳
+     * 毫秒，字段会被转换为秒
+     * @param timeStamp the timeStamp to set
+     */
+    public void setTimeStamp(long time) {
+        this.timeStamp = String.valueOf( time / 1000l );
+    }
 	
 }

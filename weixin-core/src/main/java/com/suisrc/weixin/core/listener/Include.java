@@ -9,12 +9,12 @@ import java.lang.annotation.Target;
 /**
  * 监听器可以同时指定多个监听类型，这里分配监听类型
  */
-@Target({ TYPE })
+@Target({TYPE})
 @Retention(RUNTIME)
 public @interface Include {
 
-	/**
-	 * 监听的内容集合
-	 */
-	Class<?>[] value();
+    /**
+     * 监听的内容集合
+     */
+    Class<?>[] value();
 }

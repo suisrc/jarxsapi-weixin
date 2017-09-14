@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.qq.weixin.pay.PayWxConsts;
 import com.suisrc.jaxrsapi.core.ServiceClient;
-import com.suisrc.jaxrsapi.core.function.ReviseHandler;
+import com.suisrc.jaxrsapi.core.runtime.ReviseHandler;
 import com.suisrc.weixin.core.crypto.WxCrypto;
 
 /**

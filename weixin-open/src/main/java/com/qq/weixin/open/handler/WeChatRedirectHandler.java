@@ -1,7 +1,7 @@
 package com.qq.weixin.open.handler;
 
 import com.qq.weixin.open.OpenWxConsts;
-import com.suisrc.jaxrsapi.core.function.ReviseHandler;
+import com.suisrc.jaxrsapi.core.runtime.ReviseHandler;
 
 /**
  * 微信跳转后缀

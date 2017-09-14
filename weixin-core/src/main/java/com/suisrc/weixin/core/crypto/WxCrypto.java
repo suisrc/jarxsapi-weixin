@@ -24,7 +24,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * 数据加密和解密
- * @author Tencent Inc
  * @author Y13
  *
  */
