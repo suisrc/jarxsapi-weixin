@@ -1,5 +1,6 @@
 package com.qq.weixin.mp.param.kf.xcx;
 
+import com.qq.weixin.mp.param.kf.media.MiniprogrampageInfo;
 import com.qq.weixin.mp.param.kf.msg.KfReplyBaseMessage;
 import com.suisrc.weixin.mp.msg.WxMsgType;
 

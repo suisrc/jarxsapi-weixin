@@ -1,4 +1,4 @@
-package com.qq.weixin.mp.param.kf.xcx;
+package com.qq.weixin.mp.param.kf.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

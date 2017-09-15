@@ -1,7 +1,7 @@
 package com.qq.weixin.mp.param.kf.msg;
 
+import com.qq.weixin.mp.param.kf.media.MediaId;
 import com.suisrc.weixin.mp.msg.WxMsgType;
-import com.suisrc.weixin.mp.msg.media.MediaId;
 
 /**
  * 图片

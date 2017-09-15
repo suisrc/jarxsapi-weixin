@@ -6,8 +6,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qq.weixin.mp.param.kf.media.ArticlesMedia;
 import com.suisrc.weixin.mp.msg.WxMsgType;
-import com.suisrc.weixin.mp.msg.media.ArticlesMedia;
 
 /**
  * 发送图文消息（点击跳转到外链） 图文消息条数限制在8条以内

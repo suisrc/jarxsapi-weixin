@@ -1,7 +1,7 @@
 package com.qq.weixin.mp.param.kf.msg;
 
+import com.qq.weixin.mp.param.kf.media.MusicMedia;
 import com.suisrc.weixin.mp.msg.WxMsgType;
-import com.suisrc.weixin.mp.msg.media.MusicMedia;
 
 /**
  * 发送语音消息
