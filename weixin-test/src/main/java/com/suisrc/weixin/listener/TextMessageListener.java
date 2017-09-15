@@ -22,6 +22,7 @@ public class TextMessageListener implements Listener<TextMessage> {
     public Object accept(TextMessage message) {
         ReplyTextMessage msg = message.reverse(new ReplyTextMessage());
         msg.setContent("TextMessageListener->" + message.getContent());
+        msg.setJson(message.isJson());
         return msg;
     }
 }

@@ -85,7 +85,7 @@ public abstract class AbstractWxBinding<T> {
     public String doGet(@BeanParam WxJsapiSignature sign) {
         assertClientInfo();
         if (config.getToken() == null || !sign.isValid()) {
-            return "非法请求";
+            return "Illegal request";
         }
         // 进行验证
         String signature = WxCrypto.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
@@ -103,21 +103,21 @@ public abstract class AbstractWxBinding<T> {
     public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
         assertClientInfo();
         if (data == null || data.isEmpty()) {
-            return Response.ok().entity("没有有效的请求数据").type(MediaType.TEXT_PLAIN).build();
+            return Response.ok().entity("There is no valid request data").type(MediaType.TEXT_PLAIN).build();
         }
         // 确定数据传输格式
         boolean isJson = data.startsWith("<xml>") ? false : true;
         // --------------------------------服务器验证------------------------------------//
         if (isEncrypt && (config.getToken() == null || !sign.isValid())) {
             // 没有签名信息
-            return Response.ok().entity("非法请求").type(MediaType.TEXT_PLAIN).build();
+            return Response.ok().entity("Illegal request").type(MediaType.TEXT_PLAIN).build();
         }
         if (sign.getSignature() != null) {
             // 服务器验证
             String signature = WxCrypto.genSHA1(config.getToken(), sign.getTimestamp(), sign.getNonce());
             if (!signature.equals(sign.getSignature())) {
                 // 消息签名不正确，说明不是公众平台发过来的消息
-                return Response.ok().entity("非法请求").type(MediaType.TEXT_PLAIN).build();
+                return Response.ok().entity("Illegal request").type(MediaType.TEXT_PLAIN).build();
             }
             if (sign.getEchostr() != null && !sign.getEchostr().isEmpty()) {
                 // 仅仅用来验证的请求，回显echostr
@@ -136,7 +136,7 @@ public abstract class AbstractWxBinding<T> {
             // 验证数据签名
             String signature = WxCrypto.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
             if (!signature.equals(sign.getMsgSignature())) {
-                return Response.ok().entity("数据签名异常").type(MediaType.TEXT_PLAIN).build();
+                return Response.ok().entity("Data signature exception").type(MediaType.TEXT_PLAIN).build();
             }
             content = wxCrypt.decrypt(encryptMsg.getEncrypt());
         } else {
@@ -147,13 +147,13 @@ public abstract class AbstractWxBinding<T> {
         // 解析消息内容
         IMessage message = str2Bean(content, isJson); // 转换为bean
         if (message == null) {
-            return Response.ok().entity("消息内容无法解析").type(MediaType.TEXT_PLAIN).build();
+            return Response.ok().entity("Message content can not be resolved").type(MediaType.TEXT_PLAIN).build();
         }
         message.setJson(isJson); // 告诉系统数据的来源格式
         // 通过监听器处理消息内容
         Object bean = listenerManager.accept(message); // 得到处理的结构
         if (bean == null) {
-            return Response.ok().entity("消息内容无法应答").type(MediaType.TEXT_PLAIN).build();
+            return Response.ok().entity("Message content can not be answered").type(MediaType.TEXT_PLAIN).build();
         }
         if (bean instanceof IMessage) {
             isJson = ((IMessage)bean).isJson(); // 用新的格式要求替换

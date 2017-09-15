@@ -102,7 +102,8 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
         if (whitelist.contains(clientIp)) {
             return; // 客户ip在白名单中，不进行处理
         }
-        throw new ResponseException("非法访问, 来自:" + clientIp, "无效的IP[" + clientIp + "],不在微信服务器IP白名单中", "HTTP-ERR-403");
+        throw new ResponseException("Illegal access, from:" + clientIp, "Invalid IP[" + clientIp + 
+                "],Not in the weixin server IP whitelist", "HTTP-ERR-403");
     }
 
     /**
@@ -119,9 +120,9 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
     @Override
     public String updateWhiteList(String secret) {
         if (whitelistSecret == null) {
-            return "没有配置访问密钥, 无法完成操作";
+            return "The access key was not configured, no operation";
         } else if (!whitelistSecret.equals(secret)) {
-            return "密钥验证失败，请更换操作密钥";
+            return "Key authentication failed, please replace the operation key";
         }
         //-------------------------------------------
         try {
@@ -130,7 +131,7 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
                 throw WxErrCodeException.err(result);
             }
             whitelist = new HashSet<>();
-            StringBuilder sbir = new StringBuilder("服务微信接口白名单已经启用,IP列表:\n");
+            StringBuilder sbir = new StringBuilder("Weixin service interface's whitelist has been enabled, IP list:\n");
             for (String ip : result.getIpList()) {
                 int offset = ip.indexOf('/');
                 String ipf = offset > 0 ? ip.substring(0, offset) : ip;
@@ -140,7 +141,7 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
             return sbir.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            return "服务微信接口白名单启动失败：" + e.getMessage();
+            return "Weixin service interface's whitelist failed to start：" + e.getMessage();
         }
     }
 
@@ -150,17 +151,17 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
     @Override
     public String deleteWhiteList(String secret) {
         if (whitelistSecret == null) {
-            return "没有配置访问密钥, 无法完成操作";
+            return "The access key was not configured, no operation";
         } else if (!whitelistSecret.equals(secret)) {
-            return "密钥验证失败，请更换操作密钥";
+            return "Key authentication failed, please replace the operation key";
         }
         //-------------------------------------------
         if (whitelist == null) {
-            return "服务微信接口白名单没有启动.";
+            return "Weixin service interface's whitelist does not start";
         }
         HashSet<String> list = whitelist;
         whitelist = null;
-        StringBuilder sbir = new StringBuilder("服务微信接口白名单已经禁用,IP列表:\n");
+        StringBuilder sbir = new StringBuilder("Weixin service interface's whitelist has been disabled, IP list:\n");
         list.forEach(ip -> sbir.append(ip).append('\n'));
         return sbir.toString();
     }
