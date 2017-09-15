@@ -138,6 +138,7 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
         return ClientBuilderFactory.newBuilder();
     }
 
+    // ----------------------------------------------------------------ZERO Adapter
     /**
      * 获取系统中常用的数据配置 返回系统中常量数据
      */

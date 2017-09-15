@@ -40,6 +40,11 @@ public abstract class AbstractWxBinding<T> {
      * 需要初始化listenerManager和isEncrypt
      */
     protected abstract void initialized();
+    
+    /**
+     * 判断用于信息
+     */
+    protected void assertClientInfo() {}
 
     /**
      * 设定微信配置信息
@@ -51,11 +56,20 @@ public abstract class AbstractWxBinding<T> {
     }
     
     /**
-     * 把xml转换为消息
+     * 把字符串转换为消息
      * @param xml
      * @return
      */
-    protected abstract IMessage xml2Message(String xml);
+    protected abstract IMessage str2Bean(String str, boolean isJson);
+    
+    /**
+     * 把消息转换为字符串
+     * @param xml
+     * @return
+     */
+    protected String bean2Str(Object bean, boolean isJson) {
+        return WxMsgCrFactory.bean2Str(bean, isJson);
+    }
     
     /**
      * 后台微信请求服务器运行状态
@@ -69,6 +83,7 @@ public abstract class AbstractWxBinding<T> {
      * 
      */
     public String doGet(@BeanParam WxJsapiSignature sign) {
+        assertClientInfo();
         if (config.getToken() == null || !sign.isValid()) {
             return "非法请求";
         }
@@ -86,6 +101,12 @@ public abstract class AbstractWxBinding<T> {
      * 
      */
     public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
+        assertClientInfo();
+        if (data == null || data.isEmpty()) {
+            return Response.ok().entity("没有有效的请求数据").type(MediaType.TEXT_PLAIN).build();
+        }
+        // 确定数据传输格式
+        boolean isJson = data.startsWith("<xml>") ? false : true;
         // --------------------------------服务器验证------------------------------------//
         if (isEncrypt && (config.getToken() == null || !sign.isValid())) {
             // 没有签名信息
@@ -106,25 +127,25 @@ public abstract class AbstractWxBinding<T> {
         // --------------------------------消息签名验证------------------------------------//
         // 处理消息内容
         WxCrypto wxCrypt = null;
-        String xmlContent;
+        String content;
         if (WxConsts.ENCRYPT_TYPE_AES.equals(sign.getEncryptType())) {
             // 使用AES加密
             wxCrypt = new WxCrypto(config.getToken(), config.getEncodingAesKey(), config.getAppId());
             // 解析网络数据
-            EncryptMessage encryptMsg = WxMsgCrFactory.xmlToBean(data, EncryptMessage.class);
+            EncryptMessage encryptMsg = WxMsgCrFactory.str2Bean(data, EncryptMessage.class, isJson);
             // 验证数据签名
             String signature = WxCrypto.genSHA1(wxCrypt.getToken(), sign.getTimestamp(), sign.getNonce(), encryptMsg.getEncrypt());
             if (!signature.equals(sign.getMsgSignature())) {
                 return Response.ok().entity("数据签名异常").type(MediaType.TEXT_PLAIN).build();
             }
-            xmlContent = wxCrypt.decrypt(encryptMsg.getEncrypt());
+            content = wxCrypt.decrypt(encryptMsg.getEncrypt());
         } else {
             // raw 明文传输
-            xmlContent = data;
+            content = data;
         }
         // --------------------------------消息内容处理------------------------------------//
         // 解析消息内容
-        IMessage message = xml2Message(xmlContent); // 转换为bean
+        IMessage message = str2Bean(content, isJson); // 转换为bean
         if (message == null) {
             return Response.ok().entity("消息内容无法解析").type(MediaType.TEXT_PLAIN).build();
         }
@@ -135,7 +156,7 @@ public abstract class AbstractWxBinding<T> {
         }
         // --------------------------------响应结果解析------------------------------------//
         // 分析结果
-        String reault = bean instanceof String ? bean.toString() : WxMsgCrFactory.beanToXml(bean);
+        String reault = bean instanceof String ? bean.toString() : bean2Str(bean, isJson);
         if (wxCrypt != null) {
             // 消息内容需要加密返回
             String encryText = wxCrypt.encrypt(reault);
@@ -148,7 +169,7 @@ public abstract class AbstractWxBinding<T> {
             String signature = WxCrypto.genSHA1(wxCrypt.getToken(), encryptMsg.getTimeStamp(), encryptMsg.getNonce(), encryText);
             encryptMsg.setMsgSignature(signature);
             // 生成xml内容
-            reault = WxMsgCrFactory.beanToXml(encryptMsg);
+            reault = bean2Str(encryptMsg, isJson);
         }
         // --------------------------------返回处理的结果------------------------------------//
         return Response.ok().entity(reault).build();

@@ -92,6 +92,14 @@
             <artifactId>commons-codec</artifactId>
             <version>${version.commons-codec}</version>
         </dependency>
+        <!-- <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>swagger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>swagger-webapp</artifactId>
+        </dependency> -->
         <!-- junit -->
         <dependency>
             <groupId>junit</groupId>

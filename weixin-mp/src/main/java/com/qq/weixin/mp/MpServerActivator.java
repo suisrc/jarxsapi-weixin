@@ -17,6 +17,7 @@ import com.suisrc.weixin.core.AbstractWeixinActivator;
 import com.suisrc.weixin.core.WxConfig;
 import com.suisrc.weixin.core.bean.GrantType;
 import com.suisrc.weixin.core.bean.WxAccessToken;
+import com.suisrc.weixin.core.exception.WxErrCodeException;
 
 /**
  * 程序入口配置
@@ -65,7 +66,11 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
      */
     @Override
     protected WxAccessToken getWxAccessToken() {
-        return accessTokenRest.getToken(GrantType.client_credential.name(), getAppId(), getAppSecret());
+        WxAccessToken token = accessTokenRest.getToken(GrantType.client_credential.name(), getAppId(), getAppSecret());
+        if (token.getErrcode() != null) {
+            throw WxErrCodeException.err(token);
+        }
+        return token;
     }
 
     /**
@@ -90,24 +95,11 @@ public class MpServerActivator extends AbstractWeixinActivator implements ApiAct
         if (value != null) {
             encodingAesKey = value;
         }
-        baseUrl = System.getProperty(MpWxConsts.BASE_URL, "https://api.weixin.qq.com");
+        baseUrl = System.getProperty(MpWxConsts.KEY_BASE_URL, "https://api.weixin.qq.com");
         // 构建缓存线程池
         executor = Executors.newFixedThreadPool(Integer.valueOf(System.getProperty(MpWxConsts.KEY_ACTIVATOR_THREAD_COUNT, "10")));
 
         super.init();
-    }
-
-    /**
-     * 万能接口
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getAdapter(String key) {
-        if (MpWxConsts.BASE_URL.equals(key)) {
-            return (T) getBaseUrl();
-        } else {
-            return super.getAdapter(key);
-        }
     }
 
     /**

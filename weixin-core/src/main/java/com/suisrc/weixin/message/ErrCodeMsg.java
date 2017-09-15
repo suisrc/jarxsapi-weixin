@@ -20,8 +20,7 @@ public class ErrCodeMsg {
     /**
      * 目前只支持中文显示
      */
-    private static final String LANGUAGE = Global.getValue(System::getProperty, WxConsts.KEY_CORE_LANGUAGE_KEY, "zh", 
-            "zh");
+    private static final String LANGUAGE = Global.getValue(System::getProperty, WxConsts.KEY_CORE_LANGUAGE_KEY, "zh", "zh");
 
     /**
      * 中文库

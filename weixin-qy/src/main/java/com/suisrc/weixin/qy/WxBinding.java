@@ -50,12 +50,6 @@ public class WxBinding extends AbstractWxBinding {
         super.setWxConfig(config);
     }
 
-    @Override
-    protected IMessage xml2Message(String xml) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     /**
      * 后台微信请求服务器运行状态
      */
@@ -86,5 +80,12 @@ public class WxBinding extends AbstractWxBinding {
     @Produces(MediaType.APPLICATION_XML)
     public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
         return super.doPost(sign, data);
+    }
+
+
+    @Override
+    protected IMessage str2Bean(String str, boolean isJson) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

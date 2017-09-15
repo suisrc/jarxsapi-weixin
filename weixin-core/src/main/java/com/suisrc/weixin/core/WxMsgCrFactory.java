@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
@@ -16,22 +17,24 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 public class WxMsgCrFactory {
 
     /**
-     * 每一个线程上一个XmlMapper，加快分析进度。
+     * 每一个线程上一个mapper，加快分析进度。
      */
-    private static final ThreadLocal<XmlMapper> mappers = new ThreadLocal<>();
+    private static final ThreadLocal<ObjectMapper> xmlMappers = new ThreadLocal<>();
+    private static final ThreadLocal<ObjectMapper> jsonMappers = new ThreadLocal<>();
 
     /**
      * 获取Xml Mapper
      * 
      * @return
      */
-    private static XmlMapper getXmlMapper() {
-        XmlMapper xmlMapper = mappers.get();
-        if (xmlMapper == null) {
-            xmlMapper = new XmlMapper();
-            mappers.set(xmlMapper);
+    private static ObjectMapper getXmlMapper() {
+        ObjectMapper mapper = xmlMappers.get();
+        if (mapper == null) {
+            xmlMappers.set(mapper = new XmlMapper());
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            mapper.setSerializationInclusion(Include.NON_NULL);
         }
-        return xmlMapper;
+        return mapper;
     }
 
     /**
@@ -41,9 +44,9 @@ public class WxMsgCrFactory {
      * @param clazz
      * @return
      */
-    public static <T> T xmlToBean(String content, Class<T> clazz) {
+    public static <T> T xml2Bean(String content, Class<T> clazz) {
         try {
-            return getXmlMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).readValue(content, clazz);
+            return getXmlMapper().readValue(content, clazz);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -56,14 +59,80 @@ public class WxMsgCrFactory {
      * @param bean
      * @return
      */
-    public static <T> String beanToXml(T bean) {
+    public static <T> String bean2Xml(T bean) {
         try {
-            return getXmlMapper().setSerializationInclusion(Include.NON_NULL).writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(bean);
+            return getXmlMapper().writerWithDefaultPrettyPrinter().writeValueAsString(bean);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "";
         }
+    }
+    
+    /**
+     * 获取Json Mapper
+     * 
+     * @return
+     */
+    private static ObjectMapper getJsonMapper() {
+        ObjectMapper mapper = jsonMappers.get();
+        if (mapper == null) {
+            jsonMappers.set(mapper = new ObjectMapper());
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            mapper.setSerializationInclusion(Include.NON_NULL);
+        }
+        return mapper;
+    }
+
+    /**
+     * json转换为bean
+     * 
+     * @param xmlContent
+     * @param clazz
+     * @return
+     */
+    public static <T> T json2Bean(String content, Class<T> clazz) {
+        try {
+            return getJsonMapper().readValue(content, clazz);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * bean转换为json
+     * 
+     * @param bean
+     * @return
+     */
+    public static <T> String bean2Json(T bean) {
+        try {
+            return getJsonMapper().writerWithDefaultPrettyPrinter().writeValueAsString(bean);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * bean转换为字符串
+     * @param bean
+     * @param isJson
+     * @return
+     */
+    public static <T> String bean2Str(T bean, boolean isJson) {
+        return isJson ? bean2Json(bean) : bean2Xml(bean);
+    }
+
+    /**
+     * 字符串转换为bean
+     * @param data
+     * @param class1
+     * @param isJson
+     * @return
+     */
+    public static <T> T str2Bean(String data, Class<T> clazz, boolean isJson) {
+        return isJson ? json2Bean(data, clazz) : xml2Bean(data, clazz);
     }
 
 }

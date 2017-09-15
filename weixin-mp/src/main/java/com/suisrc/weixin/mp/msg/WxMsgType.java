@@ -128,12 +128,12 @@ public enum WxMsgType {
     miniprogrampage("微信小程序", null);
 
     /** 消息内容 */
-    public final String value;
+    public final String _value;
     /** 消息对应的Bean类型 */
     public final Class<? extends BaseMessage> clazz;
 
     private WxMsgType(String value, Class<? extends BaseMessage> clazz) {
-        this.value = value;
+        this._value = value;
         this.clazz = clazz;
     }
 }

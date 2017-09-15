@@ -40,7 +40,7 @@ public interface MpWxConsts extends WxConsts {
     /**
      * base url
      */
-    String BASE_URL = "com.qq.weixin.mp.endpoint.base-url"; //$NON-NLS-N$
+    String KEY_BASE_URL = "com.qq.weixin.mp.endpoint.base-url"; //$NON-NLS-N$
 
     /**
      * 激活器中私有的线程数量
@@ -61,5 +61,10 @@ public interface MpWxConsts extends WxConsts {
      * 消息是否加密
      */
     String KEY_WEIXIN_CALLBACK_MESSAGE_ENCRYPT = "com.qq.weixin.mp.callback.message.encrypt"; //$NON-NLS-N$
+    
+    /**
+     * 操作密钥
+     */
+    String KEY_WEIXIN_WHITELIST_SECRET = "com.qq.weixin.mp.whitelist.secret"; //$NON-NLS-N$
 
 }
