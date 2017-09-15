@@ -22,21 +22,54 @@ import com.suisrc.jaxrsapi.core.util.JaxrsapiUtils;
  *
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class ListenerManager extends HashMap<Class, Listener[]> {
+public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     private static final long serialVersionUID = 2802236925094985275L;
 
     /**
      * 监控管理器的所有者 如果所有者为null，为公共监听器， 监听的内容可以为所有没有@Named标记的共通监听
      */
-    private Object owner;
-
+    private C owner;
+    /**
+     * 所属类型，解决实体和接口标记的问题
+     */
+    private Class<C> ownerType;
+    
+    /**
+     * 构造
+     */
+    public ListenerManager() {}
     /**
      * 构造
      * 
      * @param owner
      */
-    public ListenerManager(Object owner) {
+    public ListenerManager(C owner) {
         this.owner = owner;
+        this.ownerType = owner == null ? null : (Class<C>)owner.getClass();
+    }
+    /**
+     * 构造
+     * 
+     * @param owner
+     * @param ownerType 
+     */
+    public ListenerManager(C owner, Class<C> ownerType) {
+        this.owner = owner;
+        this.ownerType = ownerType;
+    }
+    
+    /**
+     * 获取所属者
+     */
+    public C getOwner() {
+        return owner;
+    }
+    
+    /**
+     * 获取所属者的类型
+     */
+    public Class<C> getOwnerType() {
+        return ownerType;
     }
 
     /**
@@ -52,7 +85,7 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
         }
 
         for (Listener listener : listeners) {
-            Object obj = listener.accept(bean);
+            Object obj = listener.accept(bean, owner);
             if (obj != null) {
                 return obj;
             }
@@ -61,8 +94,10 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
     }
 
     /**
-     * 接受对象, 执行内容 该方式会遍历所有接口的继承关系， 但是在我们后期开发的时候，认为@Include功能能够满足这里的需求， 并且提供更快的处理过程， 所以这里不再需要该方法
+     * 接受对象, 执行内容 该方式会遍历所有接口的继承关系， 但是在我们后期开发的时候，
+     * 认为@Include功能能够满足这里的需求， 并且提供更快的处理过程， 所以这里不再需要该方法
      * 
+     * 170915 目前舍弃不再使用
      * @param bean
      * @return
      */
@@ -87,7 +122,9 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
 
     /**
      * 接受对象, 执行内容
+     * 与public Object accept2(Object bean)方法成对使用
      * 
+     * 170915 目前舍弃不再使用
      * @param bean
      * @return
      */
@@ -96,7 +133,7 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
         Listener[] listeners = get(clazz);
         if (listeners != null) {
             for (Listener listener : listeners) {
-                Object obj = listener.accept(bean);
+                Object obj = listener.accept(bean, owner);
                 if (obj != null) {
                     return obj;
                 }
@@ -113,16 +150,16 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
      */
     private Set<Class> getKey(Class<?> clazz) {
         Named named = clazz.getAnnotation(Named.class);
-        if (owner == null && named == null) {
-            // 监听没有所属者，采用标记的监听内容
-        } else if (owner != null && named != null && named.value().equals(owner.getClass().getCanonicalName())) {
+        if (named == null) {
+            // 泛型监听
+        } else if (ownerType != null && named.value().equals(ownerType.getCanonicalName())) {
             // @Named标记的内容必须是监听所有这的名字
         } else {
             return null; // 鉴别条件验证没有通过
         }
-        // 查询监听的内容类型
         Class genericType = getGenericKey(clazz);
         if (genericType == null) {
+            // 查询监听的内容类型
             return null;
         }
         // 查询包含关系
@@ -137,6 +174,9 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
             if (genericType.isAssignableFrom(type)) {
                 // 监听的类型可以使用
                 types.add(type);
+            } else {
+                System.err.println(String.format("listener type '%s' is not assignable form '%s' in [%s], ignore.", 
+                        genericType.getCanonicalName(), type.getCanonicalName(), clazz.getCanonicalName()));
             }
         }
         return types;
@@ -200,7 +240,6 @@ public class ListenerManager extends HashMap<Class, Listener[]> {
      * @param clazz 监听的类型
      * @return Listener 系统中已经存在的监听
      */
-    @Deprecated
     private <T> Listener addListener(Listener<T> listener, Class<T> clazz) {
         Listener[] listeners = get(clazz); // 查看原有监听
         if (listeners == null) {

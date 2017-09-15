@@ -10,7 +10,7 @@ package com.suisrc.weixin.core.listener;
  *
  */
 public interface Listener<T> {
-
+    
     /**
      * 接受监听对象
      * 
@@ -18,6 +18,16 @@ public interface Listener<T> {
      * @return
      */
     Object accept(T bean);
+
+    /**
+     * 接受监听对象
+     * 
+     * @param bean null表示对该条内容没有记性处理
+     * @return
+     */
+    default Object accept(T bean, Object owner) {
+        return accept(bean);
+    }
 
     /**
      * 监听是否有效

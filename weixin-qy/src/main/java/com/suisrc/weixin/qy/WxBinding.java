@@ -17,6 +17,7 @@ import com.suisrc.weixin.core.AbstractWxBinding;
 import com.suisrc.weixin.core.WxConfig;
 import com.suisrc.weixin.core.bean.WxEncryptSignature;
 import com.suisrc.weixin.core.bean.WxJsapiSignature;
+import com.suisrc.weixin.core.listener.ListenerManager;
 import com.suisrc.weixin.core.msg.IMessage;
 
 /**
@@ -33,8 +34,8 @@ public class WxBinding extends AbstractWxBinding {
      */
     @PostConstruct
     protected void initialized() {
-        super.initialized();
         // 初始化监听管理器
+        listenerManager = new ListenerManager(this);
         listenerManager.addClassesBySysProp(QyWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_CLASSES);
         listenerManager.addPackagesBySysProp(QyWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES);
         // 消息加密

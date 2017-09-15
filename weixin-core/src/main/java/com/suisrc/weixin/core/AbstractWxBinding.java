@@ -19,12 +19,12 @@ import com.suisrc.weixin.core.msg.IMessage;
  * @author Y13
  *
  */
-public abstract class AbstractWxBinding {
+public abstract class AbstractWxBinding<T> {
 
     /**
      * 监听器
      */
-    protected ListenerManager listenerManager;
+    protected ListenerManager<T> listenerManager;
 
     /**
      * 是否使用信息加密
@@ -39,9 +39,7 @@ public abstract class AbstractWxBinding {
     /**
      * 需要初始化listenerManager和isEncrypt
      */
-    protected void initialized() {
-        listenerManager = new ListenerManager(this);
-    }
+    protected abstract void initialized();
 
     /**
      * 设定微信配置信息

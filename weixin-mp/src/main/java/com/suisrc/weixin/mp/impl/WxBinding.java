@@ -8,6 +8,7 @@ import javax.inject.Named;
 import com.qq.weixin.mp.MpWxConsts;
 import com.suisrc.weixin.core.AbstractWxBinding;
 import com.suisrc.weixin.core.WxConfig;
+import com.suisrc.weixin.core.listener.ListenerManager;
 import com.suisrc.weixin.core.msg.IMessage;
 import com.suisrc.weixin.mp.api.WxBindingRest;
 import com.suisrc.weixin.mp.msg.WxMsgFactory;
@@ -19,7 +20,7 @@ import com.suisrc.weixin.mp.msg.WxMsgFactory;
  *
  */
 @ApplicationScoped
-public class WxBinding extends AbstractWxBinding implements WxBindingRest {
+public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBindingRest {
 
     /**
      * 构造
@@ -27,8 +28,8 @@ public class WxBinding extends AbstractWxBinding implements WxBindingRest {
     @PostConstruct
     @Override
     protected void initialized() {
-        super.initialized();
         // 初始化监听管理器
+        listenerManager = new ListenerManager<>(this, WxBindingRest.class);
         listenerManager.addClassesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_CLASSES);
         listenerManager.addPackagesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES);
         // 消息加密

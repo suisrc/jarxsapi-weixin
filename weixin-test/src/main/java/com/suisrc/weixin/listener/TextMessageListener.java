@@ -12,16 +12,16 @@ import com.suisrc.weixin.mp.msg.reply.ReplyTextMessage;
  * @author Y13
  *
  */
-@Named("com.suisrc.weixin.mp.WxBinding")
+@Named("com.suisrc.weixin.mp.api.WxBindingRest")
 public class TextMessageListener implements Listener<TextMessage> {
 
-	/**
-	 * 文本消息处理
-	 */
-	@Override
-	public Object accept(TextMessage message) {
-		ReplyTextMessage msg = message.reverse(new ReplyTextMessage());
-		msg.setContent("TextMessageListener->" + message.getContent());
-		return msg;
-	}
+    /**
+     * 文本消息处理
+     */
+    @Override
+    public Object accept(TextMessage message) {
+        ReplyTextMessage msg = message.reverse(new ReplyTextMessage());
+        msg.setContent("TextMessageListener->" + message.getContent());
+        return msg;
+    }
 }

@@ -7,18 +7,19 @@ import com.suisrc.weixin.mp.msg.msg.LinkMessage;
 
 /**
  * 监听文本消息
+ * 
  * @author Y13
  *
  */
-@Named("com.suisrc.weixin.mp.WxBinding")
+@Named("com.suisrc.weixin.mp.api.WxBindingRest")
 public class LinkMessageListener implements Listener<LinkMessage> {
 
-	/**
-	 * 链接消息处理
-	 */
-	@Override
-	public Object accept(LinkMessage message) {
-		return message.getUrl();
-	}
+    /**
+     * 链接消息处理
+     */
+    @Override
+    public Object accept(LinkMessage message) {
+        return message.getUrl();
+    }
 
 }

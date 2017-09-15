@@ -70,8 +70,8 @@ public interface WxKfAccountRest {
     @Path("customservice/kfaccount/add")
     @Produces(MediaType.APPLICATION_JSON)
     WxErrCode addKfAccount(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfAccount account);
-    default
-    WxErrCode addKfAccount(KfAccount account) {
+
+    default WxErrCode addKfAccount(KfAccount account) {
         return addKfAccount(null, account);
     }
     
@@ -104,8 +104,8 @@ public interface WxKfAccountRest {
     @Path("customservice/kfaccount/update")
     @Produces(MediaType.APPLICATION_JSON)
     WxErrCode updateKfAccount(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfAccount account);
-    default
-    WxErrCode updateKfAccount(KfAccount account) {
+
+    default WxErrCode updateKfAccount(KfAccount account) {
         return updateKfAccount(null, account);
     }
     
@@ -138,8 +138,8 @@ public interface WxKfAccountRest {
     @Path("customservice/kfaccount/del")
     @Produces(MediaType.APPLICATION_JSON)
     WxErrCode delKfAccount(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfAccount account);
-    default
-    WxErrCode delKfAccount(KfAccount account) {
+
+    default WxErrCode delKfAccount(KfAccount account) {
         return delKfAccount(null, account);
     }
     
@@ -163,8 +163,8 @@ public interface WxKfAccountRest {
     @Path("customservice/kfaccount/uploadheadimg")
     @Produces(MediaType.MULTIPART_FORM_DATA)
     WxErrCode uploadKfAccountHeadimg(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, @QueryParam("kf_account")String kfAccount, @FormParam("img") InputStream inStream);
-    default
-    WxErrCode uploadKfAccountHeadimg(String kfAccount, InputStream inStream) {
+
+    default WxErrCode uploadKfAccountHeadimg(String kfAccount, InputStream inStream) {
         return uploadKfAccountHeadimg(null, kfAccount, inStream);
     }
     
@@ -203,9 +203,9 @@ public interface WxKfAccountRest {
     @POST
     @Path("cgi-bin/customservice/getkflist")
     @Produces(MediaType.APPLICATION_JSON)
-    KfAccountList getKfList(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken);
-    default
-    KfAccountList getKfList() {
+    KfAccountList getKfList(@QueryParam("ACCESS_TOKEN") @Value(MpWxConsts.ACCESS_TOKEN) String accessToken);
+
+    default KfAccountList getKfList() {
         return getKfList(null);
     }
     
@@ -249,6 +249,10 @@ public interface WxKfAccountRest {
     @Produces(MediaType.APPLICATION_JSON)
     WxErrCode sendKfMessage(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfReplyBaseMessage msg);
     
+    default WxErrCode sendKfMessage(KfReplyBaseMessage msg) {
+        return sendKfMessage(null, msg);
+    }
+    
     /**
      * 客服输入状态 开发者可通过调用“客服输入状态”接口，返回客服当前输入状态给用户。 微信客户端效果图如下：
      * 
@@ -281,5 +285,9 @@ public interface WxKfAccountRest {
     @Path("cgi-bin/message/custom/typing")
     @Produces(MediaType.APPLICATION_JSON)
     WxErrCode customTyping(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfReplyCustomTyping msg);
+
+    default WxErrCode customTyping(KfReplyCustomTyping msg) {
+        return customTyping(null, msg);
+    }
 
 }

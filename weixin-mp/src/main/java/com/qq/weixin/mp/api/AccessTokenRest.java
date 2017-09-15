@@ -11,7 +11,9 @@ import com.suisrc.weixin.core.bean.WxAccessToken;
 
 /**
  * 公众号可以使用AppID和AppSecret调用本接口来获取access_token。
+ * 
  * AppID和AppSecret可在微信公众平台官网-开发页中获得（需要已经成为开发者，且帐号没有异常状态）。
+ * 
  * 注意调用所有微信接口时均需使用https协议。如果第三方不使用中控服务器，而是选择各个业务逻辑点各 自去刷新access_token，那么就可能会产生冲突，导致服务不稳定。
  * 
  * @author Y13
@@ -31,6 +33,5 @@ public interface AccessTokenRest {
     @GET
     @Path("cgi-bin/token")
     @Produces(MediaType.APPLICATION_JSON)
-    WxAccessToken getToken(@QueryParam("grant_type") String grantType, @QueryParam("appid") String appid,
-            @QueryParam("secret") String secret);
+    WxAccessToken getToken(@QueryParam("grant_type") String grantType, @QueryParam("appid") String appid, @QueryParam("secret") String secret);
 }

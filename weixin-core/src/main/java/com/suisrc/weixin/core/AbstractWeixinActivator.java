@@ -84,7 +84,9 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
     // protected volatile WxAccessToken accessToken;
     protected AtomicReference<WxAccessToken> accessToken = null;
 
-    // -----------------------------------------------------------------------------------------------//
+    /**
+     * 构造方法
+     */
     protected AbstractWeixinActivator() {
         /*
          * 写在这里是方便后面初始化方法进行替换,更新
@@ -95,6 +97,7 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
         encodingAesKey = System.getProperty(WxConsts.KEY_CORE_ENCODING_AES_KEY);
     }
 
+    // ----------------------------------------------------------------ZERO ApiActivator
     /**
      * 构造后被系统调用 进行内容初始化
      */
@@ -182,6 +185,8 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
         }
     }
 
+    //--------------------------------------------------ZERO WxConfig
+    
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -202,6 +207,8 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
         return encodingAesKey;
     }
 
+    //--------------------------------------------------ZERO AccessToken
+    
     /**
      * 初始化构造AccessToken
      */
@@ -256,7 +263,9 @@ public abstract class AbstractWeixinActivator implements ApiActivator, WxConfig 
     }
 
     /**
-     * 获取 weixin access token, 不允许保证线程安全，获取新的token对象
+     * 获取 weixin access token, 
+     * 不需要保证线程安全，框架中已经控制了线程安全
+     * 获取新的token对象
      * 
      * @return
      */
