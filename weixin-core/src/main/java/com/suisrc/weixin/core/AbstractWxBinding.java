@@ -149,10 +149,14 @@ public abstract class AbstractWxBinding<T> {
         if (message == null) {
             return Response.ok().entity("消息内容无法解析").type(MediaType.TEXT_PLAIN).build();
         }
+        message.setJson(isJson); // 告诉系统数据的来源格式
         // 通过监听器处理消息内容
         Object bean = listenerManager.accept(message); // 得到处理的结构
         if (bean == null) {
             return Response.ok().entity("消息内容无法应答").type(MediaType.TEXT_PLAIN).build();
+        }
+        if (bean instanceof IMessage) {
+            isJson = ((IMessage)bean).isJson(); // 用新的格式要求替换
         }
         // --------------------------------响应结果解析------------------------------------//
         // 分析结果

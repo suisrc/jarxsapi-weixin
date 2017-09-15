@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.reply;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -26,6 +27,7 @@ public class ReplyMusicMessage extends BaseMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Music")
+    @JsonProperty("Music")
     private MusicMedia music;
 
     public ReplyMusicMessage() {

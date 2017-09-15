@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.base;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.suisrc.weixin.core.msg.IMessage;
@@ -24,6 +25,7 @@ public abstract class BaseMessage implements IMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "URL")
+    @JsonProperty("URL")
     private String baseUrl;
 
     /**
@@ -31,6 +33,7 @@ public abstract class BaseMessage implements IMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "ToUserName")
+    @JsonProperty("ToUserName")
     private String toUserName;
 
     /**
@@ -38,12 +41,14 @@ public abstract class BaseMessage implements IMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "FromUserName")
+    @JsonProperty("FromUserName")
     private String fromUserName;
 
     /**
      * 消息创建时间 （整型）
      */
     @JacksonXmlProperty(localName = "CreateTime")
+    @JsonProperty("CreateTime")
     private Integer createTime;
 
     /**
@@ -51,6 +56,7 @@ public abstract class BaseMessage implements IMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "MsgType")
+    @JsonProperty("MsgType")
     private String msgType;
 
     /**
@@ -131,6 +137,30 @@ public abstract class BaseMessage implements IMessage {
      */
     public void setMsgType(String msgType) {
         this.msgType = msgType;
+    }
+    
+    /**
+     * 是否格式化为json
+     * 
+     * 该字段不参与格式数据内容
+     */
+    private boolean isJson = false;
+    
+    /**
+     * 是否格式化为json
+     */
+    @Override
+    public boolean isJson() {
+        return isJson;
+    }
+    
+    /**
+     * 设定格式化为json，默认情况下格式化为xml
+     * @param isJson
+     */
+    @Override
+    public void setJson(boolean isJson) {
+        this.isJson = isJson;
     }
 
     /**

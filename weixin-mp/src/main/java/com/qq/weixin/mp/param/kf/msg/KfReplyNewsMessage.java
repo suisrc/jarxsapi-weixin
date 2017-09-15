@@ -1,11 +1,8 @@
 package com.qq.weixin.mp.param.kf.msg;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qq.weixin.mp.param.kf.media.ArticlesMedia;
 import com.suisrc.weixin.mp.msg.WxMsgType;
 
@@ -62,22 +59,6 @@ public class KfReplyNewsMessage extends KfReplyBaseMessage {
     public void setArticlesMedias(List<ArticlesMedia> news) {
         this.news = new News();
         this.news.setArticles(news);
-    }
-    
-    public static void main(String[] args) throws JsonProcessingException {
-        KfReplyNewsMessage news = new KfReplyNewsMessage();
-        news.setTouser("lin");
-        List<ArticlesMedia> ams = new ArrayList<>();
-        ArticlesMedia am = new ArticlesMedia();
-        am.setDescription("hello");
-        am.setTitle("123");
-        am.setPicUrl("http://");
-        ams.add(am);
-        news.setArticlesMedias(ams);
-        
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(news);
-        System.out.println(json);
     }
 
 }

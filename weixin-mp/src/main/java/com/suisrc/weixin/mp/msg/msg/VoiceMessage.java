@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.msg;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -23,6 +24,7 @@ public class VoiceMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "MediaId")
+    @JsonProperty("MediaId")
     private String mediaId;
 
     /**
@@ -30,6 +32,7 @@ public class VoiceMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Format")
+    @JsonProperty("Format")
     private String format;
 
     /**
@@ -37,6 +40,7 @@ public class VoiceMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Recognition")
+    @JsonProperty("Recognition")
     private String recognition;
 
     /**

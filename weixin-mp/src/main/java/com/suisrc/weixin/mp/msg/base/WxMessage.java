@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.base;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
@@ -13,6 +14,7 @@ public abstract class WxMessage extends BaseMessage {
      * 消息id，64位整型
      */
     @JacksonXmlProperty(localName = "MsgId")
+    @JsonProperty("MsgId")
     private Long msgId;
 
     /**

@@ -1,8 +1,7 @@
 package com.suisrc.weixin.mp.msg.media;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -13,7 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @author Y13
  *
  */
-@JsonInclude(Include.NON_NULL)
+@JsonRootName("item")
 public class ArticlesMedia {
 
     /**
@@ -24,6 +23,7 @@ public class ArticlesMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Title")
+    @JsonProperty("Title")
     private String title;
 
     /**
@@ -34,6 +34,7 @@ public class ArticlesMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Description")
+    @JsonProperty("Description")
     private String description;
 
     /**
@@ -44,7 +45,7 @@ public class ArticlesMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "PicUrl")
-    @JsonProperty("picurl")
+    @JsonProperty("PicUrl")
     private String picUrl;
 
     /**
@@ -55,6 +56,7 @@ public class ArticlesMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Url")
+    @JsonProperty("Url")
     private String url;
 
     /**

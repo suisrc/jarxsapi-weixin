@@ -24,7 +24,7 @@ public class WxMsgFactory {
         try {
             Matcher matcher = Pattern.compile(isJson ? WxRegex.REGEX_TYPE_JSON : WxRegex.REGEX_TYPE_XML).matcher(content);
             if (matcher.find()) {
-                String typeName = content.substring(matcher.start(), matcher.end()).toLowerCase();
+                String typeName = matcher.group().toLowerCase();
                 if (WxMsgType.event.name().equals(typeName)) {
                     // 消息类型有分很多种
                     return getEventType(content, isJson);
@@ -48,7 +48,7 @@ public class WxMsgFactory {
         try {
             Matcher matcher = Pattern.compile(isJson ? WxRegex.REGEX_EVENT_TYPE_JSON : WxRegex.REGEX_EVENT_TYPE_XML).matcher(content);
             if (matcher.find()) {
-                String typeName = content.substring(matcher.start(), matcher.end()).toLowerCase();
+                String typeName = matcher.group().toLowerCase();
                 typeName = WxMsgType.event.name() + "_" + typeName;
                 if (WxMsgType.event_subscribe.name().equals(typeName)) {
                     // 关注的两种形式，基本关注和二维码关注

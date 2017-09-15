@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.msg;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -23,6 +24,7 @@ public class LinkMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Title")
+    @JsonProperty("Title")
     private String title;
 
     /**
@@ -30,6 +32,7 @@ public class LinkMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Description")
+    @JsonProperty("Description")
     private String description;
 
     /**
@@ -37,6 +40,7 @@ public class LinkMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Url")
+    @JsonProperty("Url")
     private String url;
 
     /**

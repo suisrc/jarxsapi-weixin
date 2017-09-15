@@ -1,8 +1,6 @@
 package com.suisrc.weixin.mp.msg.media;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -12,17 +10,17 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @author Y13
  *
  */
-@JsonInclude(Include.NON_NULL)
 public class MediaId {
 
     /**
-     * <MediaId><![CDATA[media_id]]></MediaId> 通过素材管理中的接口上传多媒体文件，得到的id。
+     * <MediaId><![CDATA[media_id]]></MediaId> 
+     * 通过素材管理中的接口上传多媒体文件，得到的id。
      * 
      * 必须字段
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "MediaId")
-    @JsonProperty("media_id")
+    @JsonProperty("MediaId")
     private String mediaId;
 
     /**

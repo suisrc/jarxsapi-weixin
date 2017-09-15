@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -21,18 +22,21 @@ public class LocationEvent extends WxEventMessage {
      * 地理位置纬度
      */
     @JacksonXmlProperty(localName = "Latitude")
+    @JsonProperty("Latitude")
     private String latitude;
 
     /**
      * 地理位置经度
      */
     @JacksonXmlProperty(localName = "Longitude")
+    @JsonProperty("Longitude")
     private String longitude;
 
     /**
      * 地理位置精度
      */
     @JacksonXmlProperty(localName = "Precision")
+    @JsonProperty("Precision")
     private String precision;
 
     /**

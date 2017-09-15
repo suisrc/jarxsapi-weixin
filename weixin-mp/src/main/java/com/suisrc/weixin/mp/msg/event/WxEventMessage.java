@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -19,6 +20,7 @@ public class WxEventMessage extends BaseMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="Event")
+    @JsonProperty("Event")
 	private String event;
 	
 	public String getEvent() {

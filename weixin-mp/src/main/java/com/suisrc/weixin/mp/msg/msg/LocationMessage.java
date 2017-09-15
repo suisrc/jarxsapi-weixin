@@ -1,5 +1,6 @@
 package com.suisrc.weixin.mp.msg.msg;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -23,18 +24,21 @@ public class LocationMessage extends WxMessage {
      * 地理位置维度
      */
     @JacksonXmlProperty(localName = "Location_X")
+    @JsonProperty("Location_X")
     private String locationX;
 
     /**
      * 地理位置经度
      */
     @JacksonXmlProperty(localName = "Location_Y")
+    @JsonProperty("Location_Y")
     private String locationY;
 
     /**
      * 地图缩放大小
      */
     @JacksonXmlProperty(localName = "Scale")
+    @JsonProperty("Scale")
     private String scale;
 
     /**
@@ -42,6 +46,7 @@ public class LocationMessage extends WxMessage {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Label")
+    @JsonProperty("Label")
     private String label;
 
     /**

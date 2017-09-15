@@ -1,8 +1,6 @@
 package com.suisrc.weixin.mp.msg.media;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -12,7 +10,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * @author Y13
  *
  */
-@JsonInclude(Include.NON_NULL)
 public class MusicMedia {
 
     /**
@@ -23,6 +20,7 @@ public class MusicMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Title")
+    @JsonProperty("Title")
     private String title;
 
     /**
@@ -33,6 +31,7 @@ public class MusicMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "Description")
+    @JsonProperty("Description")
     private String description;
 
     /**
@@ -43,7 +42,7 @@ public class MusicMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "MusicUrl")
-    @JsonProperty("musicurl")
+    @JsonProperty("MusicUrl")
     private String musicUrl;
 
     /**
@@ -54,7 +53,7 @@ public class MusicMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "HQMusicUrl")
-    @JsonProperty("hqmusicurl")
+    @JsonProperty("HQMusicUrl")
     private String hQMusicUrl;
 
     /**
@@ -63,7 +62,7 @@ public class MusicMedia {
      */
     @JacksonXmlCData
     @JacksonXmlProperty(localName = "ThumbMediaId")
-    @JsonProperty("thumb_media_id")
+    @JsonProperty("ThumbMediaId")
     private String thumbMediaId;
 
     /**
