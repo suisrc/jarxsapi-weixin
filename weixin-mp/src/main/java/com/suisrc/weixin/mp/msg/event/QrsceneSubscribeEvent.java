@@ -21,7 +21,7 @@ import com.suisrc.weixin.mp.msg.base.WxEventMessage;
  * @author Y13
  *
  */
-@MpEvent(value = "subscribe", priority = 1023, handler = TypeEqualsAssert.class)
+@MpEvent(value = "subscribe", priority = "m", handler = TypeEqualsAssert.class)
 @MpEventKey(value = "qrscene_", handler = TypeStartsWithAssert.class)
 @JacksonXmlRootElement(localName = "xml")
 public class QrsceneSubscribeEvent extends WxEventMessage {

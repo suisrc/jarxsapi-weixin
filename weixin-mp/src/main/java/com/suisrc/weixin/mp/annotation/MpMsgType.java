@@ -40,7 +40,7 @@ public @interface MpMsgType {
      * 该字段只有在handler字段不为TypeAssert.class时候有效
      * 如果排序有效，其作用于默认排序之后，即默认认为是1025
      */
-    int priority() default WxMsgFactory.DEFAULT_PRIORITY;
+    String priority() default WxMsgFactory.DEFAULT_PRIORITY;
     
     /**
      * 适配方式,默认使用接口，表示使用相等方式匹配，同TypeEqualsAssert方式

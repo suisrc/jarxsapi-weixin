@@ -14,7 +14,7 @@ import com.suisrc.weixin.mp.msg.base.WxMessage;
  * @author Y13
  *
  */
-@MpMsgType(value = ".+", priority = 4096, handler = TypeRegexAssert.class)
+@MpMsgType(value = ".+", priority = "z", handler = TypeRegexAssert.class)
 @JacksonXmlRootElement(localName="xml")
 public class UnknowMessage extends WxMessage {
     

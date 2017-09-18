@@ -41,7 +41,7 @@ public @interface MpEvent {
      * 匹配的顺序
      * 该字段只有在handler字段不为TypeAssert.class时候有效
      */
-    int priority() default WxMsgFactory.DEFAULT_PRIORITY;
+    String priority() default WxMsgFactory.DEFAULT_PRIORITY;
     
     /**
      * 适配方式,默认使用接口，表示使用相等方式匹配，同TypeEqualsAssert方式

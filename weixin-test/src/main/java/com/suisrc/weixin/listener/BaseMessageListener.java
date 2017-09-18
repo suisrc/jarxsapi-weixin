@@ -1,5 +1,6 @@
 package com.suisrc.weixin.listener;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Include;
@@ -14,6 +15,7 @@ import com.suisrc.weixin.mp.msg.msg.VoiceMessage;
  * @author Y13
  *
  */
+@ApplicationScoped
 @Named("com.suisrc.weixin.mp.api.WxBindingRest")
 @Include({TextMessage.class, VoiceMessage.class})
 public class BaseMessageListener implements Listener<BaseMessage> {

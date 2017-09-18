@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
@@ -65,6 +66,9 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
     protected void initialized() {
         // 初始化监听管理器
         listenerManager = new ListenerManager<>(this, WxBindingRest.class);
+        // 设定构建器创建工具
+        listenerManager.setListenerCreater(clazz -> CDI.current().select(clazz).get());
+        // 设定监听的内容
         listenerManager.addClassesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_CLASSES);
         listenerManager.addPackagesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES);
         // 消息加密

@@ -1,5 +1,6 @@
 package com.suisrc.weixin.listener;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Listener;
@@ -12,6 +13,7 @@ import com.suisrc.weixin.mp.msg.reply.ReplyTextMessage;
  * @author Y13
  *
  */
+@ApplicationScoped
 @Named("com.suisrc.weixin.mp.api.WxBindingRest")
 public class TextMessageListener implements Listener<TextMessage> {
 

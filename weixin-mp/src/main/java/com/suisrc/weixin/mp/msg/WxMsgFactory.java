@@ -17,14 +17,14 @@ public class WxMsgFactory {
     /**
      * 默认顺序
      */
-    public final static int DEFAULT_PRIORITY = 1024;
+    public final static String DEFAULT_PRIORITY = "n";
     
     /**
      * 类型注解索引
      */
-    public final static MpTypeAnnoIndex annoIndex;
+    public final static MpMsgTypeIndex annoIndex;
     static {
-        annoIndex = new MpTypeAnnoIndex();
+        annoIndex = new MpMsgTypeIndex();
         String[] pkgs = {UnknowMessage.class.getPackage().getName(), UnknowEvent.class.getPackage().getName()}; // 系统默认
         // 读取系统配置
         String content = System.getProperty(MpWxConsts.KEY_WEIXIN_MSG_TYPE_PACKAGES);

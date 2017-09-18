@@ -8,7 +8,7 @@ import com.suisrc.weixin.mp.annotation.MpMsgType;
  * @author Y13
  *
  */
-@MpMsgType(value = ".+", priority = 4096, handler = TypeRegexAssert.class)
+@MpMsgType(value = ".+", priority = "z", handler = TypeRegexAssert.class)
 public class UnknowEvent {
 
 }

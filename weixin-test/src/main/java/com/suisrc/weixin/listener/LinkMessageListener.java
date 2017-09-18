@@ -1,5 +1,6 @@
 package com.suisrc.weixin.listener;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Listener;
@@ -11,6 +12,7 @@ import com.suisrc.weixin.mp.msg.msg.LinkMessage;
  * @author Y13
  *
  */
+@ApplicationScoped
 @Named("com.suisrc.weixin.mp.api.WxBindingRest")
 public class LinkMessageListener implements Listener<LinkMessage> {
 

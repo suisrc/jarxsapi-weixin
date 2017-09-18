@@ -35,6 +35,11 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     private Class<C> ownerType;
     
     /**
+     * 监听创建者
+     */
+    private ListenerCreater listenerCreater = ListenerCreater.DEFAULT;
+    
+    /**
      * 构造
      */
     public ListenerManager() {}
@@ -70,6 +75,22 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
      */
     public Class<C> getOwnerType() {
         return ownerType;
+    }
+    
+    /**
+     * 创建构建器的实体
+     * @param listenerCreater
+     */
+    public void setListenerCreater(ListenerCreater listenerCreater) {
+        this.listenerCreater = listenerCreater;
+    }
+    
+    /**
+     * 获取构建器的实体
+     * @return
+     */
+    public ListenerCreater getListenerCreater() {
+        return listenerCreater;
     }
 
     /**
@@ -280,10 +301,10 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
                 // 无法找到监听对象
                 return false;
             }
-            Listener listener = listenerClass.newInstance();
+            Listener listener = listenerCreater.newInstance(listenerClass);
             addListeners(listener, classes);
             return true;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
             return false;
         }

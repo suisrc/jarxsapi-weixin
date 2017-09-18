@@ -1,5 +1,7 @@
 package com.suisrc.weixin.mp.msg;
 
+import java.util.regex.Pattern;
+
 interface WxRegex {
 
     /**
@@ -19,4 +21,31 @@ interface WxRegex {
      */
     String REGEX_EVENT_KEY_XML = "(?<=<EventKey><!\\[CDATA\\[).+?(?=\\]\\]></EventKey>)";
     String REGEX_EVENT_KEY_JSON = "(?<=\"EventKey\":\").+?(?=\")";
+    
+    /**
+     * 获取消息类型的正则表达式
+     * @param isJson
+     * @return
+     */
+    static Pattern getRegexType(boolean isJson) {
+        return Pattern.compile(isJson ? REGEX_TYPE_JSON : REGEX_TYPE_XML);
+    }
+    
+    /**
+     * 获取事件类型的正则表达式
+     * @param isJson
+     * @return
+     */
+    static Pattern getRegexEvent(boolean isJson) {
+        return Pattern.compile(isJson ? REGEX_EVENT_TYPE_JSON : REGEX_EVENT_TYPE_XML);
+    }
+    
+    /**
+     * 获取消息类型的正则表达式
+     * @param isJson
+     * @return
+     */
+    static Pattern getRegexEventKey(boolean isJson) {
+        return Pattern.compile(isJson ? REGEX_EVENT_KEY_JSON : REGEX_EVENT_KEY_XML);
+    }
 }
