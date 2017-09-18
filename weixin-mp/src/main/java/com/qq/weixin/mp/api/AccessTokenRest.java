@@ -1,5 +1,6 @@
 package com.qq.weixin.mp.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -33,5 +34,6 @@ public interface AccessTokenRest {
     @GET
     @Path("cgi-bin/token")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     WxAccessToken getToken(@QueryParam("grant_type") String grantType, @QueryParam("appid") String appid, @QueryParam("secret") String secret);
 }

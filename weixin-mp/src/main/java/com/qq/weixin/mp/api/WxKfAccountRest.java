@@ -2,6 +2,7 @@ package com.qq.weixin.mp.api;
 
 import java.io.InputStream;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -69,6 +70,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("customservice/kfaccount/add")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     WxErrCode addKfAccount(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfAccount account);
 
     default WxErrCode addKfAccount(KfAccount account) {
@@ -103,6 +105,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("customservice/kfaccount/update")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     WxErrCode updateKfAccount(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfAccount account);
 
     default WxErrCode updateKfAccount(KfAccount account) {
@@ -137,6 +140,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("customservice/kfaccount/del")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     WxErrCode delKfAccount(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfAccount account);
 
     default WxErrCode delKfAccount(KfAccount account) {
@@ -162,6 +166,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("customservice/kfaccount/uploadheadimg")
     @Produces(MediaType.MULTIPART_FORM_DATA)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     WxErrCode uploadKfAccountHeadimg(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, @QueryParam("kf_account")String kfAccount, @FormParam("img") InputStream inStream);
 
     default WxErrCode uploadKfAccountHeadimg(String kfAccount, InputStream inStream) {
@@ -203,6 +208,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("cgi-bin/customservice/getkflist")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     KfAccountList getKfList(@QueryParam("ACCESS_TOKEN") @Value(MpWxConsts.ACCESS_TOKEN) String accessToken);
 
     default KfAccountList getKfList() {
@@ -247,6 +253,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("cgi-bin/message/custom/send")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     WxErrCode sendKfMessage(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfReplyBaseMessage msg);
     
     default WxErrCode sendKfMessage(KfReplyBaseMessage msg) {
@@ -284,6 +291,7 @@ public interface WxKfAccountRest {
     @POST
     @Path("cgi-bin/message/custom/typing")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     WxErrCode customTyping(@QueryParam("ACCESS_TOKEN")@Value(MpWxConsts.ACCESS_TOKEN)String accessToken, KfReplyCustomTyping msg);
 
     default WxErrCode customTyping(KfReplyCustomTyping msg) {

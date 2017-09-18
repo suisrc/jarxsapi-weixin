@@ -1,5 +1,6 @@
 package com.qq.weixin.mp.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -32,6 +33,7 @@ public interface WxServerInfoRest {
     @GET
     @Path("cgi-bin/getcallbackip")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     ServerIpResult getCallbackIp(@QueryParam("access_token") @Value(WxConsts.ACCESS_TOKEN) String accessToken);
     
     default ServerIpResult getCallbackIp() {

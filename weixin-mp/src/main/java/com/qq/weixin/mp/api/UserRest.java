@@ -1,5 +1,6 @@
 package com.qq.weixin.mp.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -39,6 +40,7 @@ public interface UserRest {
     @GET
     @Path("cgi-bin/user/get")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     UserListResult getUserGet(
             @QueryParam("access_token") @Value(MpWxConsts.ACCESS_TOKEN) String accessToken,
             @QueryParam("next_openid")                                  String openid);
@@ -59,6 +61,7 @@ public interface UserRest {
     @GET
     @Path("cgi-bin/user/info")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Reviser(value = WxTokenCheck.class, master = Consts.FIELD_ACTIVATOR)
     UserInfoResult getUserInfo(
             @QueryParam("access_token") @Value(MpWxConsts.ACCESS_TOKEN) String accessToken,
