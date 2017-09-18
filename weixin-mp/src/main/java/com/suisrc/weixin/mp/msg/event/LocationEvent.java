@@ -3,6 +3,8 @@ package com.suisrc.weixin.mp.msg.event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.suisrc.weixin.mp.annotation.MpEvent;
+import com.suisrc.weixin.mp.msg.base.WxEventMessage;
 
 /**
  * 上报地理位置事件
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * @author Y13
  *
  */
+@MpEvent("LOCATION")
 @JacksonXmlRootElement(localName = "xml")
 public class LocationEvent extends WxEventMessage {
 

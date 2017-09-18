@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.param.kf.msg;
 
 import com.qq.weixin.mp.param.kf.media.MediaId;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 图文消息
@@ -17,7 +16,8 @@ public class KfReplyMpnewsMessage extends KfReplyBaseMessage {
     private MediaId mpnews;
 
     public KfReplyMpnewsMessage() {
-        setMsgtype(WxMsgType.mpnews.name());
+        // setMsgtype(WxMsgType.mpnews.name());
+        setMsgtype("mpnews");
     }
 
     /**

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 import com.suisrc.weixin.mp.msg.media.MediaId;
 
@@ -26,7 +25,8 @@ public class ReplyImageMessage extends BaseMessage {
     private MediaId image;
 
     public ReplyImageMessage() {
-        setMsgType(WxMsgType.image.name());
+        // setMsgType(WxMsgType.image.name());
+        setMsgType("image");
         setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
     }
 

@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.param.kf.msg;
 
 import com.qq.weixin.mp.param.kf.media.MediaInfo;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 发送视频消息
@@ -16,7 +15,8 @@ public class KfReplyVideoMessage extends KfReplyBaseMessage {
     private MediaInfo video;
     
     public KfReplyVideoMessage() {
-        setMsgtype(WxMsgType.video.name());
+        // setMsgtype(WxMsgType.video.name());
+        setMsgtype("video");
     }
 
     /**

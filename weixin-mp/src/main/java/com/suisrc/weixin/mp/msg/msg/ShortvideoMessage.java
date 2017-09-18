@@ -4,17 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.suisrc.weixin.mp.annotation.MpMsgType;
 import com.suisrc.weixin.mp.msg.base.WxMessage;
 
 /**
  * 小视频消息
- * <MsgType><![CDATA[video]]></MsgType>
+ * <MsgType><![CDATA[shortvideo]]></MsgType>
  * 
  * <MediaId><![CDATA[media_id]]></MediaId>
  * <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
  * @author Y13
  *
  */
+@MpMsgType("shortvideo")
 @JacksonXmlRootElement(localName="xml")
 public class ShortvideoMessage extends WxMessage {
 

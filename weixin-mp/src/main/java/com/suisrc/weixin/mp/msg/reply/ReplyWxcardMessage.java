@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 import com.suisrc.weixin.mp.msg.media.MediaId;
 
@@ -25,7 +24,8 @@ public class ReplyWxcardMessage extends BaseMessage {
     private MediaId wxcard;
 
     public ReplyWxcardMessage() {
-        setMsgType(WxMsgType.wxcard.name());
+        // setMsgType(WxMsgType.wxcard.name());
+        setMsgType("wxcard");
         setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
     }
 

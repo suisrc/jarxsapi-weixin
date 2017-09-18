@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 import com.suisrc.weixin.mp.msg.media.MediaId;
 
@@ -23,7 +22,8 @@ public class ReplyMpnewsMessage extends BaseMessage {
     private MediaId mpnews;
 
     public ReplyMpnewsMessage() {
-        setMsgType(WxMsgType.mpnews.name());
+        // setMsgType(WxMsgType.mpnews.name());
+        setMsgType("mpnews");
         setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
     }
 

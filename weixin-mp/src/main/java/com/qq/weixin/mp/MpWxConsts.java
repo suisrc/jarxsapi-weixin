@@ -66,5 +66,10 @@ public interface MpWxConsts extends WxConsts {
      * 操作密钥
      */
     String KEY_WEIXIN_WHITELIST_SECRET = "com.qq.weixin.mp.whitelist.secret"; //$NON-NLS-N$
+    
+    /**
+     * 系统监听的消息推送的类型包
+     */
+    String KEY_WEIXIN_MSG_TYPE_PACKAGES = "com.qq.weixin.mp.msgtype.packages"; //$NON-NLS-N$
 
 }

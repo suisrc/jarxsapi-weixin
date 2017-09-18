@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.param.kf.msg;
 
 import com.qq.weixin.mp.param.kf.media.Wxcard;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 发送卡券
@@ -16,7 +15,8 @@ public class KfReplyWxcardMessage extends KfReplyBaseMessage {
     private Wxcard wxcard;
 
     public KfReplyWxcardMessage() {
-        setMsgtype(WxMsgType.wxcard.name());
+        // setMsgtype(WxMsgType.wxcard.name());
+        setMsgtype("wxcard");
     }
 
     /**

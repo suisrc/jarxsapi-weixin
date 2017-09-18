@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 
 /**
@@ -23,7 +22,8 @@ public class ReplyTextMessage extends BaseMessage {
     private String content;
 
     public ReplyTextMessage() {
-        setMsgType(WxMsgType.text.name());
+        // setMsgType(WxMsgType.text.name());
+        setMsgType("text");
         setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
     }
 

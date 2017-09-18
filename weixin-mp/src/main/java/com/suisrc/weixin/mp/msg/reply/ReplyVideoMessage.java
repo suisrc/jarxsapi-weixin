@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 import com.suisrc.weixin.mp.msg.media.MediaInfo;
 
@@ -28,7 +27,8 @@ public class ReplyVideoMessage extends BaseMessage {
     private MediaInfo video;
 
     public ReplyVideoMessage() {
-        setMsgType(WxMsgType.video.name());
+        // setMsgType(WxMsgType.video.name());
+        setMsgType("video");
         setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
     }
 

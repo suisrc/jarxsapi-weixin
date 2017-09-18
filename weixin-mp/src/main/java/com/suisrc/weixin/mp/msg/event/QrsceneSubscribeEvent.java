@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.suisrc.weixin.core.check.TypeEqualsAssert;
+import com.suisrc.weixin.core.check.TypeStartsWithAssert;
+import com.suisrc.weixin.mp.annotation.MpEvent;
+import com.suisrc.weixin.mp.annotation.MpEventKey;
+import com.suisrc.weixin.mp.msg.base.WxEventMessage;
 
 /**
  * 二维码扫描
@@ -16,6 +21,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * @author Y13
  *
  */
+@MpEvent(value = "subscribe", priority = 1023, handler = TypeEqualsAssert.class)
+@MpEventKey(value = "qrscene_", handler = TypeStartsWithAssert.class)
 @JacksonXmlRootElement(localName = "xml")
 public class QrsceneSubscribeEvent extends WxEventMessage {
 

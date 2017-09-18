@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 import com.suisrc.weixin.mp.msg.media.ArticlesMedia;
 
@@ -50,7 +49,8 @@ public class ReplyNewsMessage extends BaseMessage {
     private List<ArticlesMedia> articles = new ArrayList<>();
 
     public ReplyNewsMessage() {
-        setMsgType(WxMsgType.news.name());
+        // setMsgType(WxMsgType.news.name());
+        setMsgType("news");
         setCreateTime(Long.valueOf(System.currentTimeMillis() / 1000l).intValue());
     }
 

@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.param.kf.msg;
 
 import com.qq.weixin.mp.param.kf.media.MediaId;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 发送语音消息
@@ -16,7 +15,8 @@ public class KfReplyVoiceMessage extends KfReplyBaseMessage {
     private MediaId voice;
     
     public KfReplyVoiceMessage() {
-        setMsgtype(WxMsgType.voice.name());
+        // setMsgtype(WxMsgType.voice.name());
+        setMsgtype("voice");
     }
 
     /**

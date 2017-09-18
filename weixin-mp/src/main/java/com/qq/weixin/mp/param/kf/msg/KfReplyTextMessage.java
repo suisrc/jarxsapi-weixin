@@ -1,7 +1,5 @@
 package com.qq.weixin.mp.param.kf.msg;
 
-import com.suisrc.weixin.mp.msg.WxMsgType;
-
 /**
  * 文本
  * 
@@ -15,7 +13,8 @@ public class KfReplyTextMessage extends KfReplyBaseMessage {
     private String text;
     
     public KfReplyTextMessage() {
-        setMsgtype(WxMsgType.text.name());
+        // setMsgtype(WxMsgType.text.name());
+        setMsgtype("text");
     }
 
     /**

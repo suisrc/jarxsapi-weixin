@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.param.kf.msg;
 
 import com.qq.weixin.mp.param.kf.media.MediaId;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 图片
@@ -16,7 +15,8 @@ public class KfReplyImageMessage extends KfReplyBaseMessage {
     private MediaId image;
 
     public KfReplyImageMessage() {
-        setMsgtype(WxMsgType.image.name());
+        // setMsgtype(WxMsgType.image.name());
+        setMsgtype("image");
     }
     
     /**

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.suisrc.weixin.mp.annotation.MpEvent;
+import com.suisrc.weixin.mp.msg.base.WxEventMessage;
 
 /**
  * 点击菜单拉取消息时的事件推送
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * @author Y13
  *
  */
+@MpEvent("CLICK")
 @JacksonXmlRootElement(localName = "xml")
 public class ClickEvent extends WxEventMessage {
 

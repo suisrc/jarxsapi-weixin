@@ -2,7 +2,6 @@ package com.qq.weixin.mp.param.kf.xcx;
 
 import com.qq.weixin.mp.param.kf.media.MiniprogrampageInfo;
 import com.qq.weixin.mp.param.kf.msg.KfReplyBaseMessage;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 发送小程序卡片（要求小程序与公众号已关联）
@@ -31,7 +30,8 @@ public class KfReplyMiniprogrampageMessage extends KfReplyBaseMessage {
     private MiniprogrampageInfo miniprogrampage;
 
     public KfReplyMiniprogrampageMessage() {
-        setMsgtype(WxMsgType.miniprogrampage.name());
+        // setMsgtype(WxMsgType.miniprogrampage.name());
+        setMsgtype("miniprogrampage");
     }
 
     /**

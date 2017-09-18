@@ -15,8 +15,8 @@ interface WxRegex {
     String REGEX_EVENT_TYPE_JSON = "(?<=\"Event\":\").+?(?=\")";
 
     /**
-     * 二维码关注订阅，EventKey内容为qrscene_开头
+     * EventKey内容的正则表达式
      */
-    String REGEX_QR_SUBSCRIBE_XML = "<EventKey><!\\[CDATA\\[qrscene_.+?\\]\\]></EventKey>";
-    String REGEX_QR_SUBSCRIBE_JSON = "\"EventKey\":\"qrscene_+?\"";
+    String REGEX_EVENT_KEY_XML = "(?<=<EventKey><!\\[CDATA\\[).+?(?=\\]\\]></EventKey>)";
+    String REGEX_EVENT_KEY_JSON = "(?<=\"EventKey\":\").+?(?=\")";
 }

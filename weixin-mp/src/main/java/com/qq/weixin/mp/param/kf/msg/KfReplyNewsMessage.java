@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qq.weixin.mp.param.kf.media.ArticlesMedia;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 发送图文消息（点击跳转到外链） 图文消息条数限制在8条以内
@@ -32,7 +31,8 @@ public class KfReplyNewsMessage extends KfReplyBaseMessage {
     private News news;
     
     public KfReplyNewsMessage() {
-        setMsgtype(WxMsgType.news.name());
+        // setMsgtype(WxMsgType.news.name());
+        setMsgtype("news");
     }
 
     /**

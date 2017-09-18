@@ -1,7 +1,6 @@
 package com.qq.weixin.mp.param.kf.msg;
 
 import com.qq.weixin.mp.param.kf.media.MusicMedia;
-import com.suisrc.weixin.mp.msg.WxMsgType;
 
 /**
  * 发送语音消息
@@ -16,7 +15,8 @@ public class KfReplyMusicMessage extends KfReplyBaseMessage {
     private MusicMedia music;
     
     public KfReplyMusicMessage() {
-        setMsgtype(WxMsgType.music.name());
+        // setMsgtype(WxMsgType.music.name());
+        setMsgtype("music");
     }
 
     /**

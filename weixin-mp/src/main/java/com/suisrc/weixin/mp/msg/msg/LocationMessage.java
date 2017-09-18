@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.suisrc.weixin.mp.annotation.MpMsgType;
 import com.suisrc.weixin.mp.msg.base.WxMessage;
 
 /**
@@ -17,6 +18,7 @@ import com.suisrc.weixin.mp.msg.base.WxMessage;
  * @author Y13
  *
  */
+@MpMsgType("location")
 @JacksonXmlRootElement(localName = "xml")
 public class LocationMessage extends WxMessage {
 
