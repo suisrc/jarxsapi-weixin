@@ -62,12 +62,7 @@
         </dependency>
         <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>
-            <artifactId>weixin-core</artifactId>
-            <version>${module.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.suisrc.jaxrsapi</groupId>
-            <artifactId>weixin-mp</artifactId>
+            <artifactId>weixin-mp-service</artifactId>
             <version>${module.version}</version>
         </dependency>
         <!-- <dependency>

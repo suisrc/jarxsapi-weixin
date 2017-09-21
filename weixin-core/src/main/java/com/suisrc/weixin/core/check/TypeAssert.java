@@ -10,7 +10,8 @@ public interface TypeAssert {
     
     /**
      * 执行assert
-     * @param type
+     * @param type 注解中标记的内容， 可能保护注解
+     * @param value 对比内容
      * @return
      */
     boolean apply(String type, String value);

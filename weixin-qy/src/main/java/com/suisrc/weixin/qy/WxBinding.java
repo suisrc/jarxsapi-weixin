@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import com.qq.weixin.qy.QyWxConsts;
 import com.suisrc.weixin.core.AbstractWxBinding;
 import com.suisrc.weixin.core.WxConfig;
+import com.suisrc.weixin.core.WxMsgNode;
 import com.suisrc.weixin.core.bean.WxEncryptSignature;
 import com.suisrc.weixin.core.bean.WxJsapiSignature;
 import com.suisrc.weixin.core.listener.ListenerManager;
@@ -85,6 +86,13 @@ public class WxBinding extends AbstractWxBinding {
 
     @Override
     protected IMessage str2Bean(String str, boolean isJson) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    @Override
+    protected Class findMsgTypeClass(WxMsgNode node) {
         // TODO Auto-generated method stub
         return null;
     }

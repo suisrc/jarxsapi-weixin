@@ -11,30 +11,30 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 /**
  * 消息工厂
  * 
+ * 舍弃的线程变量
+ * 
  * @author Y13
  *
  */
 public class WxMsgCrFactory {
 
     /**
-     * 每一个线程上一个mapper，加快分析进度。
-     */
-    private static final ThreadLocal<ObjectMapper> xmlMappers = new ThreadLocal<>();
-    private static final ThreadLocal<ObjectMapper> jsonMappers = new ThreadLocal<>();
-
-    /**
-     * 获取Xml Mapper
+     * xml转换为node
      * 
+     * @param xmlContent
+     * @param clazz
      * @return
      */
-    private static ObjectMapper getXmlMapper() {
-        ObjectMapper mapper = xmlMappers.get();
-        if (mapper == null) {
-            xmlMappers.set(mapper = new XmlMapper());
+    public static WxMsgNode xml2Node(String content) {
+        try {
+            ObjectMapper mapper = new XmlMapper();
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            mapper.setSerializationInclusion(Include.NON_NULL);
+            mapper.writerWithDefaultPrettyPrinter();
+            return WxMsgNode.create(mapper, content);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        return mapper;
     }
 
     /**
@@ -46,13 +46,16 @@ public class WxMsgCrFactory {
      */
     public static <T> T xml2Bean(String content, Class<T> clazz) {
         try {
-            return getXmlMapper().readValue(content, clazz);
+            ObjectMapper mapper = new XmlMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            mapper.writerWithDefaultPrettyPrinter();
+            return mapper.readValue(content, clazz);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
-
+    
     /**
      * bean转换为xml
      * 
@@ -61,29 +64,35 @@ public class WxMsgCrFactory {
      */
     public static <T> String bean2Xml(T bean) {
         try {
-            return getXmlMapper().writerWithDefaultPrettyPrinter().writeValueAsString(bean);
+            ObjectMapper mapper = new XmlMapper();
+            mapper.setSerializationInclusion(Include.NON_NULL);
+            mapper.writerWithDefaultPrettyPrinter();
+            return mapper.writeValueAsString(bean);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "";
         }
     }
-    
+
     /**
-     * 获取Json Mapper
+     * xml转换为node
      * 
+     * @param xmlContent
+     * @param clazz
      * @return
      */
-    private static ObjectMapper getJsonMapper() {
-        ObjectMapper mapper = jsonMappers.get();
-        if (mapper == null) {
-            jsonMappers.set(mapper = new ObjectMapper());
+    public static WxMsgNode json2Node(String content) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            mapper.setSerializationInclusion(Include.NON_NULL);
-            // mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+            mapper.writerWithDefaultPrettyPrinter();
+            return WxMsgNode.create(mapper, content);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        return mapper;
     }
-
+    
     /**
      * json转换为bean
      * 
@@ -93,7 +102,9 @@ public class WxMsgCrFactory {
      */
     public static <T> T json2Bean(String content, Class<T> clazz) {
         try {
-            return getJsonMapper().readValue(content, clazz);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+            return mapper.readValue(content, clazz);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -108,7 +119,10 @@ public class WxMsgCrFactory {
      */
     public static <T> String bean2Json(T bean) {
         try {
-            return getJsonMapper().writerWithDefaultPrettyPrinter().writeValueAsString(bean);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(Include.NON_NULL);
+            mapper.writerWithDefaultPrettyPrinter();
+            return mapper.writeValueAsString(bean);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "";
@@ -134,6 +148,17 @@ public class WxMsgCrFactory {
      */
     public static <T> T str2Bean(String data, Class<T> clazz, boolean isJson) {
         return isJson ? json2Bean(data, clazz) : xml2Bean(data, clazz);
+    }
+
+    /**
+     * 字符串转换为bean
+     * @param data
+     * @param class1
+     * @param isJson
+     * @return
+     */
+    public static WxMsgNode str2Node(String data, boolean isJson) {
+        return isJson ? json2Node(data) : xml2Node(data);
     }
 
 }

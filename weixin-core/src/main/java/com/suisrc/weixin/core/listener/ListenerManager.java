@@ -40,6 +40,11 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     private ListenerCreater listenerCreater = ListenerCreater.DEFAULT;
     
     /**
+     * 监听消息的类型解析器
+     */
+    private MsgTypeIndexs msgTypeIndexs = null;
+    
+    /**
      * 构造
      */
     public ListenerManager() {}
@@ -92,7 +97,22 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     public ListenerCreater getListenerCreater() {
         return listenerCreater;
     }
-
+    
+    /**
+     * 获取监听消息的类型解析器
+     * @return the msgTypeIndexs
+     */
+    public MsgTypeIndexs getMsgTypeIndexs() {
+        return msgTypeIndexs;
+    }
+    /**
+     * 设定监听消息的类型解析器
+     * @param msgTypeIndexs the msgTypeIndexs to set
+     */
+    public void setMsgTypeIndexs(MsgTypeIndexs msgTypeIndexs) {
+        this.msgTypeIndexs = msgTypeIndexs;
+    }
+    
     /**
      * 接受对象, 执行内容
      * 
@@ -183,24 +203,28 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
             // 查询监听的内容类型
             return null;
         }
+        // 类型集合
+        Set types = new LinkedHashSet<>();
         // 查询包含关系
         Include include = clazz.getAnnotation(Include.class);
-        if (include == null || include.value().length == 0) {
-            return Sets.newHashSet(genericType);
-        }
-        // 当前genericType失效，不再监听，如果需要进行，需要重新指定到Include中
-        // 记性过滤， 防止指定的类型不可用
-        Set types = new LinkedHashSet<>(include.value().length, 1);
-        for (Class type : include.value()) {
-            if (genericType.isAssignableFrom(type)) {
-                // 监听的类型可以使用
-                types.add(type);
-            } else {
-                System.err.println(String.format("listener type '%s' is not assignable form '%s' in [%s], ignore.", 
-                        genericType.getCanonicalName(), type.getCanonicalName(), clazz.getCanonicalName()));
+        if (include != null && include.value().length > 0) {
+            for (Class type : include.value()) {
+                if (genericType.isAssignableFrom(type)) {
+                    // 监听的类型可以使用
+                    types.add(type);
+                } else {
+                    // 指定的类型不可用
+                    System.err.println(String.format("listener type '%s' is not assignable form '%s' in [%s], ignore.", 
+                            genericType.getCanonicalName(), type.getCanonicalName(), clazz.getCanonicalName()));
+                }
             }
         }
-        return types;
+        // if (types.isEmpty() && (genericType.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) {
+        if (types.isEmpty()) {
+            return Sets.newHashSet(genericType);
+        } else {
+            return Sets.newLinkedHashSet(types);
+        }
     }
 
     /**

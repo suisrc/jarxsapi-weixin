@@ -12,6 +12,7 @@ import com.suisrc.weixin.core.crypto.WxCrypto;
 import com.suisrc.weixin.core.listener.ListenerManager;
 import com.suisrc.weixin.core.msg.EncryptMessage;
 import com.suisrc.weixin.core.msg.IMessage;
+import com.suisrc.weixin.core.msg.UnknowMessage;
 
 /**
  * 跟微信服务器捆绑
@@ -42,6 +43,13 @@ public abstract class AbstractWxBinding<T> {
     protected abstract void initialized();
     
     /**
+     * 获取数据对应的类型
+     * @param node
+     * @return
+     */
+    protected abstract Class<? extends IMessage> findMsgTypeClass(WxMsgNode node);
+    
+    /**
      * 判断用于信息
      */
     protected void assertClientInfo() {}
@@ -60,8 +68,26 @@ public abstract class AbstractWxBinding<T> {
      * @param xml
      * @return
      */
-    protected abstract IMessage str2Bean(String str, boolean isJson);
-    
+    protected IMessage str2Bean(String content, boolean isJson) {
+        WxMsgNode node = WxMsgCrFactory.str2Node(content, isJson);
+        Class<? extends IMessage> msgType = findMsgTypeClass(node);
+        IMessage bean = null;
+        if (msgType != null) {
+            // 解析数据
+            bean = node.toBean(msgType);
+        }
+        if (bean == null) {
+            // 数据无法解析
+            bean = new UnknowMessage();
+        }
+        // 给出数据的原始类型
+        bean.setJson(isJson);
+        // 给出原始数据内容--防止后面用于验证时候使用一些漏掉的信息
+        bean.setRawData2(content);
+        
+        return bean;
+    }
+
     /**
      * 把消息转换为字符串
      * @param xml
@@ -149,7 +175,7 @@ public abstract class AbstractWxBinding<T> {
         if (message == null) {
             return Response.ok().entity("Message content can not be resolved").type(MediaType.TEXT_PLAIN).build();
         }
-        message.setJson(isJson); // 告诉系统数据的来源格式
+        // message.setJson(isJson); // 告诉系统数据的来源格式
         // 通过监听器处理消息内容
         Object bean = listenerManager.accept(message); // 得到处理的结构
         if (bean == null) {
