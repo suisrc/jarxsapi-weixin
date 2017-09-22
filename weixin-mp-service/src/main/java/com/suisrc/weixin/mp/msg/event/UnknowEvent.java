@@ -15,7 +15,7 @@ import com.suisrc.weixin.mp.msg.base.WxEventMessage;
  *
  */
 
-@MpEvent(value = "", priority = "z", handler = TypeTrueAssert.class)
+@MpEvent(value = "", priority = "x", handler = TypeTrueAssert.class)
 @JacksonXmlRootElement(localName="xml")
 public class UnknowEvent extends WxEventMessage {
 

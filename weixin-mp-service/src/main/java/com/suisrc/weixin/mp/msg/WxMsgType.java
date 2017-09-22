@@ -10,7 +10,6 @@ package com.suisrc.weixin.mp.msg;
  */
 @Deprecated
 public enum WxMsgType {
-
 //    /**
 //     * 未知消息类型，用于防止无法解析消息内容 无法确定消息类型
 //     */
