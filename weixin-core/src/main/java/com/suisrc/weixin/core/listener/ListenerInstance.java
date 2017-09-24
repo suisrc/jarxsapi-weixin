@@ -9,7 +9,7 @@ import com.suisrc.jaxrsapi.core.util.JaxrsapiUtils;
  */
 @SuppressWarnings("rawtypes")
 @FunctionalInterface
-public interface ListenerCreater {
+public interface ListenerInstance {
 
     /**
      * 创建一个类型的实体对象
@@ -21,5 +21,5 @@ public interface ListenerCreater {
     /**
      * 默认的构建器
      */
-    ListenerCreater DEFAULT = clazz -> JaxrsapiUtils.newInstance(clazz);
+    ListenerInstance DEFAULT = clazz -> JaxrsapiUtils.newInstance(clazz);
 }

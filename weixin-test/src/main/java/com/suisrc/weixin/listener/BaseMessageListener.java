@@ -2,8 +2,8 @@ package com.suisrc.weixin.listener;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.suisrc.weixin.core.listener.Include;
 import com.suisrc.weixin.core.listener.Listener;
+import com.suisrc.weixin.core.listener.ListenerInclude;
 import com.suisrc.weixin.core.listener.ListenerMsgType;
 import com.suisrc.weixin.core.listener.ListenerRest;
 import com.suisrc.weixin.mp.api.WxBindingRest;
@@ -19,7 +19,7 @@ import com.suisrc.weixin.mp.msg.msg.VoiceMessage;
  */
 @ApplicationScoped
 @ListenerRest(WxBindingRest.class)
-@Include({TextMessage.class, VoiceMessage.class})
+@ListenerInclude({TextMessage.class, VoiceMessage.class})
 @ListenerMsgType("event")
 public class BaseMessageListener implements Listener<BaseMessage> {
 

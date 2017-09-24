@@ -38,17 +38,17 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     /**
      * 监听创建者
      */
-    private ListenerCreater listenerCreater = ListenerCreater.DEFAULT;
+    private ListenerInstance instance = ListenerInstance.DEFAULT;
     
     /**
      * 监听消息的类型解析器
      */
-    private MsgTypeIndexs msgTypeIndexs = null;
+    private MsgTypeIndexs indexs = null;
     
     /**
      * 分析时候，获取的索引监听对象
      */
-    private List<Class<? extends Listener>> msgTypeClasses = null;
+    private List<Class<? extends Listener>> indexsClasses = null;
     
     /**
      * 构造
@@ -92,31 +92,8 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
      * 创建构建器的实体
      * @param listenerCreater
      */
-    public void setListenerCreater(ListenerCreater listenerCreater) {
-        this.listenerCreater = listenerCreater;
-    }
-    
-    /**
-     * 获取构建器的实体
-     * @return
-     */
-    public ListenerCreater getListenerCreater() {
-        return listenerCreater;
-    }
-    
-    /**
-     * 获取监听消息的类型解析器
-     * @return the msgTypeIndexs
-     */
-    public MsgTypeIndexs getMsgTypeIndexs() {
-        return msgTypeIndexs;
-    }
-    /**
-     * 设定监听消息的类型解析器
-     * @param msgTypeIndexs the msgTypeIndexs to set
-     */
-    public void setMsgTypeIndexs(MsgTypeIndexs msgTypeIndexs) {
-        this.msgTypeIndexs = msgTypeIndexs;
+    public void setListenerInstance(ListenerInstance instance) {
+        this.instance = instance;
     }
     
     /**
@@ -128,9 +105,11 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     @SuppressWarnings("deprecation")
     public Object acceptmsg(IMessage msg) {
         // 执行一级匹配
-        Listener ltmsg = msgTypeIndexs.searchFirstV(msg.getMsgType(), msg.getEvent(), msg.getEventKey());
-        if (ltmsg != null) {
-            return ltmsg.accept(msg, owner);
+        if (indexs != null) {
+            Listener ltmsg = indexs.searchFirstV(msg.getMsgType(), msg.getEvent(), msg.getEventKey());
+            if (ltmsg != null) {
+                return ltmsg.accept(msg, owner);
+            }
         }
         // 执行二级匹配
         Listener[] listeners = get(msg.getClass());
@@ -247,7 +226,7 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
         // 类型集合
         Set types = new LinkedHashSet<>();
         // 查询包含关系
-        Include include = clazz.getAnnotation(Include.class);
+        ListenerInclude include = clazz.getAnnotation(ListenerInclude.class);
         if (include != null && include.value().length > 0) {
             for (Class type : include.value()) {
                 if (genericType.isAssignableFrom(type)) {
@@ -268,10 +247,10 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
         if (msgType == null) {
             return Sets.newHashSet(genericType);
         }
-        if (msgTypeClasses == null) {
-            msgTypeClasses = new ArrayList<>();
+        if (indexsClasses == null) {
+            indexsClasses = new ArrayList<>();
         }
-        msgTypeClasses.add(clazz);
+        indexsClasses.add(clazz);
         return null;
     }
 
@@ -373,7 +352,7 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
                 // 无法找到监听对象
                 return false;
             }
-            Listener listener = listenerCreater.newInstance(listenerClass);
+            Listener listener = instance.newInstance(listenerClass);
             addListeners(listener, classes);
             return true;
         } catch (RuntimeException e) {
@@ -437,17 +416,20 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
      * 构建检索索引
      */
     public void buildMsgTypeIndexs() {
-        if (msgTypeClasses == null || msgTypeClasses.isEmpty()) {
+        if (indexsClasses == null || indexsClasses.isEmpty()) {
             return;
         }
         List<Listener> list = new ArrayList<>();
-        for (Class<? extends Listener> clazz : msgTypeClasses) {
-            Listener listener = listenerCreater.newInstance(clazz);
+        for (Class<? extends Listener> clazz : indexsClasses) {
+            Listener listener = instance.newInstance(clazz);
             if (listener != null) {
                 list.add(listener);
             }
         }
-        msgTypeIndexs = new MsgTypeIndexs(list);
+        if (list.isEmpty()) {
+            return;
+        }
+        indexs = new MsgTypeIndexs(list);
     }
 
 }

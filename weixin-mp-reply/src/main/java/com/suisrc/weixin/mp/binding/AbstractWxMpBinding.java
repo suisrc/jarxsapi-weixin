@@ -1,25 +1,17 @@
-package com.suisrc.weixin.mp.impl;
+package com.suisrc.weixin.mp.binding;
 
 import java.util.HashSet;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import com.qq.weixin.mp.MpWxConsts;
 import com.qq.weixin.mp.api.WxServerInfoRest;
 import com.qq.weixin.mp.result.ServerIpResult;
 import com.suisrc.weixin.core.AbstractWxBinding;
-import com.suisrc.weixin.core.WxConfig;
 import com.suisrc.weixin.core.WxMsgNode;
 import com.suisrc.weixin.core.exception.ResponseException;
 import com.suisrc.weixin.core.exception.WxErrCodeException;
-import com.suisrc.weixin.core.listener.ListenerManager;
 import com.suisrc.weixin.core.msg.IMessage;
-import com.suisrc.weixin.mp.api.WxBindingRest;
 import com.suisrc.weixin.mp.msg.WxMsgTypeParser;
 
 /**
@@ -28,8 +20,7 @@ import com.suisrc.weixin.mp.msg.WxMsgTypeParser;
  * @author Y13
  *
  */
-@ApplicationScoped
-public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBindingRest {
+public abstract class AbstractWxMpBinding<T> extends AbstractWxBinding<T>{
     
     /**
      * 白名单操作密钥
@@ -54,38 +45,40 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
     /**
      * 客户端访问信息
      */
-    @Inject protected HttpServletRequest request;
+    protected HttpServletRequest request;
     
     /**
      * 微信服务器获取API接口
      */
-    @SuppressWarnings("cdi-ambiguous-dependency")
-    @Inject protected WxServerInfoRest wxServerInfoRest;
+    protected WxServerInfoRest wxServerInfoRest;
 
     /**
-     * 注入服务器配置信息
+     * 设定客户访问信息
+     * @param request
      */
-    @Inject
-    @Named(MpWxConsts.NAMED)
-    @Override
-    protected void setWxConfig(WxConfig config) {
-        super.setWxConfig(config);
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+    
+    /**
+     * 设定微信服务器获取API接口
+     * @param wxServerInfoRest
+     */
+    public void setWxServerInfoRest(WxServerInfoRest wxServerInfoRest) {
+        this.wxServerInfoRest = wxServerInfoRest;
     }
     
     /**
      * 构造
      */
-    @PostConstruct
     @Override
     protected void initialized() {
-        // 注入消息类型解析器
-        wxMsgTypeParser = CDI.current().select(WxMsgTypeParser.class).get();
-        // 初始化监听管理器
-        listenerManager = new ListenerManager<>(this, WxBindingRest.class);
-        // 设定构建器创建工具
-        listenerManager.setListenerCreater(clazz -> CDI.current().select(clazz).get());
-        // 设定类型解析工具
-//        listenerManager.setMsgTypeIndexs(wxMsgTypeParser::searchMsgType);
+//        // 注入消息类型解析器
+//        wxMsgTypeParser = CDI.current().select(WxMsgTypeParser.class).get();
+//        // 初始化监听管理器
+//        listenerManager = new ListenerManager<>(this, WxBindingRest.class);
+//        // 设定构建器创建工具
+//        listenerManager.setListenerCreater(clazz -> CDI.current().select(clazz).get());
         // 设定监听的内容
         listenerManager.addClassesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_CLASSES);
         listenerManager.addPackagesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES);
@@ -125,8 +118,7 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
         if (whitelist.contains(clientIp)) {
             return; // 客户ip在白名单中，不进行处理
         }
-        throw new ResponseException("Illegal access, from:" + clientIp, "Invalid IP[" + 
-                clientIp + "],Not in the weixin server IP whitelist", "HTTP-ERR-403");
+        throw new ResponseException(String.format("Illegal access, from:%s, Invalid IP[%s],Not in the weixin server IP whitelist", clientIp, clientIp), "HTTP-ERR-403");
     }
 
     /**
@@ -140,7 +132,6 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
     /**
      * 刷新/启用微信服务器IP白名单
      */
-    @Override
     public String updateWhiteList(String secret) {
         if (whitelistSecret == null) {
             return "The access key was not configured, no operation";
@@ -171,7 +162,6 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
     /**
      * 删除/禁用微信服务器IP白名单
      */
-    @Override
     public String deleteWhiteList(String secret) {
         if (whitelistSecret == null) {
             return "The access key was not configured, no operation";

@@ -116,6 +116,7 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T, V>,
                     return info.getTarget();
                 }
             }
+            return null;
         }
         if (list.size() > 1) {
             list.sort((l, r) -> l.getPriority().compareTo(r.getPriority()));

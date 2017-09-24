@@ -8,21 +8,10 @@
         <version>1.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>weixin-mp-service</artifactId>
+    <artifactId>weixin-mp-reply</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>${version.swagger-annotations}</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>
             <artifactId>weixin-mp</artifactId>

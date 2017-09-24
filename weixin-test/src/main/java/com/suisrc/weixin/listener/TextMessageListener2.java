@@ -3,7 +3,7 @@ package com.suisrc.weixin.listener;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.suisrc.weixin.core.listener.Listener;
-import com.suisrc.weixin.core.listener.ListenerMsgType;
+import com.suisrc.weixin.core.listener.ListenerInclude;
 import com.suisrc.weixin.core.listener.ListenerRest;
 import com.suisrc.weixin.mp.api.WxBindingRest;
 import com.suisrc.weixin.mp.msg.msg.TextMessage;
@@ -17,8 +17,8 @@ import com.suisrc.weixin.mp.msg.reply.ReplyTextMessage;
  */
 @ApplicationScoped
 @ListenerRest(WxBindingRest.class)
-@ListenerMsgType("text")
-public class TextMessageListener implements Listener<TextMessage> {
+@ListenerInclude(TextMessage.class)
+public class TextMessageListener2 implements Listener<TextMessage> {
 
     /**
      * 文本消息处理
@@ -26,8 +26,13 @@ public class TextMessageListener implements Listener<TextMessage> {
     @Override
     public Object accept(TextMessage message) {
         ReplyTextMessage msg = message.reverse(new ReplyTextMessage());
-        msg.setContent("TextMessageListener[@ListenerMsgType]->" + message.getContent());
+        msg.setContent("TextMessageListener[@Include]->" + message.getContent());
         msg.setJson(message.isJson());
         return msg;
+    }
+    
+    @Override
+    public String priority() {
+        return "M";
     }
 }
