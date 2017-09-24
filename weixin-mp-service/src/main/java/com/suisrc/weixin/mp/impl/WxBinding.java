@@ -89,6 +89,7 @@ public class WxBinding extends AbstractWxBinding<WxBindingRest> implements WxBin
         // 设定监听的内容
         listenerManager.addClassesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_CLASSES);
         listenerManager.addPackagesBySysProp(MpWxConsts.KEY_WEIXIN_CALLBACK_LISTENER_PACKAGES);
+        listenerManager.buildMsgTypeIndexs();
         // 消息加密
         isEncrypt = Boolean.valueOf(System.getProperty(MpWxConsts.KEY_WEIXIN_CALLBACK_MESSAGE_ENCRYPT, "true")).booleanValue();
         // 其他

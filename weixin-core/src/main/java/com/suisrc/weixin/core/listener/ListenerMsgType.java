@@ -9,9 +9,19 @@ import java.lang.annotation.Target;
 import com.suisrc.weixin.core.check.TypeAssert;
 
 /**
+ * 该注解使用说明
+ * 
+ * 注解不能和@Include同时使用，如果发现@Include，该注解会被无视，但是执行系统遍历的执行顺序会高于Include的方式
+ * 
+ * ListenerMsgType强调有限匹配型，即如果找到匹配监听器，无论该监听器是否能够正常返回结果，都不会进行再次处理
+ * 
+ * 而@Inlcude无法发型处理后的结果为null,则会继续匹配处理
+ * 
+ * ListenerMsgType匹配过程中，发现监听的消息类型和匹配的消息类型不匹配时候，不会记性强制验证，所以这个时候，系统会出现异常
  * 
  * @author Y13
  */
+@Include(Void.class)
 @Target({TYPE})
 @Retention(RUNTIME)
 public @interface ListenerMsgType {
@@ -46,6 +56,6 @@ public @interface ListenerMsgType {
     /**
      * 事件KEY断言器
      */
-    Class<? extends TypeAssert> assertEventType() default TypeAssert.class;
+    Class<? extends TypeAssert> assertEventKey() default TypeAssert.class;
 
 }

@@ -16,13 +16,13 @@ import com.suisrc.weixin.mp.annotation.MpMsgType;
  * @author Y13
  *
  */
-public class MsgTypeInfo extends AbstractMsgTypeInfo<MsgTypeInfo> {
+public class MsgTypeInfo extends AbstractMsgTypeInfo<MsgTypeInfo, Class<? extends IMessage>> {
     
     /**
      * 构造方法
      */
-    public MsgTypeInfo(Class<? extends IMessage> targetClass) {
-        super(targetClass);
+    public MsgTypeInfo(Class<? extends IMessage> target) {
+        super(target);
     }
 
     /**
@@ -34,10 +34,10 @@ public class MsgTypeInfo extends AbstractMsgTypeInfo<MsgTypeInfo> {
      * @param targetClass
      */
     @Override
-    protected void initialize(Class<? extends IMessage> targetClass) {
-        this.targetClass = targetClass;
+    protected void initialize(Class<? extends IMessage> target) {
+        this.target = target;
         
-        MpMsgType msgType = targetClass.getAnnotation(MpMsgType.class);
+        MpMsgType msgType = target.getAnnotation(MpMsgType.class);
         this.msgType = msgType.value();
         this.priority = msgType.priority();
         if (msgType.handler() != TypeAssert.class) {
@@ -45,7 +45,7 @@ public class MsgTypeInfo extends AbstractMsgTypeInfo<MsgTypeInfo> {
             // msgTypeAssert = v -> ta.apply(this.msgType, v);
             msgTypeAssert = JaxrsapiUtils.newInstance(msgType.handler());
         }
-        MpEvent event = targetClass.getAnnotation(MpEvent.class);
+        MpEvent event = target.getAnnotation(MpEvent.class);
         if (event == null || !event.effect()) {
             // 结束构建
             return;
@@ -57,7 +57,7 @@ public class MsgTypeInfo extends AbstractMsgTypeInfo<MsgTypeInfo> {
         if (event.handler() != TypeAssert.class) {
             eventAssert = JaxrsapiUtils.newInstance(event.handler());
         }
-        MpEventKey eventKey = targetClass.getAnnotation(MpEventKey.class);
+        MpEventKey eventKey = target.getAnnotation(MpEventKey.class);
         if (eventKey == null || !eventKey.effect()) {
             // 结束构建
             return;

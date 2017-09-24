@@ -83,7 +83,8 @@ public final class WxMsgNode {
      * 如果不存在返回 null
      */
     public String getValueAsString(String fieldName) {
-        return root.get(fieldName).asText(null);
+        JsonNode node = root.get(fieldName);
+        return node == null ? null : node.asText(null);
     }
     
     /**
@@ -92,7 +93,8 @@ public final class WxMsgNode {
      * getValueAsString方法的简写
      */
     public String getV(String fieldName) {
-        return root.get(fieldName).asText(null);
+        JsonNode node = root.get(fieldName);
+        return node == null ? null : node.asText(null);
     }
 
     /**

@@ -43,7 +43,7 @@ public class DefaultWxMsgTypeParser implements WxMsgTypeParser {
      */
     @Override
     public Class<? extends IMessage> parser(String msgtype, String event, String eventkey) {
-        return indexs.searchFirstClass(msgtype, event, eventkey);
+        return indexs.searchFirstV(msgtype, event, eventkey);
     }
 
 }

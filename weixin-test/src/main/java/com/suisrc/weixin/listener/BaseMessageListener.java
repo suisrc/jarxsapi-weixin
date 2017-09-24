@@ -1,10 +1,12 @@
 package com.suisrc.weixin.listener;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Include;
 import com.suisrc.weixin.core.listener.Listener;
+import com.suisrc.weixin.core.listener.ListenerMsgType;
+import com.suisrc.weixin.core.listener.ListenerRest;
+import com.suisrc.weixin.mp.api.WxBindingRest;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
 import com.suisrc.weixin.mp.msg.msg.TextMessage;
 import com.suisrc.weixin.mp.msg.msg.VoiceMessage;
@@ -16,8 +18,9 @@ import com.suisrc.weixin.mp.msg.msg.VoiceMessage;
  *
  */
 @ApplicationScoped
-@Named("com.suisrc.weixin.mp.api.WxBindingRest")
+@ListenerRest(WxBindingRest.class)
 @Include({TextMessage.class, VoiceMessage.class})
+@ListenerMsgType("event")
 public class BaseMessageListener implements Listener<BaseMessage> {
 
     /**
@@ -32,7 +35,7 @@ public class BaseMessageListener implements Listener<BaseMessage> {
      * 比正常加载顺序多一个加载等级
      */
     @Override
-    public int priority() {
-        return Listener.super.priority() + 1;
+    public String priority() {
+        return Listener.super.priority() + "0";
     }
 }

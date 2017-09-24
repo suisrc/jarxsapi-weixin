@@ -39,12 +39,23 @@ public interface Listener<T> {
     }
 
     /**
-     * 监听接受的顺序，默认排序为1024,为以后扩展留下空间
+     * 监听接受的顺序，默认排序为N,为以后扩展留下空间
      * 
      * @return
      */
-    default int priority() {
-        return 1024;
+    default String priority() {
+        return "N";
+    }
+    
+    /**
+     * 获取监听的类型
+     * 
+     * @return
+     */
+    @Deprecated
+    default Class<T> type() {
+        // return T.class;
+        return null;
     }
 
 }

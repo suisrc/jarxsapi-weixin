@@ -177,7 +177,7 @@ public abstract class AbstractWxBinding<T> {
         }
         // message.setJson(isJson); // 告诉系统数据的来源格式
         // 通过监听器处理消息内容
-        Object bean = listenerManager.accept(message); // 得到处理的结构
+        Object bean = listenerManager.acceptmsg(message); // 得到处理的结构
         if (bean == null) {
             return Response.ok().entity("Message content can not be answered").type(MediaType.TEXT_PLAIN).build();
         }

@@ -1,16 +1,12 @@
 package com.suisrc.weixin.core.msg;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
-
-import com.suisrc.jaxrsapi.core.util.JaxrsapiUtils;
-import com.suisrc.weixin.core.listener.MsgTypeIndexs;
 
 /**
  * 用户构建消息类型的索引，主要处理Event, EventKey, MsgType中的内容
@@ -18,7 +14,7 @@ import com.suisrc.weixin.core.listener.MsgTypeIndexs;
  * @author Y13
  *
  */
-public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
+public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T, V>, V> {
     
     /**
      * 消息类型链， 所有的消息内容, 初始化后，该内容不可更改
@@ -41,17 +37,9 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
      * 索引的构造方法
      * @param packages
      */
-    public AbstractMsgTypeIndexs(Function<Class<? extends IMessage>, T> creater, String... packages) {
-        if (packages.length == 0) {
-            throw new RuntimeException("Unable to build message type index object:" + MsgTypeIndexs.class.getName());
-        }
+    public AbstractMsgTypeIndexs(Function<V, T> creater, Collection<V> values) {
         ArrayList<T> infos = new ArrayList<>();
-        // 查询指定包内所有继承接口
-        Set<Class<? extends IMessage>> classes = JaxrsapiUtils.getSubclasses(IMessage.class, packages);
-        for (Class<? extends IMessage> clazz : classes) {
-            if (Modifier.isAbstract(clazz.getModifiers())) {
-                continue; // 抽象类跳过
-            }
+        for (V clazz : values) {
             T info = creater.apply(clazz);
             if (info != null) {
                 infos.add(info);
@@ -62,7 +50,6 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
         // indexs中的内容不可修改
         infos.trimToSize();
         indexs = Collections.unmodifiableList(infos);
-        
         // 初始化
         initialize();
     }
@@ -94,7 +81,14 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
                 prefix = current;
                 ilist.add(current);
             } else {
-                imap.put(identity, current);
+                // T old = imap.get(identity);
+                // if (old == null) {
+                //     imap.put(identity, current);
+                // }
+                // 高优先级的内容不可被覆盖
+                if (!imap.containsKey(identity)) {
+                    imap.put(identity, current);
+                }
             }
         }
         ilist.trimToSize();
@@ -107,7 +101,7 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
      * @param node
      * @return
      */
-    public Class<? extends IMessage> searchFirstClass(String msgtype, String event, String eventkey) {
+    public V searchFirstV(String msgtype, String event, String eventkey) {
         List<T> list = new ArrayList<>();
         List<String> indexKey = getIndexKey(msgtype, event, eventkey);
         for (String key : indexKey) {
@@ -119,15 +113,17 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
         if (list.isEmpty()) {
             for (T info : indexList) {
                 if (info.match(msgtype, event, eventkey)) {
-                    return info.getTargetClass();
+                    return info.getTarget();
                 }
             }
         }
-        list.sort((l, r) -> l.getPriority().compareTo(r.getPriority()));
+        if (list.size() > 1) {
+            list.sort((l, r) -> l.getPriority().compareTo(r.getPriority()));
+        }
         T info = list.get(0);
         T prefix = info.getPrefixInfo(msgtype, event, eventkey);
         // 返回查询的类型
-        return (prefix != null ? prefix : info).getTargetClass();
+        return (prefix != null ? prefix : info).getTarget();
     }
     
     /**
@@ -136,10 +132,10 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
      * @return
      */
     @Deprecated
-    public Class<? extends IMessage> searchFirstClass2(String msgtype, String event, String eventkey) {
+    public V searchFirstV2(String msgtype, String event, String eventkey) {
         for (T info : indexs) {
             if (info.match(msgtype, event, eventkey)) {
-                return info.getTargetClass();
+                return info.getTarget();
             }
         }
         return null;
@@ -159,7 +155,6 @@ public abstract class AbstractMsgTypeIndexs<T extends AbstractMsgTypeInfo<T>> {
             return keys;
         }
         keys.add(msgtype + "|" + event + "|" + eventKey);
-        
         // 返回检索key集合
         return keys;
     }

@@ -7,16 +7,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 监听器可以同时指定多个监听类型，这里分配监听类型
  * 
- * 当一个监听器返回结果为null时候，会继续进行下一个匹配
+ * @author Y13
  */
 @Target({TYPE})
 @Retention(RUNTIME)
-public @interface Include {
+public @interface ListenerRest {
 
     /**
-     * 监听的内容集合
+     * 监听的接口的类型
      */
-    Class<?>[] value();
+    Class<?> value();
+
 }

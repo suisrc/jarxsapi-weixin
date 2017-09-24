@@ -1,9 +1,10 @@
 package com.suisrc.weixin.listener;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 
 import com.suisrc.weixin.core.listener.Listener;
+import com.suisrc.weixin.core.listener.ListenerRest;
+import com.suisrc.weixin.mp.api.WxBindingRest;
 import com.suisrc.weixin.mp.msg.msg.TextMessage;
 import com.suisrc.weixin.mp.msg.reply.ReplyTextMessage;
 
@@ -14,7 +15,7 @@ import com.suisrc.weixin.mp.msg.reply.ReplyTextMessage;
  *
  */
 @ApplicationScoped
-@Named("com.suisrc.weixin.mp.api.WxBindingRest")
+@ListenerRest(WxBindingRest.class)
 public class TextMessageListener implements Listener<TextMessage> {
 
     /**

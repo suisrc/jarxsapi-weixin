@@ -16,7 +16,7 @@ import com.suisrc.weixin.core.check.TypeAssert;
  * @author Y13
  *
  */
-public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
+public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T, V>, V> {
     
     /**
      * 消息类型, 该字段是必须字段
@@ -56,7 +56,7 @@ public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
     /**
      * 绑定的类型
      */
-    protected Class<? extends IMessage> targetClass;
+    protected V target;
     
     //-------------------------------------------------------以上是注解属性，以下是判定属性
     
@@ -87,8 +87,8 @@ public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
     /**
      * 构造方法
      */
-    public AbstractMsgTypeInfo(Class<? extends IMessage> targetClass) {
-        initialize(targetClass);
+    public AbstractMsgTypeInfo(V target) {
+        initialize(target);
         initAssertList();
     }
 
@@ -99,7 +99,13 @@ public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
     private void initAssertList() {
         asserts = new ArrayList<>(3);
         asserts.add(new SimpleEntry(msgType, msgTypeAssert));
+        if (event == null) {
+            return;
+        }
         asserts.add(new SimpleEntry(event, eventAssert));
+        if (eventKey == null) {
+            return;
+        }
         asserts.add(new SimpleEntry(eventKey, eventKeyAssert));
     }
 
@@ -108,7 +114,7 @@ public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
      * @param msgType
      * @param targetClass
      */
-    protected abstract void initialize(Class<? extends IMessage> targetClass);
+    protected abstract void initialize(V target);
 
     /**
      * 排序，作用优先级 @MpEvenKye > @MpEvent > @MpMsgType
@@ -163,8 +169,8 @@ public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
      * 绑定的消息类型
      * @return
      */
-    public Class<? extends IMessage> getTargetClass() {
-        return targetClass;
+    public V getTarget() {
+        return target;
     }
     
     /**
@@ -252,8 +258,12 @@ public abstract class AbstractMsgTypeInfo<T extends AbstractMsgTypeInfo<T>> {
      * @return
      */
     public int compareTo(T other) {
-        for (int i = 0; i < asserts.size(); i++) {
-            Entry<String, TypeAssert> e1 = asserts.get(i);
+        int size = getAsserts().size();
+        if (size > other.getAsserts().size()) {
+            return -1;
+        }
+        for (int i = 0; i < size; i++) {
+            Entry<String, TypeAssert> e1 = this.getAsserts().get(i);
             Entry<String, TypeAssert> e2 = other.getAsserts().get(i);
             if (e1.getValue() == null && e2.getValue() == null && !e1.getKey().equals(e2.getKey())) {
                 return -1;

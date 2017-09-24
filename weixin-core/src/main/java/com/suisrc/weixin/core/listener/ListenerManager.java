@@ -2,16 +2,17 @@ package com.suisrc.weixin.core.listener;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-
-import javax.inject.Named;
 
 import com.google.common.collect.Sets;
 import com.suisrc.jaxrsapi.core.util.JaxrsapiUtils;
+import com.suisrc.weixin.core.msg.IMessage;
 
 /**
  * 监听事件管理器 用于管理微信中所有回调监听
@@ -43,6 +44,11 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
      * 监听消息的类型解析器
      */
     private MsgTypeIndexs msgTypeIndexs = null;
+    
+    /**
+     * 分析时候，获取的索引监听对象
+     */
+    private List<Class<? extends Listener>> msgTypeClasses = null;
     
     /**
      * 构造
@@ -114,17 +120,51 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
     }
     
     /**
-     * 接受对象, 执行内容
+     * 接受消息对象, 执行内容
      * 
      * @param bean
      * @return
      */
-    public Object accept(Object bean) {
+    @SuppressWarnings("deprecation")
+    public Object acceptmsg(IMessage msg) {
+        // 执行一级匹配
+        Listener ltmsg = msgTypeIndexs.searchFirstV(msg.getMsgType(), msg.getEvent(), msg.getEventKey());
+        if (ltmsg != null) {
+            return ltmsg.accept(msg, owner);
+        }
+        // 执行二级匹配
+        Listener[] listeners = get(msg.getClass());
+        if (listeners == null) {
+            return null;
+        }
+        // 执行监听中的内容
+        for (Listener listener : listeners) {
+            Object obj = listener.accept(msg, owner);
+            if (obj != null) {
+                return obj;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 接受对象, 执行内容
+     * 
+     * 170925 目前舍弃不再使用
+     * 
+     * 请使用acceptmsg
+     * 
+     * @param bean
+     * @return
+     */
+    @Deprecated
+    protected Object accept(Object bean) {
+        
         Listener[] listeners = get(bean.getClass());
         if (listeners == null) {
             return null;
         }
-
+        // 执行监听中的内容
         for (Listener listener : listeners) {
             Object obj = listener.accept(bean, owner);
             if (obj != null) {
@@ -143,7 +183,7 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
      * @return
      */
     @Deprecated
-    public Object accept2(Object bean) {
+    protected Object accept2(Object bean) {
         Class subClass = bean.getClass();
         while (subClass != null) {
             Object obj = accept2(bean, subClass);
@@ -189,11 +229,12 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
      * @param clazz
      * @return
      */
-    private Set<Class> getKey(Class<?> clazz) {
-        Named named = clazz.getAnnotation(Named.class);
-        if (named == null) {
+    private Set<Class> getKey(Class<? extends Listener> clazz) {
+        ListenerRest rest = clazz.getAnnotation(ListenerRest.class);
+        if (rest == null) {
             // 泛型监听
-        } else if (ownerType != null && named.value().equals(ownerType.getCanonicalName())) {
+        } else if (ownerType != null && rest.value() == ownerType) {
+            // TODO 监听类型对比
             // @Named标记的内容必须是监听所有这的名字
         } else {
             return null; // 鉴别条件验证没有通过
@@ -220,11 +261,18 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
             }
         }
         // if (types.isEmpty() && (genericType.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) {
-        if (types.isEmpty()) {
-            return Sets.newHashSet(genericType);
-        } else {
+        if (!types.isEmpty()){
             return Sets.newLinkedHashSet(types);
         }
+        ListenerMsgType msgType = clazz.getAnnotation(ListenerMsgType.class);
+        if (msgType == null) {
+            return Sets.newHashSet(genericType);
+        }
+        if (msgTypeClasses == null) {
+            msgTypeClasses = new ArrayList<>();
+        }
+        msgTypeClasses.add(clazz);
+        return null;
     }
 
     /**
@@ -268,7 +316,7 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
             return;
         }
         if (classes == null) {
-            classes = getKey(listener.getClass());
+            classes = getKey((Class<Listener>)listener.getClass());
             if (classes == null) {
                 // 无法找到监听对象
                 return;
@@ -299,7 +347,7 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
                 listeners[i] = listener;
                 if (olistener.priority() != listener.priority()) {
                     // 需要重新排序
-                    Arrays.sort(listeners, (l, r) -> l.priority() - r.priority());
+                    Arrays.sort(listeners, (l, r) -> l.priority().compareTo(r.priority()));
                 }
                 return olistener;
             }
@@ -307,7 +355,7 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
         // 加入新数据
         listeners = Arrays.copyOf(listeners, listeners.length + 1);
         listeners[listeners.length - 1] = listener;
-        Arrays.sort(listeners, (l, r) -> l.priority() - r.priority());
+        Arrays.sort(listeners, (l, r) -> l.priority().compareTo(r.priority()));
         put(clazz, listeners);
         return null;
     }
@@ -383,6 +431,23 @@ public class ListenerManager<C> extends HashMap<Class, Listener[]> {
                 e.printStackTrace();
             }
         }
+    }
+    
+    /**
+     * 构建检索索引
+     */
+    public void buildMsgTypeIndexs() {
+        if (msgTypeClasses == null || msgTypeClasses.isEmpty()) {
+            return;
+        }
+        List<Listener> list = new ArrayList<>();
+        for (Class<? extends Listener> clazz : msgTypeClasses) {
+            Listener listener = listenerCreater.newInstance(clazz);
+            if (listener != null) {
+                list.add(listener);
+            }
+        }
+        msgTypeIndexs = new MsgTypeIndexs(list);
     }
 
 }
