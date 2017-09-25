@@ -6,21 +6,28 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.suisrc.weixin.mp.annotation.MpEvent;
 import com.suisrc.weixin.mp.msg.base.WxEventMessage;
+import com.suisrc.weixin.mp.msg.media.SendPicsInfo;
 
 /**
- * 点击菜单拉取消息时的事件推送
+ * 弹出系统拍照发图的事件推送
  * 
- * 用户点击自定义菜单后，微信会把点击事件推送给开发者，请注意，点击菜单弹出子菜单，不会产生上报。
+ * <Event><![CDATA[pic_sysphoto]]></Event>
+ * <EventKey><![CDATA[6]]></EventKey>
+ * <SendPicsInfo>
+ *   <Count>1</Count>
+ *   <PicList>
+ *     <item>
+ *       <PicMd5Sum><![CDATA[1b5f7c23b5bf75682a53e7b6d163e185]]></PicMd5Sum>
+ *     </item>
+ *   </PicList>
+ * </SendPicsInfo>
  * 
- * <Event><![CDATA[CLICK]]></Event>
- * 
- * <EventKey><![CDATA[EVENTKEY]]></EventKey>
  * @author Y13
  *
  */
-@MpEvent("CLICK")
-@JacksonXmlRootElement(localName = "xml")
-public class ClickEvent extends WxEventMessage {
+@MpEvent("pic_sysphoto")
+@JacksonXmlRootElement(localName="xml")
+public class PicSysphotoEvent extends WxEventMessage {
 
     /**
      * 事件KEY值，与自定义菜单接口中KEY值对应
@@ -29,6 +36,13 @@ public class ClickEvent extends WxEventMessage {
     @JacksonXmlProperty(localName = "EventKey")
     @JsonProperty("EventKey")
     private String eventKey;
+    
+    /**
+     * 发送的图片信息
+     */
+    @JacksonXmlProperty(localName = "SendPicsInfo")
+    @JsonProperty("SendPicsInfo")
+    private SendPicsInfo sendPicsInfo;
 
     /**
      * 获取事件KEY值，与自定义菜单接口中KEY值对应
@@ -46,4 +60,19 @@ public class ClickEvent extends WxEventMessage {
         this.eventKey = eventKey;
     }
 
+    /**
+     * 获取发送的图片信息
+     * @return the sendPicsInfo
+     */
+    public SendPicsInfo getSendPicsInfo() {
+        return sendPicsInfo;
+    }
+
+    /**
+     * 设定发送的图片信息
+     * @param sendPicsInfo the sendPicsInfo to set
+     */
+    public void setSendPicsInfo(SendPicsInfo sendPicsInfo) {
+        this.sendPicsInfo = sendPicsInfo;
+    }
 }

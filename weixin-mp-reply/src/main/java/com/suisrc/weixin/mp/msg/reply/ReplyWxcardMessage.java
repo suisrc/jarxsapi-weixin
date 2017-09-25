@@ -1,7 +1,6 @@
 package com.suisrc.weixin.mp.msg.reply;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.suisrc.weixin.mp.msg.base.BaseMessage;
@@ -18,7 +17,6 @@ public class ReplyWxcardMessage extends BaseMessage {
     /**
      * 微信卡券 必须
      */
-    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Wxcard")
     @JsonProperty("Wxcard")
     private MediaId wxcard;

@@ -8,6 +8,7 @@ import com.suisrc.weixin.mp.msg.base.WxEventMessage;
 
 /**
  * 上报地理位置事件
+ * 
  * <Event><![CDATA[LOCATION]]></Event>
  * 
  * <Latitude>23.137466</Latitude>

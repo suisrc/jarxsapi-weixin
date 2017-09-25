@@ -9,7 +9,9 @@ import com.suisrc.weixin.mp.msg.base.WxEventMessage;
 
 /**
  * 二维码扫描
+ * 
  * 用户已关注时的事件推送
+ * 
  * <Event><![CDATA[SCAN]]></Event>
  * 
  * <EventKey><![CDATA[SCENE_VALUE]]></EventKey>

@@ -51,8 +51,19 @@ public abstract class AbstractWxBinding<T> {
     
     /**
      * 判断用于信息
+     * 
+     * 理论上这里的消息不是发给微信服务器的，请注意
      */
     protected void assertClientInfo() {}
+    
+    /**
+     * 输入log, 可以重写该部分，输入到logger中
+     * 
+     * @param log
+     */
+    protected void printLog(String log) {
+        System.out.println(log);
+    }
 
     /**
      * 设定微信配置信息
@@ -129,7 +140,9 @@ public abstract class AbstractWxBinding<T> {
     public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
         assertClientInfo();
         if (data == null || data.isEmpty()) {
-            return Response.ok().entity("There is no valid request data").type(MediaType.TEXT_PLAIN).build();
+            // return Response.ok().entity("There is no valid request data").type(MediaType.TEXT_PLAIN).build();
+            printLog("There is no valid request data");
+            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
         }
         // 确定数据传输格式
         boolean isJson = data.startsWith("<xml>") ? false : true;
@@ -173,13 +186,17 @@ public abstract class AbstractWxBinding<T> {
         // 解析消息内容
         IMessage message = str2Bean(content, isJson); // 转换为bean
         if (message == null) {
-            return Response.ok().entity("Message content can not be resolved").type(MediaType.TEXT_PLAIN).build();
+            // return Response.ok().entity("Message content can not be resolved").type(MediaType.TEXT_PLAIN).build();
+            printLog("Message content can not be resolved:" + content);
+            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
         }
         // message.setJson(isJson); // 告诉系统数据的来源格式
         // 通过监听器处理消息内容
         Object bean = listenerManager.acceptmsg(message); // 得到处理的结构
         if (bean == null) {
-            return Response.ok().entity("Message content can not be answered").type(MediaType.TEXT_PLAIN).build();
+            // return Response.ok().entity("Message content can not be answered").type(MediaType.TEXT_PLAIN).build();
+            printLog("Message content can not be answered:" + content);
+            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
         }
         if (bean instanceof IMessage) {
             isJson = ((IMessage)bean).isJson(); // 用新的格式要求替换

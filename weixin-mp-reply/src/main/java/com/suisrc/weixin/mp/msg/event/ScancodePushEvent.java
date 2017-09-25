@@ -6,21 +6,24 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.suisrc.weixin.mp.annotation.MpEvent;
 import com.suisrc.weixin.mp.msg.base.WxEventMessage;
+import com.suisrc.weixin.mp.msg.media.ScanCodeInfo;
 
 /**
- * 点击菜单拉取消息时的事件推送
+ * 扫码推事件的事件推送
  * 
- * 用户点击自定义菜单后，微信会把点击事件推送给开发者，请注意，点击菜单弹出子菜单，不会产生上报。
+ * <Event><![CDATA[scancode_push]]></Event>
+ * <EventKey><![CDATA[6]]></EventKey>
+ * <ScanCodeInfo>
+ *   <ScanType><![CDATA[qrcode]]></ScanType>
+ *   <ScanResult><![CDATA[1]]></ScanResult>
+ * </ScanCodeInfo>
  * 
- * <Event><![CDATA[CLICK]]></Event>
- * 
- * <EventKey><![CDATA[EVENTKEY]]></EventKey>
  * @author Y13
  *
  */
-@MpEvent("CLICK")
-@JacksonXmlRootElement(localName = "xml")
-public class ClickEvent extends WxEventMessage {
+@MpEvent("scancode_push")
+@JacksonXmlRootElement(localName="xml")
+public class ScancodePushEvent extends WxEventMessage {
 
     /**
      * 事件KEY值，与自定义菜单接口中KEY值对应
@@ -29,6 +32,13 @@ public class ClickEvent extends WxEventMessage {
     @JacksonXmlProperty(localName = "EventKey")
     @JsonProperty("EventKey")
     private String eventKey;
+    
+    /**
+     * 扫描信息
+     */
+    @JacksonXmlProperty(localName = "ScanCodeInfo")
+    @JsonProperty("ScanCodeInfo")
+    private ScanCodeInfo scanCodeInfo;
 
     /**
      * 获取事件KEY值，与自定义菜单接口中KEY值对应
@@ -46,4 +56,20 @@ public class ClickEvent extends WxEventMessage {
         this.eventKey = eventKey;
     }
 
+    /**
+     * 获取扫描信息
+     * @return the scanCodeInfo
+     */
+    public ScanCodeInfo getScanCodeInfo() {
+        return scanCodeInfo;
+    }
+
+    /**
+     * 设定扫描信息
+     * @param scanCodeInfo the scanCodeInfo to set
+     */
+    public void setScanCodeInfo(ScanCodeInfo scanCodeInfo) {
+        this.scanCodeInfo = scanCodeInfo;
+    }
+    
 }
