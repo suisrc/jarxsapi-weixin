@@ -1,5 +1,6 @@
 package com.suisrc.weixin.core.msg;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -26,6 +27,7 @@ public class EncryptMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="ToUserName")
+	@JsonProperty("ToUserName")
 	private String toUserName;
 	
 	/**
@@ -34,6 +36,7 @@ public class EncryptMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="AgentID")
+    @JsonProperty("AgentID")
 	private String agentID;
 	
 	/**
@@ -42,6 +45,7 @@ public class EncryptMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="Encrypt")
+    @JsonProperty("Encrypt")
 	private String encrypt;
 	
 	/**
@@ -49,12 +53,14 @@ public class EncryptMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="MsgSignature")
+    @JsonProperty("MsgSignature")
 	private String msgSignature;
 	
 	/**
 	 * 密文时间戳
 	 */
 	@JacksonXmlProperty(localName="TimeStamp")
+    @JsonProperty("TimeStamp")
 	private String timeStamp;
 	
 	/**
@@ -62,6 +68,7 @@ public class EncryptMessage {
 	 */
 	@JacksonXmlCData
 	@JacksonXmlProperty(localName="Nonce")
+    @JsonProperty("Nonce")
 	private String nonce;
     
     /**

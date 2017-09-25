@@ -35,4 +35,9 @@ public class TextMessageListener2 implements Listener<TextMessage> {
     public String priority() {
         return "M";
     }
+    
+    @Override
+    public boolean effect() {
+        return false;
+    }
 }

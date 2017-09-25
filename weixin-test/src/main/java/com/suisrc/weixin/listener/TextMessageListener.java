@@ -30,4 +30,9 @@ public class TextMessageListener implements Listener<TextMessage> {
         msg.setJson(message.isJson());
         return msg;
     }
+    
+    @Override
+    public boolean effect() {
+        return false;
+    }
 }

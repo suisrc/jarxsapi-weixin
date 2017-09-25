@@ -38,4 +38,9 @@ public class BaseMessageListener implements Listener<BaseMessage> {
     public String priority() {
         return Listener.super.priority() + "0";
     }
+    
+    @Override
+    public boolean effect() {
+        return false;
+    }
 }

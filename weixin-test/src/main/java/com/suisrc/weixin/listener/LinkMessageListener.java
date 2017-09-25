@@ -24,5 +24,10 @@ public class LinkMessageListener implements Listener<LinkMessage> {
     public Object accept(LinkMessage message) {
         return message.getUrl();
     }
+    
+    @Override
+    public boolean effect() {
+        return false;
+    }
 
 }
