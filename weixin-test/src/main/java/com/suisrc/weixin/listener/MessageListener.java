@@ -35,7 +35,7 @@ public class MessageListener implements Listener<IMessage> {
         System.out.println("---------------------------------------------------------");
         System.err.println("MessageType:" + message.getClass().getName());
         System.out.println("Content:" + message.getRawData2());
-        
+        msg.setJson(message.isJson());
         return msg;
     }
     

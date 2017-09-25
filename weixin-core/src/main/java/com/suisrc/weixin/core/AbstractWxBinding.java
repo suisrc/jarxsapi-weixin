@@ -219,7 +219,7 @@ public abstract class AbstractWxBinding<T> {
             reault = bean2Str(encryptMsg, isJson);
         }
         // --------------------------------返回处理的结果------------------------------------//
-        return Response.ok().entity(reault).build();
+        return Response.ok().entity(reault).type(isJson ? MediaType.APPLICATION_JSON : MediaType.APPLICATION_XML).build();
     }
 
 }
