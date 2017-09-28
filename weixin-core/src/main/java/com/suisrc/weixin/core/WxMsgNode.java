@@ -127,4 +127,14 @@ public final class WxMsgNode {
         }
     }
 
+    /**
+     * 转换为Bean结构的对象
+     * @param type
+     * @return
+     * @throws JsonProcessingException 
+     */
+    public <T> T toBean2(Class<T> type) throws JsonProcessingException {
+        return mapper.treeToValue(root, type);
+    }
+
 }

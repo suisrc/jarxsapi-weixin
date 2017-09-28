@@ -61,8 +61,8 @@ public abstract class AbstractWxBinding<T> {
      * 
      * @param log
      */
-    protected void printLog(String log) {
-        System.out.println(log);
+    protected void printThrowable(Throwable e) {
+        System.out.println(e.getMessage());
     }
 
     /**
@@ -79,23 +79,33 @@ public abstract class AbstractWxBinding<T> {
      * @param xml
      * @return
      */
+    @SuppressWarnings("deprecation")
     protected IMessage str2Bean(String content, boolean isJson) {
         WxMsgNode node = WxMsgCrFactory.str2Node(content, isJson);
         Class<? extends IMessage> msgType = findMsgTypeClass(node);
         IMessage bean = null;
         if (msgType != null) {
             // 解析数据
-            bean = node.toBean(msgType);
+            try {
+                bean = node.toBean2(msgType);
+            } catch (Throwable e) {
+                // 使用 node.toBean在某种情况下，比如@JacksonXmlElementWrapper是无法解析的
+                System.out.println(String.format("Message content can not be resolved [%s]:%s", 
+                        msgType.getCanonicalName(), e.getMessage()));
+                // 尝试使用基础解析工具解析
+                bean = WxMsgCrFactory.str2Bean(content, msgType, isJson);
+            }
         }
         if (bean == null) {
             // 数据无法解析
             bean = new UnknowMessage();
+            ((UnknowMessage)bean).setRawNode2(node);
         }
         // 给出数据的原始类型
         bean.setJson(isJson);
         // 给出原始数据内容--防止后面用于验证时候使用一些漏掉的信息
         bean.setRawData2(content);
-        
+        // 返回解析的结果
         return bean;
     }
 
@@ -138,11 +148,25 @@ public abstract class AbstractWxBinding<T> {
      * 
      */
     public Response doPost(@BeanParam WxEncryptSignature sign, String data) {
+        try {
+            return doInternalWork(sign, data);
+        } catch (Throwable e) {
+            printThrowable(e);
+            // 虽然失败了，但是还是需要通知服务器已经接受到请求
+            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
+        }
+    }
+
+    /**
+     * 微信回调请求绑定
+     * 
+     * 内部处理方法
+     */
+    protected Response doInternalWork(WxEncryptSignature sign, String data) {
         assertClientInfo();
         if (data == null || data.isEmpty()) {
             // return Response.ok().entity("There is no valid request data").type(MediaType.TEXT_PLAIN).build();
-            printLog("There is no valid request data");
-            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
+            throw new RuntimeException("There is no valid request data");
         }
         // 确定数据传输格式
         boolean isJson = data.startsWith("<xml>") ? false : true;
@@ -187,16 +211,14 @@ public abstract class AbstractWxBinding<T> {
         IMessage message = str2Bean(content, isJson); // 转换为bean
         if (message == null) {
             // return Response.ok().entity("Message content can not be resolved").type(MediaType.TEXT_PLAIN).build();
-            printLog("Message content can not be resolved:" + content);
-            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
+            throw new RuntimeException("Message content can not be resolved:" + content);
         }
         // message.setJson(isJson); // 告诉系统数据的来源格式
         // 通过监听器处理消息内容
         Object bean = listenerManager.acceptmsg(message); // 得到处理的结构
         if (bean == null) {
             // return Response.ok().entity("Message content can not be answered").type(MediaType.TEXT_PLAIN).build();
-            printLog("Message content can not be answered:" + content);
-            return Response.ok().entity("success").type(MediaType.TEXT_PLAIN).build();
+            throw new RuntimeException("Message content can not be answered:" + content);
         }
         if (bean instanceof IMessage) {
             isJson = ((IMessage)bean).isJson(); // 用新的格式要求替换

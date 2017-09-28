@@ -15,10 +15,12 @@
 
         <module>weixin-core</module>
         <module>weixin-mp</module>
-        <module>weixin-mp-service</module>
+        
         <module>weixin-qy</module>
         <module>weixin-open</module>
         <module>weixin-pay</module>
         <module>weixin-wildfly</module>
+        <module>weixin-mp-ee</module>
+        <module>weixin-mp-reply</module>
     </modules>
 </project>
