@@ -5,17 +5,23 @@
     <parent>
         <groupId>com.suisrc.jaxrsapi</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>weixin-parent</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-
+    
+    <properties>
+        <!-- module -->
+        <weixin.version>1.0.1-SNAPSHOT</weixin.version>
+    </properties>
+    
     <modules>
 
         <module>weixin-core</module>
         <module>weixin-mp</module>
-        
+
         <module>weixin-qy</module>
         <module>weixin-open</module>
         <module>weixin-pay</module>

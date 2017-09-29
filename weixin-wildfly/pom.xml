@@ -20,7 +20,7 @@
             <groupId>com.suisrc.jaxrsapi</groupId>
             <artifactId>weixin-core</artifactId>
             <scope>provided</scope>
-            <version>${module.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.swarm</groupId>

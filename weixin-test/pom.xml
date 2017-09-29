@@ -58,12 +58,12 @@
         <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>
             <artifactId>weixin-wildfly</artifactId>
-            <version>${module.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>
             <artifactId>weixin-mp-ee</artifactId>
-            <version>${module.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <!-- <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>

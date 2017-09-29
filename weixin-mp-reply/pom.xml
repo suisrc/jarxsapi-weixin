@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>
             <artifactId>weixin-mp</artifactId>
-            <version>${module.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <!-- junit -->
         <dependency>

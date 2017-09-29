@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.suisrc.jaxrsapi</groupId>
             <artifactId>weixin-core</artifactId>
-            <version>${module.version}</version>
+            <version>${weixin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
