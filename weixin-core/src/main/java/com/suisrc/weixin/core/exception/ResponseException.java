@@ -27,11 +27,11 @@ public class ResponseException extends RuntimeException {
         this(cause, errmsg, null);
     }
 
-    public ResponseException(String cause, String errmsg, String errcode) {
+    public ResponseException(String cause, String errmsg, Long errcode) {
         super(cause);
         errCode = new WxErrCode();
         errCode.setErrmsg(errmsg);
-        errCode.setErrcode(errcode == null ? "10099" : errcode);
+        errCode.setErrcode(errcode == null ? 10099L: errcode);
     }
 
     public ResponseException(String cause, ResponseHandler handler) {

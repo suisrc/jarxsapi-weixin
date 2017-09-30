@@ -44,11 +44,11 @@ public class ErrCodeMsg {
      * @param def
      * @return
      */
-    public static String getErrCodeMsg(String code, String def) {
+    public static String getErrCodeMsg(Long code, String def) {
         if (code == null) {
-            code = "0";
+            code = 0L;
         }
-        String msg = errcodeDict.get(code);
+        String msg = errcodeDict.get(code.toString());
         return msg != null ? msg : def;
     }
 
@@ -59,7 +59,7 @@ public class ErrCodeMsg {
      * @param def
      * @return
      */
-    public static String getErrCodeMsg(String code) {
+    public static String getErrCodeMsg(Long code) {
         return getErrCodeMsg(code, "未知");
     }
 }

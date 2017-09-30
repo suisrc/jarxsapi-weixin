@@ -48,7 +48,6 @@ public class Oauth2AuthorizeProxy {
 	 * @return
 	 */
 	public String proxy(String uri, String appid, String redirect_uri, String response_type, String scope, String state) {
-		
 		String url= redirect_uri;
 		try {
 			url = URLEncoder.encode(url, "UTF-8");
@@ -57,7 +56,7 @@ public class Oauth2AuthorizeProxy {
 		}
 		StringBuilder sbir = new StringBuilder(getBaseUrl()).append(uri).append('?');
 		sbir.append("appid=").append(appid).append('&');
-		sbir.append("redirect_uri=").append(uri).append('&');
+		sbir.append("redirect_uri=").append(url).append('&');
 		sbir.append("response_type=").append(response_type).append('&');
 		sbir.append("scope=").append(scope).append('&');
 		sbir.append("state=").append(state);

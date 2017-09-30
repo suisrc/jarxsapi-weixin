@@ -17,18 +17,18 @@ public class WxErrCode implements Serializable {
     /**
      * 返回码
      */
-    private String errcode = null;
+    private Long errcode = null;
 
     /**
      * 对返回码的文本描述内容
      */
     private String errmsg = null;
 
-    public String getErrcode() {
+    public Long getErrcode() {
         return errcode;
     }
 
-    public void setErrcode(String errcode) {
+    public void setErrcode(Long errcode) {
         this.errcode = errcode;
     }
 

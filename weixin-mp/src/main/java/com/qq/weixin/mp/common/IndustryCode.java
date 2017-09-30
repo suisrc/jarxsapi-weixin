@@ -67,7 +67,7 @@ public enum IndustryCode {
     /**
      * 主行业
      */
-    public final String industry;
+    public final String primary;
     
     /**
      * 副行业
@@ -79,8 +79,8 @@ public enum IndustryCode {
      */
     public final String code;
     
-    private IndustryCode(String industry, String deputy, String code) {
-        this.industry = industry;
+    private IndustryCode(String primary, String deputy, String code) {
+        this.primary = primary;
         this.deputy = deputy;
         this.code = code;
     }

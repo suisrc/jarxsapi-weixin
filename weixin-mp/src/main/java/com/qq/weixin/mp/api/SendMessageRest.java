@@ -105,7 +105,6 @@ import com.suisrc.weixin.core.bean.WxErrCode;
  * 
  * 事件推送群发结果
  * MASSSENDJOBFINISH
- * 
  * @see com.suisrc.weixin.mp.msg.event.MasssendjobfinishEvent
  */
 @RemoteApi
