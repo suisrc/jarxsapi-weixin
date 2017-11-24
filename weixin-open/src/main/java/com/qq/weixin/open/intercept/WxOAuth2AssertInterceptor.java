@@ -12,10 +12,10 @@ import com.qq.weixin.open.handler.WxOAuth2Handler;
  * OAuth2.0认证拦截
  * @author Y13
  */
-@WxOAuth2
+@WxOAuth2Assert
 @Interceptor
 @Priority(value = Interceptor.Priority.APPLICATION)
-public class WxOAuth2Interceptor {
+public class WxOAuth2AssertInterceptor {
 	/**
 	 * 微信oauth2.0认证拦截实体
 	 */
@@ -29,7 +29,7 @@ public class WxOAuth2Interceptor {
 	 */
 	@AroundInvoke
 	public Object oauth2(InvocationContext ctx) throws Exception {
-		handler.checkAndGetOAuth2(ctx);
+		handler.checkOAuth2(ctx);
 		return ctx.proceed();
 	}
 }

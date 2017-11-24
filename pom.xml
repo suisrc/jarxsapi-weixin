@@ -29,4 +29,28 @@
         <module>weixin-mp-ee</module>
         <module>weixin-mp-reply</module>
     </modules>
+    
+    
+    <repositories>
+        <repository>
+            <id>maven-snapshots</id>
+            <url>http://m.suisrc.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>maven-releases</id>
+            <url>http://m.suisrc.com/repository/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

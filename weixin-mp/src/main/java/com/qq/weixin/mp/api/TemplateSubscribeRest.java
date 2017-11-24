@@ -37,7 +37,7 @@ import com.suisrc.weixin.core.bean.WxErrCode;
  * @author Y13
  *
  */
-public interface SubscribemsgTemplateRest {
+public interface TemplateSubscribeRest {
     
     /**
      * 默认跳转路径KEY, 暂时使用

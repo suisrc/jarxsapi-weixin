@@ -40,7 +40,7 @@ import com.suisrc.weixin.core.bean.WxErrCode;
  * 3、模板保留符号"{{ }}"
  * 
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751277
- * 
+ * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751288
  * 事件推送
  * TEMPLATESENDJOBFINISH
  * 
